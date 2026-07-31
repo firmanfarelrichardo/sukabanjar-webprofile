@@ -51,7 +51,7 @@ export default function UmkmPage() {
     loadUmkm();
   }, [isAdmin]);
 
-  // Filter produk berdasarkan pencarian & kategori
+  // Filter produk berdasarkan pencarian & kategori (menggunakan field category dari DB)
   const filteredProducts = useMemo(() => {
     return products.filter((item) => {
       const matchesSearch =
@@ -60,34 +60,8 @@ export default function UmkmPage() {
         item.ownerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-      let matchesCategory = true;
-      if (activeCategory !== 'Semua') {
-        if (activeCategory === 'Olahan Tani') {
-          matchesCategory =
-            item.title.toLowerCase().includes('tani') ||
-            item.title.toLowerCase().includes('pisang') ||
-            item.title.toLowerCase().includes('kelapa') ||
-            item.description.toLowerCase().includes('tani');
-        } else if (activeCategory === 'Kuliner') {
-          matchesCategory =
-            item.title.toLowerCase().includes('keripik') ||
-            item.title.toLowerCase().includes('sambal') ||
-            item.description.toLowerCase().includes('kuliner') ||
-            item.description.toLowerCase().includes('makanan');
-        } else if (activeCategory === 'Kerajinan') {
-          matchesCategory =
-            item.title.toLowerCase().includes('anyaman') ||
-            item.title.toLowerCase().includes('bambu') ||
-            item.description.toLowerCase().includes('kerajinan');
-        } else if (activeCategory === 'Kopi & Minuman') {
-          matchesCategory =
-            item.title.toLowerCase().includes('kopi') ||
-            item.title.toLowerCase().includes('madu') ||
-            item.description.toLowerCase().includes('minuman');
-        } else {
-          matchesCategory = true;
-        }
-      }
+      const matchesCategory =
+        activeCategory === 'Semua' || item.category === activeCategory;
 
       return matchesSearch && matchesCategory;
     });

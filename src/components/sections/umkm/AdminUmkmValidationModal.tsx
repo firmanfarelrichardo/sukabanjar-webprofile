@@ -9,9 +9,11 @@ interface PendingUmkm {
   id: string;
   title: string;
   ownerName: string;
+  category?: string;
   description: string;
   price: string;
   whatsapp: string;
+  imageUrls?: string[];
   isApproved: boolean;
   createdAt: string;
 }

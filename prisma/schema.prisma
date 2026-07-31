@@ -72,10 +72,12 @@ model Umkm {
   id          String   @id @default(uuid())
   title       String
   ownerName   String
+  category    String   @default("Lainnya") // Olahan Tani, Kuliner, Kerajinan, Kopi & Minuman, Lainnya
   description String   @db.Text
   price       String
   whatsapp    String
   imageUrl    String?
+  imageUrls   String[] // Array URL gambar produk (multi-gambar carousel)
   isApproved  Boolean  @default(true) // Public submission defaults to false, Admin defaults to true
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
