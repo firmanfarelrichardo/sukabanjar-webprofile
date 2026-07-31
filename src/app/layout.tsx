@@ -1,9 +1,53 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import './globals.css';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import { SITE_INFO } from '@/constants';
+import { AdminProvider } from '@/context/AdminContext';
+import AdminControlBar from '@/components/admin/AdminControlBar';
+import AdminGlobalEditButton from '@/components/admin/AdminGlobalEditButton';
+import AdminSaveBar from '@/components/admin/AdminSaveBar';
+import InlineEditModal from '@/components/admin/InlineEditModal';
+import AdminInboxModal from '@/components/admin/AdminInboxModal';
+import ExitEditConfirmationModal from '@/components/admin/ExitEditConfirmationModal';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-plus-jakarta',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: "Desa Sukabanjar — Website Profil & Portal Digital",
-  description: "Portal resmi Desa Sukabanjar, Kecamatan Sidomulyo, Kabupaten Lampung Selatan.",
+  title: {
+    default: `${SITE_INFO.name} — ${SITE_INFO.tagline}`,
+    template: `%s | ${SITE_INFO.name}`,
+  },
+  description: SITE_INFO.description,
+  keywords: [
+    'Desa Sukabanjar',
+    'Profil Desa',
+    'Sidomulyo',
+    'Lampung Selatan',
+    'UMKM Desa',
+    'Wisata Desa',
+    'Aspirasi Warga',
+    'Peta Fasilitas',
+  ],
+  authors: [{ name: 'Tim KKN Desa Sukabanjar' }],
+  openGraph: {
+    title: `${SITE_INFO.name} — ${SITE_INFO.tagline}`,
+    description: SITE_INFO.description,
+    type: 'website',
+    locale: 'id_ID',
+    siteName: SITE_INFO.name,
+  },
 };
 
 export default function RootLayout({
@@ -12,8 +56,33 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id">
-      <body className="antialiased">{children}</body>
+    <html lang="id" className={`${inter.variable} ${plusJakarta.variable}`}>
+      <body className="antialiased flex flex-col min-h-screen">
+        <AdminProvider>
+          {/* Top Admin Floating Control Bar */}
+          <AdminControlBar />
+
+          {/* Public Header Navbar */}
+          <Navbar />
+
+          {/* Main View */}
+          <main className="flex-1">{children}</main>
+
+          {/* Public Footer */}
+          <Footer />
+
+          {/* Corner Floating Action Button for Admin */}
+          <AdminGlobalEditButton />
+
+          {/* Bottom Floating Save Bar for In-Place Live Text Editing */}
+          <AdminSaveBar />
+
+          {/* Modals for Live Admin Management */}
+          <InlineEditModal />
+          <AdminInboxModal />
+          <ExitEditConfirmationModal />
+        </AdminProvider>
+      </body>
     </html>
   );
 }

@@ -2,20 +2,104 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ================================================================
+   DESIGN TOKENS — Website Profil Desa Sukabanjar
+   ================================================================
+   ⚠ PENTING: Nilai warna di bawah HARUS sinkron dengan src/lib/theme.ts
+   Jika ingin ganti warna, ubah di theme.ts lalu sesuaikan di sini.
+   ================================================================ */
 :root {
+  /* Background & Foreground — sync dengan theme.ts > semantic */
   --background: #ffffff;
   --foreground: #0f172a;
+
+  /* Surface layers — sync dengan theme.ts > semantic */
+  --surface: #f8fafc;
+  --surface-elevated: #ffffff;
+
+  /* Border — sync dengan theme.ts > semantic */
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+
+  /* Navbar */
+  --navbar-height: 4rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #090d16;
-    --foreground: #f8fafc;
+/* ================================================================
+   BASE STYLES
+   ================================================================ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-inter), system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-plus-jakarta), var(--font-inter), system-ui, sans-serif;
+    @apply font-bold tracking-tight text-slate-900;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-400;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+/* ================================================================
+   COMPONENT UTILITIES
+   ================================================================ */
+@layer components {
+  /* Container */
+  .container-section {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Glass morphism card */
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg;
+  }
+
+  /* Section spacing */
+  .section-padding {
+    @apply py-16 md:py-20 lg:py-24;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 via-primary-500 to-accent-500;
+  }
+
+  /* Navbar solid background */
+  .navbar-solid {
+    @apply bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100;
+  }
+
+  /* Active nav link */
+  .nav-link-active {
+    @apply text-primary-600 font-semibold;
+  }
+}
+
+/* ================================================================
+   UTILITY OVERRIDES
+   ================================================================ */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
 }
