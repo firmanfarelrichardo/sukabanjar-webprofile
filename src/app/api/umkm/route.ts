@@ -16,11 +16,13 @@ export async function GET(request: Request) {
         id: 'umkm-1',
         title: 'Kopi Bubuk Robusta Sidomulyo',
         ownerName: 'Bapak Herman',
+        category: 'Kopi & Minuman',
         description:
           'Kopi bubuk robusta petik merah asli lereng perbukitan Sidomulyo dengan aroma pekat alami dan cita rasa khas.',
         price: 'Rp 28.000 / 250gram',
         whatsapp: '6281234567890',
         imageUrl: null,
+        imageUrls: [],
         isApproved: true,
         createdAt: new Date().toISOString(),
       },
@@ -28,11 +30,13 @@ export async function GET(request: Request) {
         id: 'umkm-2',
         title: 'Madu Hutan Murni Sukabanjar',
         ownerName: 'Bapak Darmawan',
+        category: 'Olahan Tani',
         description:
           'Madu murni alami tanpa pemanis buatan yang dipanen langsung dari vegetasi hutan kawasan Sukabanjar.',
         price: 'Rp 85.000 / botol',
         whatsapp: '6281234567891',
         imageUrl: null,
+        imageUrls: [],
         isApproved: true,
         createdAt: new Date().toISOString(),
       },
@@ -40,11 +44,13 @@ export async function GET(request: Request) {
         id: 'umkm-3',
         title: 'Sambal Olahan Hasil Tani Cabai',
         ownerName: 'Ibu Wati',
+        category: 'Kuliner',
         description:
           'Sambal botol siap saji dengan kepedasan gurih khas resep turun-temurun warga desa Sukabanjar.',
         price: 'Rp 18.000 / jar',
         whatsapp: '6281234567892',
         imageUrl: null,
+        imageUrls: [],
         isApproved: true,
         createdAt: new Date().toISOString(),
       },
@@ -70,7 +76,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, ownerName, description, price, whatsapp, imageUrl, isApproved } = body;
+    const { title, ownerName, category, description, price, whatsapp, imageUrl, imageUrls, isApproved } = body;
 
     if (!title || !ownerName || !whatsapp) {
       return NextResponse.json(
@@ -83,10 +89,12 @@ export async function POST(request: Request) {
       data: {
         title,
         ownerName,
+        category: category || 'Lainnya',
         description: description || 'Usaha lokal warga Desa Sukabanjar.',
         price: price || 'Hubungi Penjual',
         whatsapp: whatsapp.replace(/[^0-9]/g, ''),
-        imageUrl: imageUrl || null,
+        imageUrl: imageUrl || (Array.isArray(imageUrls) && imageUrls.length > 0 ? imageUrls[0] : null),
+        imageUrls: Array.isArray(imageUrls) ? imageUrls : [],
         isApproved: isApproved !== undefined ? Boolean(isApproved) : false, // Default false for public
       },
     });
@@ -113,7 +121,8 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const { id, isApproved } = await request.json();
+    const body = await request.json();
+    const { id, title, ownerName, category, description, price, whatsapp, imageUrl, imageUrls, isApproved } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -122,22 +131,34 @@ export async function PUT(request: Request) {
       );
     }
 
+    // Build update data dynamically — only update fields that are provided
+    const updateData: Record<string, any> = {};
+    if (isApproved !== undefined) updateData.isApproved = Boolean(isApproved);
+    if (title !== undefined) updateData.title = title;
+    if (ownerName !== undefined) updateData.ownerName = ownerName;
+    if (category !== undefined) updateData.category = category;
+    if (description !== undefined) updateData.description = description;
+    if (price !== undefined) updateData.price = price;
+    if (whatsapp !== undefined) updateData.whatsapp = whatsapp.replace(/[^0-9]/g, '');
+    if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
+    if (imageUrls !== undefined) updateData.imageUrls = Array.isArray(imageUrls) ? imageUrls : [];
+
     const updated = await prisma.umkm.update({
       where: { id },
-      data: { isApproved: Boolean(isApproved) },
+      data: updateData,
     });
 
     return NextResponse.json({
       success: true,
-      message: isApproved ? 'UMKM berhasil disetujui dan ditampilkan' : 'Status UMKM diperbarui',
+      message: isApproved ? 'UMKM berhasil disetujui dan ditampilkan' : 'Data UMKM berhasil diperbarui',
       data: updated,
     });
   } catch (error) {
-    console.error('Error updating UMKM status:', error);
+    console.error('Error updating UMKM:', error);
     return NextResponse.json(
       {
         success: false,
-        message: 'Gagal memperbarui status UMKM',
+        message: 'Gagal memperbarui data UMKM',
         error: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }

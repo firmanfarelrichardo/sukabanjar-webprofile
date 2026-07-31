@@ -190,15 +190,6 @@ export default function AdminDashboardPage() {
               Kelola laporan pengaduan warga, publikasi informasi, dan pengeditan teks website desa.
             </p>
           </div>
-
-          <Link
-            href="/"
-            onClick={() => setIsEditMode(true)}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all hover:scale-105"
-          >
-            <Edit3 size={16} />
-            <span>⚡ Buka Mode Edit Visual Website</span>
-          </Link>
         </div>
 
         {/* 3 MAIN NAVIGATION MENUS (Dashboard, Edit Website, Inbox Aspirasi) */}

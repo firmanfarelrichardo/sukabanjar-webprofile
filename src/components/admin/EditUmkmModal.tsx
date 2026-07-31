@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { X, Save, Store, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { UmkmProduct } from '@/components/sections/umkm/UmkmCardGrid';
+import UmkmImageUpload from '@/components/sections/umkm/UmkmImageUpload';
+
+const UMKM_CATEGORIES = ['Olahan Tani', 'Kuliner', 'Kerajinan', 'Kopi & Minuman', 'Lainnya'];
 
 interface EditUmkmModalProps {
   product: UmkmProduct | null;
@@ -15,9 +18,11 @@ export default function EditUmkmModal({ product, isOpen, onClose }: EditUmkmModa
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [ownerName, setOwnerName] = useState('');
+  const [category, setCategory] = useState('Lainnya');
   const [price, setPrice] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [description, setDescription] = useState('');
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -25,9 +30,11 @@ export default function EditUmkmModal({ product, isOpen, onClose }: EditUmkmModa
     if (product) {
       setTitle(product.title || '');
       setOwnerName(product.ownerName || '');
+      setCategory(product.category || 'Lainnya');
       setPrice(product.price || '');
       setWhatsapp(product.whatsapp || '');
       setDescription(product.description || '');
+      setImageUrls(product.imageUrls || []);
       setStatusMessage(null);
     }
   }, [product]);
@@ -47,9 +54,12 @@ export default function EditUmkmModal({ product, isOpen, onClose }: EditUmkmModa
           id: product.id,
           title,
           ownerName,
+          category,
           price,
           whatsapp,
           description,
+          imageUrls,
+          imageUrl: imageUrls.length > 0 ? imageUrls[0] : null,
           isApproved: true,
         }),
       });
@@ -134,6 +144,23 @@ export default function EditUmkmModal({ product, isOpen, onClose }: EditUmkmModa
             />
           </div>
 
+          {/* Kategori Usaha */}
+          <div className="space-y-1">
+            <label className="block text-xs font-bold text-slate-800">Kategori Usaha *</label>
+            <select
+              required
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500 bg-white cursor-pointer font-medium"
+            >
+              {UMKM_CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="block text-xs font-bold text-slate-800">Nama Pemilik Usaha *</label>
@@ -176,6 +203,14 @@ export default function EditUmkmModal({ product, isOpen, onClose }: EditUmkmModa
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500 font-medium"
             />
           </div>
+
+          {/* Image Upload */}
+          <UmkmImageUpload
+            imageUrls={imageUrls}
+            onImagesChange={setImageUrls}
+            maxFiles={5}
+            accentColor="amber"
+          />
 
           <div className="pt-3 border-t border-slate-100 flex justify-end gap-3">
             <button

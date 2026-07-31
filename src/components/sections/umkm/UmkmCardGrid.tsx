@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ShoppingBag, MessageCircle, User, Store, Edit3, Trash2 } from 'lucide-react';
+import { ShoppingBag, MessageCircle, User, Store, Edit3, Trash2, ChevronLeft, ChevronRight, Tag } from 'lucide-react';
 import { useAdmin } from '@/context/AdminContext';
 import { useRouter } from 'next/navigation';
 import EditUmkmModal from '@/components/admin/EditUmkmModal';
@@ -10,16 +10,104 @@ export interface UmkmProduct {
   id: string;
   title: string;
   ownerName: string;
+  category?: string;
   description: string;
   price: string;
   whatsapp: string;
   imageUrl?: string | null;
+  imageUrls?: string[];
 }
 
 interface UmkmCardGridProps {
   products: UmkmProduct[];
 }
 
+/* ────────────── Image Carousel Sub-Component ────────────── */
+function ProductImageCarousel({ images, title }: { images: string[]; title: string }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const goToPrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const goToNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  return (
+    <div className="relative w-full h-full group/carousel">
+      <img
+        src={images[currentIndex]}
+        alt={`${title} - Foto ${currentIndex + 1}`}
+        className="w-full h-full object-cover transition-all duration-500"
+      />
+
+      {/* Navigation Arrows */}
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={goToPrev}
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 backdrop-blur-sm"
+            aria-label="Foto sebelumnya"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            onClick={goToNext}
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 backdrop-blur-sm"
+            aria-label="Foto berikutnya"
+          >
+            <ChevronRight size={18} />
+          </button>
+
+          {/* Dot Indicators */}
+          <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+            {images.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentIndex(idx);
+                }}
+                className={`rounded-full transition-all duration-200 ${
+                  idx === currentIndex
+                    ? 'w-5 h-2 bg-white shadow-md'
+                    : 'w-2 h-2 bg-white/50 hover:bg-white/80'
+                }`}
+                aria-label={`Lihat foto ${idx + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Counter Badge */}
+          <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-lg bg-black/50 text-white text-[10px] font-bold backdrop-blur-sm">
+            {currentIndex + 1}/{images.length}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ────────────── Category Color Map ────────────── */
+function getCategoryStyle(category: string) {
+  switch (category) {
+    case 'Olahan Tani':
+      return 'bg-lime-50 text-lime-700 border-lime-200';
+    case 'Kuliner':
+      return 'bg-orange-50 text-orange-700 border-orange-200';
+    case 'Kerajinan':
+      return 'bg-violet-50 text-violet-700 border-violet-200';
+    case 'Kopi & Minuman':
+      return 'bg-amber-50 text-amber-700 border-amber-200';
+    default:
+      return 'bg-slate-50 text-slate-600 border-slate-200';
+  }
+}
+
+/* ────────────── Main Grid Component ────────────── */
 export default function UmkmCardGrid({ products }: UmkmCardGridProps) {
   const router = useRouter();
   const { isAdmin, isEditMode } = useAdmin();
@@ -74,20 +162,23 @@ export default function UmkmCardGrid({ products }: UmkmCardGridProps) {
           );
           const waUrl = `https://wa.me/${waFormatted}?text=${waMessage}`;
 
+          // Determine images to show
+          const allImages = item.imageUrls && item.imageUrls.length > 0
+            ? item.imageUrls
+            : item.imageUrl
+              ? [item.imageUrl]
+              : [];
+
           return (
             <div
               key={item.id}
               className="group flex flex-col justify-between rounded-3xl bg-white border border-slate-200/90 overflow-hidden hover:shadow-xl hover:border-accent-400/80 transition-all duration-300 hover:-translate-y-1 relative"
             >
               <div>
-                {/* Product Cover Image / Decorative Fallback */}
+                {/* Product Cover Image / Carousel / Decorative Fallback */}
                 <div className="relative h-52 w-full bg-slate-100 overflow-hidden">
-                  {item.imageUrl ? (
-                    <img
-                      src={item.imageUrl}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
+                  {allImages.length > 0 ? (
+                    <ProductImageCarousel images={allImages} title={item.title} />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-slate-900 via-emerald-950 to-primary-950 flex items-center justify-center text-white/20">
                       <ShoppingBag size={48} className="text-primary-400/40" />
@@ -95,7 +186,7 @@ export default function UmkmCardGrid({ products }: UmkmCardGridProps) {
                   )}
 
                   {/* Price Badge Overlay */}
-                  <div className="absolute bottom-3 right-3">
+                  <div className="absolute bottom-3 right-3 z-[5]">
                     <span className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-accent-500 text-slate-950 shadow-md">
                       {item.price}
                     </span>
@@ -124,10 +215,18 @@ export default function UmkmCardGrid({ products }: UmkmCardGridProps) {
 
                 {/* Product Content Body */}
                 <div className="p-6 space-y-3">
-                  {/* Owner info */}
-                  <div className="flex items-center gap-1.5 text-xs text-primary-600 font-semibold bg-primary-50 px-2.5 py-1 rounded-full w-fit">
-                    <User size={13} />
-                    <span>Pemilik: {item.ownerName}</span>
+                  {/* Owner info + Category Badge */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-1.5 text-xs text-primary-600 font-semibold bg-primary-50 px-2.5 py-1 rounded-full">
+                      <User size={13} />
+                      <span>Pemilik: {item.ownerName}</span>
+                    </div>
+                    {item.category && (
+                      <div className={`flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${getCategoryStyle(item.category)}`}>
+                        <Tag size={10} />
+                        <span>{item.category}</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Title */}

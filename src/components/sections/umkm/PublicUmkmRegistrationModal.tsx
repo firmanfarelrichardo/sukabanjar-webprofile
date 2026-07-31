@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import { X, Send, Store, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import UmkmImageUpload from './UmkmImageUpload';
+
+const UMKM_CATEGORIES = ['Olahan Tani', 'Kuliner', 'Kerajinan', 'Kopi & Minuman', 'Lainnya'];
 
 interface PublicUmkmRegistrationModalProps {
   isOpen: boolean;
@@ -14,9 +17,11 @@ export default function PublicUmkmRegistrationModal({
 }: PublicUmkmRegistrationModalProps) {
   const [title, setTitle] = useState('');
   const [ownerName, setOwnerName] = useState('');
+  const [category, setCategory] = useState('Lainnya');
   const [price, setPrice] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [description, setDescription] = useState('');
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -43,9 +48,11 @@ export default function PublicUmkmRegistrationModal({
         body: JSON.stringify({
           title,
           ownerName,
+          category,
           price: price || 'Hubungi Penjual',
           whatsapp,
           description,
+          imageUrls,
           isApproved: false, // Menunggu validasi admin
         }),
       });
@@ -60,9 +67,11 @@ export default function PublicUmkmRegistrationModal({
         setTimeout(() => {
           setTitle('');
           setOwnerName('');
+          setCategory('Lainnya');
           setPrice('');
           setWhatsapp('');
           setDescription('');
+          setImageUrls([]);
           setStatusMessage(null);
           onClose();
         }, 2500);
@@ -139,6 +148,23 @@ export default function PublicUmkmRegistrationModal({
             />
           </div>
 
+          {/* Kategori Usaha */}
+          <div className="space-y-1">
+            <label className="block text-xs font-bold text-slate-800">Kategori Usaha *</label>
+            <select
+              required
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-white cursor-pointer"
+            >
+              {UMKM_CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="block text-xs font-bold text-slate-800">Nama Pemilik *</label>
@@ -186,6 +212,14 @@ export default function PublicUmkmRegistrationModal({
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
             />
           </div>
+
+          {/* Image Upload */}
+          <UmkmImageUpload
+            imageUrls={imageUrls}
+            onImagesChange={setImageUrls}
+            maxFiles={5}
+            accentColor="emerald"
+          />
 
           <div className="pt-3 border-t border-slate-100 flex justify-end gap-3">
             <button
