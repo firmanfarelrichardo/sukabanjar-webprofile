@@ -1,18 +1,24 @@
 # Progress — Website Profil Desa Sukabanjar
 
-Overall: 0%
+Overall: 20%
 
 ---
 
 ## Completed
 
-*(Belum ada task yang selesai)*
+- [x] Inisialisasi project Next.js 14 + TypeScript + Tailwind CSS
+- [x] Setup Prisma ORM + Supabase PostgreSQL Cloud
+- [x] Konfigurasi variabel lingkungan (.env.local, .env) dengan Supabase Session Pooler Port 5432
+- [x] Migrasi 8 tabel database ke Supabase PostgreSQL Cloud (`npx prisma db push`)
+- [x] Seeding data awal Profil Desa Sukabanjar & Akun Admin (`npx prisma db seed`)
+- [x] Penetapan standar Mobile-First Approach & Responsive Design pada dokumentasi
+- [x] Pembuatan helper singleton `prisma.ts` & `supabase.ts`
 
 ---
 
 ## In Progress
 
-*(Belum ada task yang sedang dikerjakan)*
+- [ ] Dokumentasi Alur Pengembangan Modular (Database -> Backend -> Endpoint List -> Sample JSON -> UI Components -> Frontend)
 
 ---
 
@@ -24,18 +30,4 @@ Overall: 0%
 
 ## Next Steps
 
-1. Inisialisasi project Next.js + TypeScript
-2. Setup Prisma ORM + koneksi Supabase
-3. Implementasi skema database (prisma db push)
-4. Setup Tailwind CSS + Framer Motion + React Bits
-5. Bangun komponen UI dasar (Header, Footer, Layout)
-6. Implementasi halaman Landing Page
-7. Implementasi modul Profil Desa (Sejarah, Visi-Misi, Struktur)
-8. Implementasi modul E-Aspirasi & Pengaduan (Form Pesan + Inbox Admin)
-9. Implementasi modul Peta Interaktif (Leaflet.js)
-10. Implementasi modul UMKM & Wisata
-11. Implementasi modul Berita & Artikel
-12. Implementasi Panel Admin CMS (seluruh modul)
-13. Testing & QA (Lighthouse Audit)
-14. Deploy ke Vercel (Production)
-15. Serah terima & pelatihan admin desa
+- [ ] Pengembangan UI & Fitur Modul (Landing Page, Profil, Aspirasi, Peta, UMKM, Wisata, Berita, Admin CMS)
