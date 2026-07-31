@@ -1,0 +1,111 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 1. Data Identitas Desa & Visi Misi
+model VillageProfile {
+  id           String   @id @default(uuid())
+  name         String   @default("Sukabanjar")
+  subdistrict  String   @default("Sidomulyo")
+  district     String   @default("Lampung Selatan")
+  province     String   @default("Lampung")
+  logoUrl      String?
+  heroImageUrl String?
+  history      String   @db.Text
+  vision       String   @db.Text
+  missions     String[] // Array String untuk poin-poin misi
+  phone        String?
+  email        String?
+  address      String?
+  updatedAt    DateTime @updatedAt
+}
+
+// 2. Modul E-Aspirasi & Pengaduan Warga (Simple Text Message Model)
+model Aspiration {
+  id          String   @id @default(uuid())
+  senderName  String   // Nama pengirim (atau "Anonim" jika isAnonymous = true)
+  isAnonymous Boolean  @default(false)
+  category    String   // "Fasilitas Publik", "Kebersihan/Lingkungan", "Keamanan", "Saran/Masukan", "Lainnya"
+  title       String
+  content     String   @db.Text // Isi pesan teks aspirasi/pengaduan (seperti email)
+  attachment  String?  // URL Foto Bukti Laporan (Opsional)
+  isRead      Boolean  @default(false) // Penanda status dibaca di Inbox Admin Desa
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// 3. Data Perangkat Desa (Struktur Organisasi)
+model Apparatus {
+  id        String   @id @default(uuid())
+  name      String
+  role      String
+  imageUrl  String?
+  orderNum  Int      @default(0) // Untuk urutan tampilan hirarki
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 4. Modul Berita & Artikel
+model Article {
+  id        String   @id @default(uuid())
+  title     String
+  slug      String   @unique
+  content   String   @db.Text
+  category  String   // "Pengumuman", "Kegiatan", "KKN", "Pembangunan"
+  imageUrl  String?
+  isDraft   Boolean  @default(false)
+  author    String   @default("Admin Desa")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 5. Modul UMKM Desa
+model Umkm {
+  id          String   @id @default(uuid())
+  title       String
+  ownerName   String
+  description String   @db.Text
+  price       String
+  whatsapp    String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// 6. Modul Wisata & Pemandangan
+model Tourism {
+  id          String   @id @default(uuid())
+  title       String
+  description String   @db.Text
+  location    String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// 7. Modul Peta Bangunan & Fasilitas Penting
+model Facility {
+  id        String   @id @default(uuid())
+  name      String
+  category  String   // "Pemerintahan", "Pendidikan", "Kesehatan", "Ibadah", "Ekonomi"
+  latitude  Float
+  longitude Float
+  address   String?
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 8. User Admin
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String   // Hashed password
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+}

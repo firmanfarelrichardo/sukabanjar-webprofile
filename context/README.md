@@ -4,29 +4,33 @@ Folder `context/` adalah **Single Source of Truth (SSOT)** dan **AI Context Repo
 
 ---
 
-## Urutan Prioritas Pembacaan Dokumentasi (AI Agent Governance)
+## Document Priority (AI Agent Governance)
 
-Setiap AI Agent wajib membaca dokumen dengan urutan berikut sebelum melakukan tindakan:
+Setiap AI Agent wajib membaca dokumen dengan urutan berikut sebelum melakukan tugas:
 
 ```text
 1. PRD.md
 2. PROJECT_STATE.md
-3. 03-management/decisions.md
-4. File modul terkait pada 05-modules/<module>.md
-5. Dokumen pendukung lainnya
+3. 05-setup/setup-sequence.md (jika task perlu memahami urutan setup / menjalankan project)
+4. 03-management/decisions.md
+5. 06-modules/<module>.md (file modul terkait)
+6. Dokumen pendukung lainnya
 ```
 
-*Contoh:* Jika mengerjakan fitur E-Aspirasi, agent cukup membaca:
-- `PRD.md`
-- `PROJECT_STATE.md`
-- `03-management/decisions.md`
-- `05-modules/aspirations.md`
+*Contoh:* Jika mengerjakan modul E-Aspirasi:
+```text
+PRD.md
+PROJECT_STATE.md
+05-setup/setup-sequence.md
+03-management/decisions.md
+06-modules/aspirations.md
+```
 
 ---
 
-## Struktur Folder
+## Directory Structure
 
-```
+```text
 context/
 │
 ├── PRD.md                ← Sumber kebenaran utama (Product Requirement Document)
@@ -60,7 +64,16 @@ context/
 │   ├── documentation/    ← Output dokumentasi
 │   └── research/         ← Output riset teknologi
 │
-└── 05-modules/           ← Spesifikasi modular (1 file = 1 modul)
+├── 05-setup/             ← Panduan setup lingkungan lokal & cloud (Zero to Hero)
+│   ├── setup-sequence.md        ← MASTER urutan setup kronologis & sistematis dari nol
+│   ├── local-development.md     ← Panduan menjalankan aplikasi di lokal
+│   ├── supabase-setup.md        ← Panduan setup database PostgreSQL & Storage Supabase
+│   ├── environment-variables.md ← Dokumentasi variabel lingkungan (.env.local)
+│   ├── database-setup.md        ← Panduan setup PostgreSQL & Prisma ORM
+│   ├── docker-setup.md          ← Status Docker (TIDAK DIGUNAKAN)
+│   └── troubleshooting.md       ← Penanganan masalah umum
+│
+└── 06-modules/           ← Spesifikasi modular (1 file = 1 modul)
     ├── auth.md           ← Autentikasi Admin CMS
     ├── profile.md        ← Identitas, Sejarah, Visi & Misi Desa
     ├── apparatus.md      ← Perangkat Desa & Struktur Organisasi
