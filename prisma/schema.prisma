@@ -9,20 +9,23 @@ generator client {
 
 // 1. Data Identitas Desa & Visi Misi
 model VillageProfile {
-  id           String   @id @default(uuid())
-  name         String   @default("Sukabanjar")
-  subdistrict  String   @default("Sidomulyo")
-  district     String   @default("Lampung Selatan")
-  province     String   @default("Lampung")
-  logoUrl      String?
-  heroImageUrl String?
-  history      String   @db.Text
-  vision       String   @db.Text
-  missions     String[] // Array String untuk poin-poin misi
-  phone        String?
-  email        String?
-  address      String?
-  updatedAt    DateTime @updatedAt
+  id               String   @id @default(uuid())
+  name             String   @default("Sukabanjar")
+  subdistrict      String   @default("Sidomulyo")
+  district         String   @default("Lampung Selatan")
+  province         String   @default("Lampung")
+  logoUrl          String?
+  heroImageUrl     String?
+  heroSubtitle     String?  @default("Portal resmi pelayanan digital, pengaduan warga, serta informasi potensi UMKM dan pariwisata Desa Sukabanjar.")
+  history          String   @db.Text
+  historyCardTitle String?  @default("Warisan Nilai & Gotong Royong")
+  historyCardQuote String?  @default("Menjaga peninggalan nilai luhur pendiri desa, membangun tatanan kemasyarakatan yang harmonis dan sejalan dengan perkembangan jaman digital.")
+  vision           String   @db.Text
+  missions         String[] // Array String untuk poin-poin misi
+  phone            String?
+  email            String?
+  address          String?
+  updatedAt        DateTime @updatedAt
 }
 
 // 2. Modul E-Aspirasi & Pengaduan Warga (Simple Text Message Model)
@@ -73,6 +76,7 @@ model Umkm {
   price       String
   whatsapp    String
   imageUrl    String?
+  isApproved  Boolean  @default(true) // Public submission defaults to false, Admin defaults to true
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

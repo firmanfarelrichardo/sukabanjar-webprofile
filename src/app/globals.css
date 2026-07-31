@@ -4,17 +4,20 @@
 
 /* ================================================================
    DESIGN TOKENS — Website Profil Desa Sukabanjar
+   ================================================================
+   ⚠ PENTING: Nilai warna di bawah HARUS sinkron dengan src/lib/theme.ts
+   Jika ingin ganti warna, ubah di theme.ts lalu sesuaikan di sini.
    ================================================================ */
 :root {
-  /* Background & Foreground */
+  /* Background & Foreground — sync dengan theme.ts > semantic */
   --background: #ffffff;
   --foreground: #0f172a;
 
-  /* Surface layers */
+  /* Surface layers — sync dengan theme.ts > semantic */
   --surface: #f8fafc;
   --surface-elevated: #ffffff;
 
-  /* Border */
+  /* Border — sync dengan theme.ts > semantic */
   --border: #e2e8f0;
   --border-light: #f1f5f9;
 

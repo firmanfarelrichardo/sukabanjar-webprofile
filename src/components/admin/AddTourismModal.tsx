@@ -1,0 +1,171 @@
+'use client';
+
+import { useState } from 'react';
+import { X, Save, Palmtree, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
+interface AddTourismModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function AddTourismModal({ isOpen, onClose }: AddTourismModalProps) {
+  const router = useRouter();
+  const [title, setTitle] = useState('');
+  const [location, setLocation] = useState('');
+  const [description, setDescription] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatusMessage(null);
+    setIsLoading(true);
+
+    try {
+      const res = await fetch('/api/tourism', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, location, description }),
+      });
+
+      const json = await res.json();
+
+      if (res.ok && json.success) {
+        setStatusMessage({
+          type: 'success',
+          text: 'Destinasi wisata baru berhasil ditambahkan!',
+        });
+        setTimeout(() => {
+          setTitle('');
+          setLocation('');
+          setDescription('');
+          setStatusMessage(null);
+          onClose();
+          router.refresh();
+        }, 1500);
+      } else {
+        setStatusMessage({
+          type: 'error',
+          text: json.message || 'Gagal menambahkan tempat wisata.',
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      setStatusMessage({
+        type: 'error',
+        text: 'Terjadi kesalahan koneksi.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto border-4 border-amber-400">
+        <button
+          onClick={onClose}
+          className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+        >
+          <X size={20} />
+        </button>
+
+        <div className="space-y-1 text-center">
+          <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mx-auto">
+            <Palmtree size={24} />
+          </div>
+          <h3 className="text-2xl font-extrabold font-heading text-slate-900">
+            Tambah Destinasi Wisata
+          </h3>
+          <p className="text-xs text-slate-500">
+            Tambah spot keindahan alam atau saung kumpul desa
+          </p>
+        </div>
+
+        {statusMessage && (
+          <div
+            className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
+              statusMessage.type === 'success'
+                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                : 'bg-rose-50 text-rose-700 border border-rose-200'
+            }`}
+          >
+            {statusMessage.type === 'success' ? (
+              <CheckCircle2 size={18} className="text-emerald-600" />
+            ) : (
+              <AlertCircle size={18} className="text-rose-600" />
+            )}
+            <span>{statusMessage.text}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-1">
+            <label className="block text-xs font-bold text-slate-800">Nama Tempat Wisata *</label>
+            <input
+              type="text"
+              required
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Contoh: Spot Foto Sunset Kebun Kelapa"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500 font-medium"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-xs font-bold text-slate-800">Lokasi / Dusun *</label>
+            <input
+              type="text"
+              required
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="Contoh: Dusun 3, Desa Sukabanjar"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500 font-medium"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-xs font-bold text-slate-800">Deskripsi Daya Tarik Wisata</label>
+            <textarea
+              rows={4}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Jelaskan keunikan dan fasilitas lokasi wisata..."
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500 font-medium"
+            />
+          </div>
+
+          <div className="pt-3 border-t border-slate-100 flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/30 cursor-pointer disabled:bg-slate-300"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span>Menyimpan...</span>
+                </>
+              ) : (
+                <>
+                  <Save size={16} />
+                  <span>Simpan Tempat Wisata</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

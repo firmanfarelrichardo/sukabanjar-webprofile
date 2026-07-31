@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { themeColors } from "./src/lib/theme";
 
 const config: Config = {
   content: [
@@ -8,40 +9,7 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        primary: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
-          950: '#052e16',
-        },
-        accent: {
-          50: '#fffbeb',
-          100: '#fef3c7',
-          200: '#fde68a',
-          300: '#fcd34d',
-          400: '#fbbf24',
-          500: '#f59e0b',
-          600: '#d97706',
-          700: '#b45309',
-          800: '#92400e',
-          900: '#78350f',
-        },
-        slate: {
-          850: '#172033',
-          925: '#0d1526',
-          950: '#080f1e',
-        },
-      },
+      colors: themeColors,
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
         heading: ['var(--font-plus-jakarta)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
@@ -67,6 +35,10 @@ const config: Config = {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(100%)' },
         },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out',
@@ -74,6 +46,7 @@ const config: Config = {
         'slide-down': 'slideDown 0.3s ease-out',
         'slide-in-right': 'slideInRight 0.3s ease-out',
         'slide-out-right': 'slideOutRight 0.3s ease-out',
+        'marquee': 'marquee 25s linear infinite',
       },
     },
   },

@@ -1,8 +1,14 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { SITE_INFO, FOOTER_NAV_ITEMS } from '@/constants';
 
 export default function Footer() {
+  const pathname = usePathname();
+  if (pathname?.startsWith('/admin')) return null;
+
   return (
     <footer className="bg-slate-900 text-slate-300">
       {/* Main footer content */}

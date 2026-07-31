@@ -321,11 +321,30 @@ Komponen dari library [React Bits](https://react-bits.dev) untuk efek visual pre
 
 | File | Deskripsi |
 |------|-----------|
-| [tailwind.config.ts](file:///c:/laragon/www/sukabanjar-webprofile/tailwind.config.ts) | Konfigurasi warna, font, animasi |
-| [globals.css](file:///c:/laragon/www/sukabanjar-webprofile/src/app/globals.css) | CSS tokens & utility components |
+| ⭐ [theme.ts](file:///c:/laragon/www/sukabanjar-webprofile/src/lib/theme.ts) | **Single source of truth** — ubah warna di sini |
+| [tailwind.config.ts](file:///c:/laragon/www/sukabanjar-webprofile/tailwind.config.ts) | Import warna dari `theme.ts`, config font & animasi |
+| [globals.css](file:///c:/laragon/www/sukabanjar-webprofile/src/app/globals.css) | CSS tokens & utility components (sync manual dengan `theme.ts`) |
 | [layout.tsx](file:///c:/laragon/www/sukabanjar-webprofile/src/app/layout.tsx) | Root layout, font loading, SEO metadata |
 | [constants/index.ts](file:///c:/laragon/www/sukabanjar-webprofile/src/constants/index.ts) | Data navigasi & site info |
 | [utils.ts](file:///c:/laragon/www/sukabanjar-webprofile/src/lib/utils.ts) | Helper `cn()` (clsx + tailwind-merge) |
 | [Navbar.tsx](file:///c:/laragon/www/sukabanjar-webprofile/src/components/layout/Navbar.tsx) | Navbar responsif |
 | [MobileMenu.tsx](file:///c:/laragon/www/sukabanjar-webprofile/src/components/layout/MobileMenu.tsx) | Mobile menu Framer Motion |
 | [Footer.tsx](file:///c:/laragon/www/sukabanjar-webprofile/src/components/layout/Footer.tsx) | Footer 3-kolom |
+
+---
+
+## 10. Cara Mengganti Color Palette
+
+> **Cukup edit 1 file:** [`src/lib/theme.ts`](file:///c:/laragon/www/sukabanjar-webprofile/src/lib/theme.ts)
+
+**Langkah:**
+1. Buka `src/lib/theme.ts`
+2. Ubah nilai HEX pada objek `primary`, `accent`, atau `semantic`
+3. Jika mengubah `semantic`, update juga nilai CSS di `globals.css` `:root`
+4. Restart `npm run dev`
+5. Seluruh website otomatis mengikuti warna baru
+
+**Tips generate shade:**
+- Gunakan [UIColors.app](https://uicolors.app) — paste 1 warna dasar, dapatkan shade 50–950
+- Gunakan [Tailwind Color Generator](https://www.tints.dev) sebagai alternatif
+

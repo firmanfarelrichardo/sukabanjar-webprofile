@@ -1,6 +1,7 @@
 import {
   Home,
   Users,
+  BarChart3,
   MessageSquareText,
   MapPin,
   ShoppingBag,
@@ -22,6 +23,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Beranda', href: '/', icon: Home },
   { label: 'Profil', href: '/profil', icon: Users },
+  { label: 'Statistik', href: '/statistik', icon: BarChart3 },
   { label: 'Aspirasi', href: '/aspirasi', icon: MessageSquareText },
   { label: 'Peta', href: '/peta', icon: MapPin },
   { label: 'UMKM', href: '/umkm', icon: ShoppingBag },
@@ -51,6 +53,7 @@ export const SITE_INFO = {
 
 export const FOOTER_NAV_ITEMS = [
   { label: 'Profil Desa', href: '/profil' },
+  { label: 'Statistik & Demografi', href: '/statistik' },
   { label: 'Aspirasi Warga', href: '/aspirasi' },
   { label: 'Peta Fasilitas', href: '/peta' },
   { label: 'UMKM Desa', href: '/umkm' },
