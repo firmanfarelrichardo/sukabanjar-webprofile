@@ -14,7 +14,7 @@ Berikut adalah pembaruan dokumen **Product Requirement Document (PRD)** untuk We
 * **Lokasi:** Desa Sukabanjar, Kecamatan Sidomulyo, Kabupaten Lampung Selatan, Lampung
 * **Konteks:** Program Kerja (Progja) Kuliah Kerja Nyata (KKN)
 * **Target Biaya Operasional:** **Rp 0 / Bulan (Zero-Cost Infrastructure)**
-* **Prinsip Utama UI/UX:** Clean, Minimalis, Responsive, Accessibility-friendly, serta diperkaya mikro-interaksi modern berbasis **React Bits**.
+* **Prinsip Utama UI/UX:** Clean, Minimalis, **Mobile-First Approach** (Desain responsif & fleksibel 100% pada seluruh ukuran layar: Smartphone, Tablet, Laptop, Desktop), Accessibility-friendly, serta diperkaya mikro-interaksi modern berbasis **React Bits**.
 * **Prinsip Pengembangan:** 100% Full Dynamic CMS, Clean Code, Type-Safe, Scalable, dan Maintainable pasca-penarikan KKN.
 
 ---

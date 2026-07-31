@@ -19,6 +19,7 @@ Platform web yang menyajikan profil desa, potensi UMKM, destinasi wisata, peta i
 3. **Pemetaan Fasilitas Publik** — Peta interaktif berbasis OpenStreetMap
 4. **Kearsipan Digital** — Portal berita, artikel, dan pengumuman
 5. **Kemandirian Pengelolaan** — Full Dynamic CMS untuk Perangkat Desa
+6. **Mobile-First & Responsive UX** — Tampilan fleksibel & optimal di seluruh layar (HP, Tablet, Laptop, Desktop)
 
 ---
 

@@ -31,6 +31,7 @@ Website Profil & Portal Informasi Digital Desa Sukabanjar adalah sebuah platform
 ### In Scope
 
 - Halaman profil desa (sejarah, visi-misi, demografi, struktur organisasi)
+- Desain UI Mobile-First Approach (tampilan fleksibel & responsif di HP, Tablet, Laptop, hingga Desktop)
 - Modul E-Aspirasi & Pengaduan Warga (pengiriman pesan teks langsung)
 - Peta Interaktif Bangunan & Fasilitas Penting (Leaflet.js + OpenStreetMap)
 - Katalog UMKM & Potensi Desa
