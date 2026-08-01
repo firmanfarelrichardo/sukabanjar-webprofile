@@ -2,7 +2,7 @@
 
 ## Overview
 
-Modul E-Aspirasi & Pengaduan Warga menyediakan sarana digital berbasis pengiriman pesan langsung (seperti formulir pesan/email) bagi warga Desa Sukabanjar untuk menyampaikan aspirasi, saran, atau pengaduan secara praktis, cepat, dan aman. Modul ini tidak menggunakan generator tiket resi, tidak memerlukan nomor WhatsApp/telepon, dan tidak menyediakan fitur tracking status laporan oleh warga.
+Modul E-Aspirasi & Pengaduan Warga menyediakan sarana digital berbasis pengiriman pesan langsung (seperti formulir pesan/email) bagi warga Desa Suka Banjar untuk menyampaikan aspirasi, saran, atau pengaduan secara praktis, cepat, dan aman. Modul ini tidak menggunakan generator tiket resi, tidak memerlukan nomor WhatsApp/telepon, dan tidak menyediakan fitur tracking status laporan oleh warga.
 
 ---
 
@@ -57,7 +57,7 @@ Modul E-Aspirasi & Pengaduan Warga menyediakan sarana digital berbasis pengirima
 3. Warga mengklik "Kirim Pesan".
 4. Frontend mengirim POST request ke `/api/aspirations`.
 5. Backend menyimpan pesan ke database PostgreSQL tabel `Aspiration`.
-6. Layar menampilkan modal/toast konfirmasi: *"Terima kasih, pesan aspirasi/pengaduan Anda telah terkirim ke Balai Desa Sukabanjar."*
+6. Layar menampilkan modal/toast konfirmasi: *"Terima kasih, pesan aspirasi/pengaduan Anda telah terkirim ke Balai Desa Suka Banjar."*
 
 ### Read & Manage Inbox (Admin)
 1. Admin membuka Panel Admin → `Inbox Aspirasi`.

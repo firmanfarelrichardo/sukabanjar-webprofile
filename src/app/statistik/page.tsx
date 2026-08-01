@@ -4,9 +4,9 @@ import StatistikOverviewCards from '@/components/sections/statistik/StatistikOve
 import DemographicsCharts from '@/components/sections/statistik/DemographicsCharts';
 
 export const metadata: Metadata = {
-  title: 'Statistik & Demografi Desa Sukabanjar',
+  title: 'Statistik & Demografi Desa Suka Banjar',
   description:
-    'Data transparan kependudukan Desa Sukabanjar, Kecamatan Sidomulyo: jumlah penduduk, mata pencaharian, tingkat pendidikan, dan distribusi dusun.',
+    'Data transparan kependudukan Desa Suka Banjar, Kecamatan Sidomulyo: jumlah penduduk, mata pencaharian, tingkat pendidikan, dan distribusi dusun.',
 };
 
 async function getStatisticsData() {

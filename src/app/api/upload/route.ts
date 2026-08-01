@@ -2,11 +2,16 @@ import { NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
+const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB Default
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
 
 export async function POST(request: Request) {
   try {
+    const url = new URL(request.url);
+    const maxKbParam = url.searchParams.get('maxKb');
+    const customMaxBytes = maxKbParam ? parseInt(maxKbParam, 10) * 1024 : undefined;
+    const maxSizeBytes = customMaxBytes || DEFAULT_MAX_FILE_SIZE;
+
     const formData = await request.formData();
     const files = formData.getAll('images') as File[];
 
@@ -19,11 +24,13 @@ export async function POST(request: Request) {
 
     // Validate all files first
     for (const file of files) {
-      if (file.size > MAX_FILE_SIZE) {
+      if (file.size > maxSizeBytes) {
+        const maxKbDisplay = (maxSizeBytes / 1024).toFixed(0);
+        const actualKbDisplay = (file.size / 1024).toFixed(1);
         return NextResponse.json(
           {
             success: false,
-            message: `File "${file.name}" melebihi batas ukuran maksimum 2 MB (${(file.size / 1024 / 1024).toFixed(1)} MB)`,
+            message: `File "${file.name}" melebihi batas ukuran maksimum ${maxKbDisplay}KB (Ukuran file: ${actualKbDisplay}KB). Silakan kompres gambar terlebih dahulu.`,
           },
           { status: 400 }
         );
@@ -41,7 +48,7 @@ export async function POST(request: Request) {
     }
 
     // Ensure upload directory exists
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'umkm');
+    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'berita');
     await mkdir(uploadDir, { recursive: true });
 
     const uploadedUrls: string[] = [];
@@ -54,12 +61,12 @@ export async function POST(request: Request) {
       const timestamp = Date.now();
       const randomStr = Math.random().toString(36).substring(2, 8);
       const ext = file.name.split('.').pop() || 'jpg';
-      const filename = `umkm_${timestamp}_${randomStr}.${ext}`;
+      const filename = `berita_${timestamp}_${randomStr}.${ext}`;
 
       const filepath = path.join(uploadDir, filename);
       await writeFile(filepath, buffer);
 
-      uploadedUrls.push(`/uploads/umkm/${filename}`);
+      uploadedUrls.push(`/uploads/berita/${filename}`);
     }
 
     return NextResponse.json({

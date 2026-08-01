@@ -158,7 +158,7 @@ export default function UmkmCardGrid({ products }: UmkmCardGridProps) {
             ? '62' + waNumber.slice(1)
             : waNumber;
           const waMessage = encodeURIComponent(
-            `Halo kak, saya tertarik dengan produk UMKM "${item.title}" di Portal Desa Sukabanjar. Bolehkah saya info selengkapnya?`
+            `Halo kak, saya tertarik dengan produk UMKM "${item.title}" di Portal Desa Suka Banjar. Bolehkah saya info selengkapnya?`
           );
           const waUrl = `https://wa.me/${waFormatted}?text=${waMessage}`;
 

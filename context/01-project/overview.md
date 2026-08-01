@@ -1,8 +1,8 @@
-# Overview — Website Profil & Portal Digital Desa Sukabanjar
+# Overview — Website Profil & Portal Digital Desa Suka Banjar
 
 ## Ringkasan Project
 
-Website Profil & Portal Informasi Digital Desa Sukabanjar adalah sebuah platform web yang dibangun sebagai bagian dari Program Kerja (Progja) Kuliah Kerja Nyata (KKN). Platform ini bertujuan menyajikan profil desa, potensi UMKM, destinasi wisata, struktur pemerintahan, serta menyediakan kanal aspirasi dan pengaduan digital bagi warga secara efisien, modern, dan sepenuhnya gratis dalam operasional bulanan.
+Website Profil & Portal Informasi Digital Desa Suka Banjar adalah sebuah platform web yang dibangun sebagai bagian dari Program Kerja (Progja) Kuliah Kerja Nyata (KKN). Platform ini bertujuan menyajikan profil desa, potensi UMKM, destinasi wisata, struktur pemerintahan, serta menyediakan kanal aspirasi dan pengaduan digital bagi warga secara efisien, modern, dan sepenuhnya gratis dalam operasional bulanan.
 
 ---
 

@@ -1,6 +1,6 @@
-# Master Urutan Setup Project — Website Profil Desa Sukabanjar
+# Master Urutan Setup Project — Website Profil Desa Suka Banjar
 
-Dokumen ini memuat **urutan alur setup secara rinci, kronologis, dan sistematis** untuk membangun dan menjalankan Website Profil Desa Sukabanjar dari nol hingga *live deployment*.
+Dokumen ini memuat **urutan alur setup secara rinci, kronologis, dan sistematis** untuk membangun dan menjalankan Website Profil Desa Suka Banjar dari nol hingga *live deployment*.
 
 > **Catatan Arsitektur:** Project ini **TIDAK menggunakan Docker**. Pengembangan dan infrastruktur berfokus 100% pada ekosistem **Next.js + Prisma ORM + Supabase (Database & Storage) + Vercel (Hosting & CI/CD)** dengan prinsip Zero-Cost Infrastructure.
 
@@ -47,8 +47,8 @@ Pastikan perangkat komputer pengembang telah terinstall software dasar berikut:
 
 1. Clone repository dari GitHub ke komputer lokal:
    ```sh
-   git clone https://github.com/<username>/sukabanjar-webprofile.git
-   cd sukabanjar-webprofile
+   git clone https://github.com/<username>/Suka Banjar-webprofile.git
+   cd Suka Banjar-webprofile
    ```
 2. Jalankan perintah instalasi seluruh paket/library yang dibutuhkan (Next.js, Tailwind CSS, Prisma, Supabase SDK, Framer Motion, Leaflet, dll.):
    ```sh
@@ -63,13 +63,13 @@ Pastikan perangkat komputer pengembang telah terinstall software dasar berikut:
 
 1. **Buat Project Supabase:**
    - Login ke [supabase.com](https://supabase.com).
-   - Buat project baru bernama `sukabanjar-webprofile`.
+   - Buat project baru bernama `Suka Banjar-webprofile`.
    - Pilih Region **Singapore (`ap-southeast-1`)** dan buat Password Database.
 2. **Ambil Kredensial Connection:**
    - **Database Connection URI:** Ambil dari Settings → Database → Connection String (URI).
    - **API Keys:** Ambil `URL`, `anon public key`, dan `service_role key` dari Settings → API.
 3. **Buat Storage Bucket:**
-   - Buka menu **Storage** → Buat Bucket baru bernama **`sukabanjar-assets`**.
+   - Buka menu **Storage** → Buat Bucket baru bernama **`Suka Banjar-assets`**.
    - Centang opsi **Public Bucket** agar gambar dapat diakses publik.
 
 *(Panduan gambar & RLS policy selengkapnya ada di `context/05-setup/supabase-setup.md`)*.
@@ -93,7 +93,7 @@ Pastikan perangkat komputer pengembang telah terinstall software dasar berikut:
    SUPABASE_SERVICE_ROLE_KEY="[SERVICE-ROLE-KEY-ANDA]"
 
    # Secret Auth Local
-   JWT_SECRET="rahasia-jwt-sukabanjar-32-karakter"
+   JWT_SECRET="rahasia-jwt-Suka Banjar-32-karakter"
 
    # URL Lokal
    NEXT_PUBLIC_BASE_URL="http://localhost:3000"
@@ -145,11 +145,11 @@ Setelah `.env.local` terisi kredensial Supabase, lakukan migrasi skema tabel ke 
    ```
 2. **Deploy di Vercel Dashboard:**
    - Login ke [vercel.com](https://vercel.com) dan buat **New Project**.
-   - Import repository `sukabanjar-webprofile` dari GitHub.
+   - Import repository `Suka Banjar-webprofile` dari GitHub.
    - Masukkan seluruh variabel lingkungan dari `.env.local` ke menu **Environment Variables** di Vercel.
    - Klik **Deploy**.
 3. **Build Command otomatis Vercel:** `npx prisma generate && next build`.
-4. Website Desa Sukabanjar resmi live dengan SSL/HTTPS gratis!
+4. Website Desa Suka Banjar resmi live dengan SSL/HTTPS gratis!
 
 ---
 
@@ -157,8 +157,8 @@ Setelah `.env.local` terisi kredensial Supabase, lakukan migrasi skema tabel ke 
 
 ```sh
 # 1. Clone & Install
-git clone https://github.com/<user>/sukabanjar-webprofile.git
-cd sukabanjar-webprofile
+git clone https://github.com/<user>/Suka Banjar-webprofile.git
+cd Suka Banjar-webprofile
 npm install
 
 # 2. Setup Env (Sesuaikan kredensial Supabase)

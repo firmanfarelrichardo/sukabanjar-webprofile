@@ -20,7 +20,7 @@ export default function UmkmCTA({ onOpenRegisterModal }: UmkmCTAProps) {
               <span>Untuk Pelaku Usaha Warga</span>
             </div>
             <h3 className="text-2xl sm:text-3xl font-extrabold font-heading text-white">
-              Punya Usaha di Desa Sukabanjar?
+              Punya Usaha di Desa Suka Banjar?
             </h3>
             <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
               Daftarkan produk UMKM, makanan olahan, atau kerajinan Anda agar dapat dipromosikan secara gratis di katalog portal resmi desa ini.

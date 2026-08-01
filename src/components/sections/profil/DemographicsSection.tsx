@@ -43,7 +43,7 @@ export default function DemographicsSection({ demographics }: DemographicsSectio
             Data Statistik Warga
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 font-heading tracking-tight">
-            Demografi Desa Sukabanjar
+            Demografi Desa Suka Banjar
           </h2>
           <p className="text-slate-600 text-sm sm:text-base">
             Gambaran statistik mata pencaharian, pendidikan, serta struktur usia penduduk desa.

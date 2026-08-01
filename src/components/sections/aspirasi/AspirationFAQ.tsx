@@ -16,7 +16,7 @@ const FAQS = [
   {
     question: 'Siapa yang membaca dan menindaklanjuti pesan aspirasi ini?',
     answer:
-      'Pesan yang dikirimkan akan langsung masuk ke Dashboard Moderasi Admin Balai Desa Sukabanjar dan ditinjau langsung oleh Kepala Desa beserta perangkat terkait.',
+      'Pesan yang dikirimkan akan langsung masuk ke Dashboard Moderasi Admin Balai Desa Suka Banjar dan ditinjau langsung oleh Kepala Desa beserta perangkat terkait.',
     icon: ShieldCheck,
   },
   {

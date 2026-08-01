@@ -94,7 +94,7 @@ export default function AdminInboxModal() {
                 Inbox Aspirasi Warga
               </h2>
               <p className="text-xs text-slate-500">
-                Laporan & masukan yang dikirim langsung warga Desa Sukabanjar
+                Laporan & masukan yang dikirim langsung warga Desa Suka Banjar
               </p>
             </div>
           </div>

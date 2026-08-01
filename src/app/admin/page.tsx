@@ -7,7 +7,7 @@ import {
   Newspaper,
   ShoppingBag,
   MapPin,
-  Palmtree,
+  Camera,
   ArrowRight,
   ShieldCheck,
   LayoutDashboard,
@@ -24,13 +24,15 @@ import {
 } from 'lucide-react';
 import { useAdmin } from '@/context/AdminContext';
 import AddUmkmModal from '@/components/admin/AddUmkmModal';
-import AddTourismModal from '@/components/admin/AddTourismModal';
+import AddGalleryModal from '@/components/admin/AddGalleryModal';
 import AddArticleModal from '@/components/admin/AddArticleModal';
+import EditVillageProfileModal from '@/components/admin/EditVillageProfileModal';
 import AdminUmkmValidationModal from '@/components/sections/umkm/AdminUmkmValidationModal';
+import AdminProfileEditTab from '@/components/admin/AdminProfileEditTab';
 
 export default function AdminDashboardPage() {
   const { openInboxModal, setIsEditMode, setUnreadCount } = useAdmin();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'edit-website' | 'inbox'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'edit-website' | 'inbox' | 'profile'>('dashboard');
 
   const [stats, setStats] = useState({
     totalAspirations: 0,
@@ -38,7 +40,7 @@ export default function AdminDashboardPage() {
     totalArticles: 0,
     totalUmkm: 0,
     pendingUmkm: 0,
-    totalTourism: 3,
+    totalGallery: 8,
     totalFacilities: 6,
     recentAspirations: [] as any[],
   });
@@ -49,8 +51,9 @@ export default function AdminDashboardPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAddUmkmOpen, setIsAddUmkmOpen] = useState(false);
-  const [isAddTourismOpen, setIsAddTourismOpen] = useState(false);
+  const [isAddGalleryOpen, setIsAddGalleryOpen] = useState(false);
   const [isAddArticleOpen, setIsAddArticleOpen] = useState(false);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isUmkmValidationOpen, setIsUmkmValidationOpen] = useState(false);
 
   const fetchAspirations = async () => {
@@ -79,17 +82,17 @@ export default function AdminDashboardPage() {
     async function loadStats() {
       try {
         setIsLoading(true);
-        const [aspRes, artRes, umkmRes, tourRes] = await Promise.all([
+        const [aspRes, artRes, umkmRes, galRes] = await Promise.all([
           fetch('/api/admin/aspirations'),
           fetch('/api/articles'),
           fetch('/api/umkm?all=true'),
-          fetch('/api/tourism'),
+          fetch('/api/gallery'),
         ]);
 
         let aspirations = [];
         let articles = [];
         let umkm = [];
-        let tourism = [];
+        let gallery = [];
 
         if (aspRes.ok) {
           const json = await aspRes.json();
@@ -106,9 +109,9 @@ export default function AdminDashboardPage() {
           if (json.success && json.data) umkm = json.data;
         }
 
-        if (tourRes.ok) {
-          const json = await tourRes.json();
-          if (json.success && json.data) tourism = json.data;
+        if (galRes.ok) {
+          const json = await galRes.json();
+          if (json.success && json.data) gallery = json.data;
         }
 
         setAspirationsList(aspirations);
@@ -122,7 +125,7 @@ export default function AdminDashboardPage() {
           totalArticles: articles.length,
           totalUmkm: umkm.length,
           pendingUmkm: pendingUmkmCount,
-          totalTourism: tourism.length,
+          totalGallery: gallery.length,
           totalFacilities: 6,
           recentAspirations: aspirations.slice(0, 5),
         });
@@ -181,7 +184,7 @@ export default function AdminDashboardPage() {
           <div className="space-y-1">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold">
               <ShieldCheck size={14} />
-              <span>Sistem Manajemen CMS Portal Desa Sukabanjar</span>
+              <span>Sistem Manajemen CMS Portal Desa Suka Banjar</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">
               Panel Pengelola Desa
@@ -203,7 +206,7 @@ export default function AdminDashboardPage() {
             }`}
           >
             <LayoutDashboard size={18} />
-            <span>1. Dashboard Ringkasan</span>
+            <span>Dashboard</span>
           </button>
 
           <button
@@ -215,7 +218,7 @@ export default function AdminDashboardPage() {
             }`}
           >
             <Edit3 size={18} className="text-amber-600" />
-            <span>2. Edit & Pengelolaan Isi Website</span>
+            <span>Edit Website</span>
             {stats.pendingUmkm > 0 && (
               <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-500 text-slate-950 font-bold">
                 {stats.pendingUmkm} UMKM
@@ -232,7 +235,7 @@ export default function AdminDashboardPage() {
             }`}
           >
             <Inbox size={18} className="text-rose-600" />
-            <span>3. Inbox Aspirasi & Pengaduan Warga</span>
+            <span>Inbox</span>
             {stats.unreadAspirations > 0 ? (
               <span className="px-2 py-0.5 rounded-full text-[10px] bg-rose-500 text-white font-bold animate-pulse">
                 {stats.unreadAspirations} Baru
@@ -242,6 +245,18 @@ export default function AdminDashboardPage() {
                 {stats.totalAspirations}
               </span>
             )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('profile')}
+            className={`flex items-center gap-2 px-5 py-3.5 font-extrabold text-xs sm:text-sm border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'profile'
+                ? 'border-teal-500 text-teal-800 bg-teal-50/50 rounded-t-2xl'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <ShieldCheck size={18} className="text-teal-600" />
+            <span>Edit Profil</span>
           </button>
         </div>
       </div>
@@ -302,23 +317,23 @@ export default function AdminDashboardPage() {
             </Link>
 
             <Link
-              href="/wisata"
+              href="/galeri"
               className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:border-teal-300 transition-all space-y-4 group"
             >
               <div className="flex items-center justify-between">
                 <div className="w-11 h-11 rounded-2xl bg-teal-500 text-white flex items-center justify-center shadow-md">
-                  <Palmtree size={22} />
+                  <Camera size={22} />
                 </div>
                 <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
-                  Destinasi Alam
+                  Dokumentasi
                 </span>
               </div>
               <div>
                 <span className="text-3xl font-extrabold text-slate-900 font-heading block">
-                  {stats.totalTourism}
+                  {stats.totalGallery}
                 </span>
                 <span className="text-xs font-semibold text-slate-500 group-hover:text-teal-600 transition-colors">
-                  Destinasi Wisata
+                  Galeri Foto Desa
                 </span>
               </div>
             </Link>
@@ -482,20 +497,28 @@ export default function AdminDashboardPage() {
                   <BookOpen size={20} />
                 </div>
                 <h3 className="text-lg font-bold font-heading text-slate-900">
-                  Halaman Profil & Sejarah Desa
+                  Profil, Ikon Logo & Sosmed Desa
                 </h3>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Edit narasi Sejarah Desa, kartu Kilas Balik Historis ("Warisan Nilai"), serta daftar Visi & Misi Desa.
+                  Ubah gambar Ikon Desa (Favicon & Header), nomor telepon, email, dan akun sosial media dinamis (Instagram, YouTube, TikTok, FB, dll).
                 </p>
               </div>
-              <Link
-                href="/profil"
-                onClick={() => setIsEditMode(true)}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors"
-              >
-                <Edit3 size={14} />
-                Edit Profil Desa (Visual Live)
-              </Link>
+              <div className="space-y-2">
+                <button
+                  onClick={() => setIsEditProfileOpen(true)}
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition-colors cursor-pointer"
+                >
+                  <Edit3 size={14} />
+                  <span>Edit Ikon Logo, Kontak & Sosmed</span>
+                </button>
+                <Link
+                  href="/profil"
+                  onClick={() => setIsEditMode(true)}
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors"
+                >
+                  Edit Sejarah & Visi Misi (Visual Live)
+                </Link>
+              </div>
             </div>
 
             {/* Card 3: Katalog UMKM Desa */}
@@ -528,25 +551,25 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Card 4: Destinasi Wisata Desa */}
+            {/* Card 4: Galeri Foto Desa */}
             <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
               <div className="space-y-3">
                 <div className="w-10 h-10 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center">
-                  <Palmtree size={20} />
+                  <Camera size={20} />
                 </div>
                 <h3 className="text-lg font-bold font-heading text-slate-900">
-                  Destinasi Wisata Desa
+                  Galeri Foto Desa
                 </h3>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Tambah spot tempat wisata baru, saung kumpul sawah, atau lokasi pemandangan alam desa.
+                  Unggah foto pemandangan alam, kegiatan kemasyarakatan, fasilitas, atau momen penting desa.
                 </p>
               </div>
               <button
-                onClick={() => setIsAddTourismOpen(true)}
+                onClick={() => setIsAddGalleryOpen(true)}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs transition-colors cursor-pointer"
               >
                 <Plus size={14} />
-                <span>+ Tambah Tempat Wisata</span>
+                <span>+ Tambah Foto Galeri</span>
               </button>
             </div>
 
@@ -798,10 +821,14 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
+      {/* MENU 4: EDIT PROFIL, IKON & SOSMED DESA */}
+      {activeTab === 'profile' && <AdminProfileEditTab />}
+
       {/* Modals */}
       <AddUmkmModal isOpen={isAddUmkmOpen} onClose={() => setIsAddUmkmOpen(false)} />
-      <AddTourismModal isOpen={isAddTourismOpen} onClose={() => setIsAddTourismOpen(false)} />
+      <AddGalleryModal isOpen={isAddGalleryOpen} onClose={() => setIsAddGalleryOpen(false)} />
       <AddArticleModal isOpen={isAddArticleOpen} onClose={() => setIsAddArticleOpen(false)} />
+      <EditVillageProfileModal isOpen={isEditProfileOpen} onClose={() => setIsEditProfileOpen(false)} />
       <AdminUmkmValidationModal
         isOpen={isUmkmValidationOpen}
         onClose={() => setIsUmkmValidationOpen(false)}

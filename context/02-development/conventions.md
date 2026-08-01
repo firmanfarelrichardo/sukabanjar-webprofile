@@ -1,4 +1,4 @@
-# Coding Conventions — Website Profil Desa Sukabanjar
+# Coding Conventions — Website Profil Desa Suka Banjar
 
 ## Naming Convention
 

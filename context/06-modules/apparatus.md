@@ -2,7 +2,7 @@
 
 ## Overview
 
-Modul Perangkat Desa mengelola hirarki struktur organisasi Pemerintahan Desa Sukabanjar (Kepala Desa, Sekretaris Desa, Kepala Dusun, dan Staf). Modul ini memungkinkan publik melihat bagan organisasi desa dan Admin mengelola daftar perangkat desa secara dinamis.
+Modul Perangkat Desa mengelola hirarki struktur organisasi Pemerintahan Desa Suka Banjar (Kepala Desa, Sekretaris Desa, Kepala Dusun, dan Staf). Modul ini memungkinkan publik melihat bagan organisasi desa dan Admin mengelola daftar perangkat desa secara dinamis.
 
 ---
 

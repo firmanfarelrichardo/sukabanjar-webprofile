@@ -13,7 +13,7 @@ interface HistorySectionProps {
 
 export default function HistorySection({
   historyText,
-  villageName = 'Sukabanjar',
+  villageName = 'Suka Banjar',
   historyCardTitle,
   historyCardQuote,
 }: HistorySectionProps) {
@@ -25,7 +25,7 @@ export default function HistorySection({
     'Menjaga peninggalan nilai luhur pendiri desa, membangun tatanan kemasyarakatan yang harmonis dan sejalan dengan perkembangan jaman digital.';
   const defaultHistory =
     historyText ||
-    `Desa Sukabanjar didirikan dengan semangat kebersamaan dan gotong royong warga masyarakat. Nama "Sukabanjar" memiliki makna filosofis yang mendalam, di mana "Suka" melambangkan kedamaian dan kegembiraan, serta "Banjar" melambangkan perkampungan atau tatanan sosial yang teratur dan harmonis.\n\nSecara historis, wilayah ini awalnya berkembang dari pemukiman warga berbasis sektor pertanian dan perkebunan. Berkat kegigihan para tokoh pendiri desa, Sukabanjar tumbuh menjadi salah satu wilayah yang mandiri dan berdaya saing di Kecamatan Sidomulyo, Kabupaten Lampung Selatan. Semangat kebersamaan dan tradisi gotong royong terus dilestarikan oleh generasi ke generasi hingga saat ini.`;
+    `Desa Suka Banjar didirikan dengan semangat kebersamaan dan gotong royong warga masyarakat. Nama "Suka Banjar" memiliki makna filosofis yang mendalam, di mana "Suka" melambangkan kedamaian dan kegembiraan, serta "Banjar" melambangkan perkampungan atau tatanan sosial yang teratur dan harmonis.\n\nSecara historis, wilayah ini awalnya berkembang dari pemukiman warga berbasis sektor pertanian dan perkebunan. Berkat kegigihan para tokoh pendiri desa, Suka Banjar tumbuh menjadi salah satu wilayah yang mandiri dan berdaya saing di Kecamatan Sidomulyo, Kabupaten Lampung Selatan. Semangat kebersamaan dan tradisi gotong royong terus dilestarikan oleh generasi ke generasi hingga saat ini.`;
 
   const [cardTitle, setCardTitle] = useState(defaultTitle);
   const [cardQuote, setCardQuote] = useState(defaultQuote);

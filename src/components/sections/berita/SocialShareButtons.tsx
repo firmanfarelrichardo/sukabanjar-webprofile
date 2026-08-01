@@ -11,7 +11,7 @@ export default function SocialShareButtons({ title }: SocialShareButtonsProps) {
   const [copied, setCopied] = useState(false);
 
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
-  const shareText = encodeURIComponent(`Baca Berita Desa Sukabanjar: "${title}"`);
+  const shareText = encodeURIComponent(`Baca Berita Desa Suka Banjar: "${title}"`);
 
   const shareLinks = {
     whatsapp: `https://wa.me/?text=${shareText}%20${encodeURIComponent(currentUrl)}`,

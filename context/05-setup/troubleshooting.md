@@ -1,4 +1,4 @@
-# Troubleshooting & Common Issues — Website Profil Desa Sukabanjar
+# Troubleshooting & Common Issues — Website Profil Desa Suka Banjar
 
 ## 1. Prisma Client Not Found / Invalid Import
 
@@ -45,7 +45,7 @@ const InteractiveMap = dynamic(
 **Gejala:** Gagal mengunggah foto bukti aspirasi, foto berita, atau foto UMKM.
 
 **Solusi:**
-1. Pastikan bucket storage (misal: `sukabanjar-assets`) sudah dibuat di Supabase Dashboard.
+1. Pastikan bucket storage (misal: `Suka Banjar-assets`) sudah dibuat di Supabase Dashboard.
 2. Periksa RLS (Row Level Security) kebijakan storage agar mengizinkan publik upload (untuk bukti aspirasi) atau admin upload.
 
 ---

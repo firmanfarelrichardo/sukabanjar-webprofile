@@ -5,7 +5,7 @@ import {
   MessageSquareText,
   MapPin,
   ShoppingBag,
-  Palmtree,
+  Camera,
   Newspaper,
   ArrowUpRight,
 } from 'lucide-react';
@@ -53,12 +53,12 @@ const modules = [
     tag: 'Ekonomi',
   },
   {
-    title: 'Wisata & Alam',
-    description: 'Destinasi keindahan alam, saung kumpul, dan rute lokasi.',
-    href: '/wisata',
-    icon: Palmtree,
-    gradient: moduleColors.wisata,
-    tag: 'Potensi',
+    title: 'Galeri Desa',
+    description: 'Koleksi dokumentasi lanskap pemandangan desa, kegiatan, & momen penting.',
+    href: '/galeri',
+    icon: Camera,
+    gradient: moduleColors.galeri,
+    tag: 'Dokumentasi',
   },
   {
     title: 'Berita & Pengumuman',
@@ -83,7 +83,7 @@ export default function QuickAccessGrid() {
             Akses Cepat Portal Desa
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Pilih modul informasi atau layanan publik digital yang ingin Anda akses di Desa Sukabanjar.
+            Pilih modul informasi atau layanan publik digital yang ingin Anda akses di Desa Suka Banjar.
           </p>
         </div>
 

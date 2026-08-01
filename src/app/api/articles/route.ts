@@ -11,46 +11,57 @@ export async function GET() {
     const defaultArticles = [
       {
         id: 'art-1',
-        title: 'Penyuluhan Kesehatan Gratis Balai Desa Hari Sabtu',
-        slug: 'penyuluhan-kesehatan-gratis-balai-desa-hari-sabtu',
-        content: `Pemerintah Desa Sukabanjar bekerja sama dengan Puskesmas Kecamatan Sidomulyo dan Tim KKN Universitas Lampung akan menyelenggarakan kegiatan Penyuluhan dan Pemeriksaan Kesehatan Gratis bagi seluruh warga masyarakat Desa Sukabanjar.\n\nKegiatan ini meliputi:\n1. Pemeriksaan tekanan darah dan gula darah secara gratis.\n2. Konsultasi kesehatan lansia dan balita.\n3. Pembagian vitamin dan edukasi pola hidup bersih dan sehat (PHBS).\n\nAcara akan dilaksanakan pada hari Sabtu, jam 08.00 WIB bertempat di Balai Desa Sukabanjar. Diharapkan seluruh warga masyarakat dapat memanfaatkan fasilitas pemeriksaan kesehatan ini secara maksimal.`,
-        category: 'Pengumuman',
-        imageUrl: null,
+        title: 'Pembukaan Turnamen Olahraga Warga & Pentas Seni Pemuda Suka Banjar',
+        slug: 'pembukaan-turnamen-olahraga-warga-pentas-seni-pemuda-suka-banjar',
+        content: `Pemerintah Desa Suka Banjar bersama Karang Taruna resmi membuka gelaran Turnamen Olahraga Antar-Dusun dan Pentas Seni Kebudayaan Desa Suka Banjar 2026.\n\nAcara yang berlangsung di Lapangan Utama Desa ini bertujuan untuk mempererat tali silaturahmi, memupuk kebersamaan antarwarga, serta menggali potensi bakat generasi muda di bidang olahraga sepak bola, bola voli, dan bulu tangkis.\n\nKepala Desa Suka Banjar dalam sambutannya mengajak seluruh masyarakat untuk senantiasa menjunjung tinggi nilai sportivitas, kebersamaan, dan menjaga ketertiban selama berlangsungnya turnamen selama 2 pekan ke depan.`,
+        category: 'Kegiatan Desa',
+        imageUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1200&q=80',
         isDraft: false,
-        author: 'Tim KKN Unila',
-        createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+        author: 'Tim Redaksi Desa',
+        createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
       },
       {
         id: 'art-2',
-        title: 'Gotong Royong Perbaikan Saluran Irigasi Dusun 2',
-        slug: 'gotong-royong-perbaikan-saluran-irigasi-dusun-2',
-        content: `Warga masyarakat Dusun 2 Desa Sukabanjar bersama perangkat desa menggelar aksi gotong royong kerja bakti membersihkan dan memperbaiki saluran irigasi pertanian.\n\nKegiatan ini bertujuan untuk memastikan kelancaran pasokan air menuju lahan persawahan warga menjelang musim tanam mendatang. Kepala Desa Sukabanjar menyampaikan apresiasi yang setinggi-tingginya atas kekompakan dan semangat kebersamaan warga Dusun 2 yang terus menjaga tradisi gotong royong luhur desa.`,
-        category: 'Kegiatan',
-        imageUrl: null,
+        title: 'Pemasangan PJU Tenaga Surya & Perbaikan Jalan Utama Dusun 2',
+        slug: 'pemasangan-pju-tenaga-surya-perbaikan-jalan-utama-dusun-2',
+        content: `Pemerintah Desa Suka Banjar resmi merampungkan pemasangan 10 unit Lampu Penerangan Jalan Umum (PJU) berbasis Tenaga Surya serta meresmikan pengaspalan jalan Dusun 2.\n\nInisiatif ini merupakan wujud komitmen pemerintah desa dalam meningkatkan fasilitas infrastruktur publik yang ramah lingkungan dan memberikan rasa aman serta kenyamanan mobilitas warga saat malam hari.`,
+        category: 'Pembangunan',
+        imageUrl: 'https://images.unsplash.com/photo-1508873696983-2df515122519?auto=format&fit=crop&w=1200&q=80',
         isDraft: false,
-        author: 'Sekretaris Desa',
-        createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+        author: 'Kaur Pembangunan',
+        createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
       },
       {
         id: 'art-3',
-        title: 'Pelatihan Digitalisasi UMKM Produk Olahan Pisang oleh Mahasiswa KKN',
-        slug: 'pelatihan-digitalisasi-umkm-produk-olahan-pisang-oleh-mahasiswa-kkn',
-        content: `Tim Mahasiswa KKN Unila menyelenggarakan workshop digitalisasi pemasaran usaha mikro bagi pelaku UMKM olahan pisang di Desa Sukabanjar.\n\nDalam pelatihan ini, para pelaku usaha warga diberikan bimbingan mengenai pembuatan foto produk yang menarik, pendaftaran titik usaha di Google Maps, serta tata cara memanfaatkan media sosial dan aplikasi pengiriman WhatsApp untuk meningkatkan jangkauan penjualan produk lokal khas Sukabanjar.`,
-        category: 'KKN',
-        imageUrl: null,
+        title: 'Pelatihan Digitalisasi Pemasaran UMKM & Google Maps Bersama KKN',
+        slug: 'pelatihan-digitalisasi-pemasaran-umkm-google-maps-bersama-kkn',
+        content: `Tim Mahasiswa KKN Universitas Lampung bersama perangkat desa menggelar workshop bimbingan teknis pemasaran digital bagi para pelaku usaha mikro di Desa Suka Banjar.\n\nDalam kegiatan ini, warga diajarkan pendaftaran titik lokasi UMKM pada Google Maps, pembuatan foto produk profesional dengan smartphone, serta strategi penjualan melalui platform media sosial WhatsApp & Instagram.`,
+        category: 'Pendidikan',
+        imageUrl: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80',
         isDraft: false,
         author: 'Tim KKN Unila',
-        createdAt: new Date(Date.now() - 86400000 * 6).toISOString(),
+        createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
       },
       {
         id: 'art-4',
-        title: 'Peresmian Lampu Penerangan Jalan Umum Tenaga Surya',
-        slug: 'peresmian-lampu-penerangan-jalan-umum-tenaga-surya',
-        content: `Pemerintah Desa Sukabanjar resmi mengoperasikan 10 unit lampu Penerangan Jalan Umum (PJU) berbasis tenaga surya yang dipasang di beberapa titik perlintasan jalan dusun utama.\n\nPemasangan PJU ramah lingkungan ini diharapkan dapat meningkatkan kenyamanan dan keamanan mobilitas warga masyarakat pada malam hari.`,
-        category: 'Pembangunan',
-        imageUrl: null,
+        title: 'Pemeriksaan Kesehatan Gratis & Posyandu Lansia di Balai Desa',
+        slug: 'pemeriksaan-kesehatan-gratis-posyandu-lansia-di-balai-desa',
+        content: `Puskesmas Sidomulyo bekerja sama dengan Tim Penggerak PKK Desa Suka Banjar menyelenggarakan pelayanan cek kesehatan gratis bagi balita dan warga lansia.\n\nLayanan meliputi pemeriksaan tekanan darah, gula darah, pemberian vitamin tambahan, serta konseling gizi guna memastikan kesehatan warga terjaga secara optimal.`,
+        category: 'Kesehatan',
+        imageUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80',
         isDraft: false,
-        author: 'Kaur Pembangunan',
+        author: 'Tim PKK Desa',
+        createdAt: new Date(Date.now() - 86400000 * 6).toISOString(),
+      },
+      {
+        id: 'art-5',
+        title: 'Panen Raya Padi Organik & Penguatan Ketahanan Pangan Warga',
+        slug: 'panen-raya-padi-organik-penguatan-ketahanan-pangan-warga',
+        content: `Kelompok Tani Desa Suka Banjar merayakan Panen Raya Padi Organik hasil olahan lahan pertanian desa. Keberhasilan panen kali ini mencapai peningkatan hasil produksi hingga 20% dibanding musim lalu.`,
+        category: 'Pertanian',
+        imageUrl: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80',
+        isDraft: false,
+        author: 'Ketua Kelompok Tani',
         createdAt: new Date(Date.now() - 86400000 * 8).toISOString(),
       },
     ];
@@ -74,11 +85,11 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { title, content, category, author, imageUrl } = await request.json();
+    const { title, content, category, author, imageUrl, publishedAt } = await request.json();
 
     if (!title || !content) {
       return NextResponse.json(
-        { success: false, message: 'Judul dan isi artikel berita wajib diisi' },
+        { success: false, message: 'Judul dan isi konten berita wajib diisi' },
         { status: 400 }
       );
     }
@@ -88,21 +99,24 @@ export async function POST(request: Request) {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)+/g, '') + '-' + Date.now();
 
+    const createdAtDate = publishedAt ? new Date(publishedAt) : new Date();
+
     const newArticle = await prisma.article.create({
       data: {
         title,
         slug,
         content,
-        category: category || 'Pengumuman',
+        category: category || 'Kegiatan Desa',
         author: author || 'Admin Desa',
         imageUrl: imageUrl || null,
         isDraft: false,
+        createdAt: isNaN(createdAtDate.getTime()) ? new Date() : createdAtDate,
       },
     });
 
     return NextResponse.json({
       success: true,
-      message: 'Artikel berita berhasil diterbitkan',
+      message: 'Artikel berita berhasil diterbitkan!',
       data: newArticle,
     });
   } catch (error) {

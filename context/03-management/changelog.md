@@ -1,6 +1,6 @@
-# Changelog — Website Profil Desa Sukabanjar
+# Changelog — Website Profil Desa Suka Banjar
 
-Dokumen ini mencatat seluruh riwayat perubahan, pembaruan fitur, perbaikan bug, dan migrasi sistem pada proyek Website Profil Desa Sukabanjar.
+Dokumen ini mencatat seluruh riwayat perubahan, pembaruan fitur, perbaikan bug, dan migrasi sistem pada proyek Website Profil Desa Suka Banjar.
 
 ---
 

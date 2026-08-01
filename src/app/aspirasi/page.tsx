@@ -6,7 +6,7 @@ import AspirationFAQ from '@/components/sections/aspirasi/AspirationFAQ';
 export const metadata: Metadata = {
   title: 'E-Aspirasi & Pengaduan Warga',
   description:
-    'Sampaikan masukan, pengaduan fasilitas publik, atau saran secara langsung ke Balai Desa Sukabanjar, Kecamatan Sidomulyo. Opsi anonim tersedia.',
+    'Sampaikan masukan, pengaduan fasilitas publik, atau saran secara langsung ke Balai Desa Suka Banjar, Kecamatan Sidomulyo. Opsi anonim tersedia.',
 };
 
 export default function AspirationPage() {

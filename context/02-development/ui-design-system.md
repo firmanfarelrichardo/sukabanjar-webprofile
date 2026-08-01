@@ -1,4 +1,4 @@
-# Frontend & UI Design System — Desa Sukabanjar
+# Frontend & UI Design System — Desa Suka Banjar
 
 > Dokumen referensi lengkap untuk seluruh aspek visual frontend: palet warna, tipografi, spacing, komponen, animasi, dan pedoman responsif.
 
@@ -77,7 +77,7 @@ Warna netral untuk teks, background, border, dan elemen UI umum.
 | Nama | Kelas Tailwind | Konteks |
 |------|----------------|---------|
 | Hero Background | `from-slate-900 via-slate-800 to-primary-950` | Background hero section |
-| Hero Text | `from-primary-400 via-emerald-300 to-accent-400` | Judul hero "Desa Sukabanjar" |
+| Hero Text | `from-primary-400 via-emerald-300 to-accent-400` | Judul hero "Desa Suka Banjar" |
 | Logo Badge | `from-primary-500 to-primary-700` | Logo placeholder di navbar & footer |
 | Gradient Text | `.gradient-text` → `from-primary-600 via-primary-500 to-accent-500` | Heading dekoratif |
 
@@ -284,7 +284,7 @@ Komponen dari library [React Bits](https://react-bits.dev) untuk efek visual pre
 
 | Komponen React Bits | Implementasi |
 |---------------------|-------------|
-| Text Pressure / Split Text | Title Hero "Selamat Datang di Desa Sukabanjar" |
+| Text Pressure / Split Text | Title Hero "Selamat Datang di Desa Suka Banjar" |
 | Tilted Card | Card Katalog UMKM & Card Destinasi Wisata |
 | Spotlight Card | Card Profil Perangkat Desa & Preview Pesan Aspirasi |
 | Count Up | Angka Statistik Penduduk, Luas Desa, & Total UMKM |
@@ -321,21 +321,21 @@ Komponen dari library [React Bits](https://react-bits.dev) untuk efek visual pre
 
 | File | Deskripsi |
 |------|-----------|
-| ⭐ [theme.ts](file:///c:/laragon/www/sukabanjar-webprofile/src/lib/theme.ts) | **Single source of truth** — ubah warna di sini |
-| [tailwind.config.ts](file:///c:/laragon/www/sukabanjar-webprofile/tailwind.config.ts) | Import warna dari `theme.ts`, config font & animasi |
-| [globals.css](file:///c:/laragon/www/sukabanjar-webprofile/src/app/globals.css) | CSS tokens & utility components (sync manual dengan `theme.ts`) |
-| [layout.tsx](file:///c:/laragon/www/sukabanjar-webprofile/src/app/layout.tsx) | Root layout, font loading, SEO metadata |
-| [constants/index.ts](file:///c:/laragon/www/sukabanjar-webprofile/src/constants/index.ts) | Data navigasi & site info |
-| [utils.ts](file:///c:/laragon/www/sukabanjar-webprofile/src/lib/utils.ts) | Helper `cn()` (clsx + tailwind-merge) |
-| [Navbar.tsx](file:///c:/laragon/www/sukabanjar-webprofile/src/components/layout/Navbar.tsx) | Navbar responsif |
-| [MobileMenu.tsx](file:///c:/laragon/www/sukabanjar-webprofile/src/components/layout/MobileMenu.tsx) | Mobile menu Framer Motion |
-| [Footer.tsx](file:///c:/laragon/www/sukabanjar-webprofile/src/components/layout/Footer.tsx) | Footer 3-kolom |
+| ⭐ [theme.ts](file:///c:/laragon/www/Suka Banjar-webprofile/src/lib/theme.ts) | **Single source of truth** — ubah warna di sini |
+| [tailwind.config.ts](file:///c:/laragon/www/Suka Banjar-webprofile/tailwind.config.ts) | Import warna dari `theme.ts`, config font & animasi |
+| [globals.css](file:///c:/laragon/www/Suka Banjar-webprofile/src/app/globals.css) | CSS tokens & utility components (sync manual dengan `theme.ts`) |
+| [layout.tsx](file:///c:/laragon/www/Suka Banjar-webprofile/src/app/layout.tsx) | Root layout, font loading, SEO metadata |
+| [constants/index.ts](file:///c:/laragon/www/Suka Banjar-webprofile/src/constants/index.ts) | Data navigasi & site info |
+| [utils.ts](file:///c:/laragon/www/Suka Banjar-webprofile/src/lib/utils.ts) | Helper `cn()` (clsx + tailwind-merge) |
+| [Navbar.tsx](file:///c:/laragon/www/Suka Banjar-webprofile/src/components/layout/Navbar.tsx) | Navbar responsif |
+| [MobileMenu.tsx](file:///c:/laragon/www/Suka Banjar-webprofile/src/components/layout/MobileMenu.tsx) | Mobile menu Framer Motion |
+| [Footer.tsx](file:///c:/laragon/www/Suka Banjar-webprofile/src/components/layout/Footer.tsx) | Footer 3-kolom |
 
 ---
 
 ## 10. Cara Mengganti Color Palette
 
-> **Cukup edit 1 file:** [`src/lib/theme.ts`](file:///c:/laragon/www/sukabanjar-webprofile/src/lib/theme.ts)
+> **Cukup edit 1 file:** [`src/lib/theme.ts`](file:///c:/laragon/www/Suka Banjar-webprofile/src/lib/theme.ts)
 
 **Langkah:**
 1. Buka `src/lib/theme.ts`

@@ -1,4 +1,4 @@
-# Deployment — Website Profil Desa Sukabanjar
+# Deployment — Website Profil Desa Suka Banjar
 
 ## Environment
 
@@ -78,8 +78,8 @@
 
 ```bash
 # Clone repository
-git clone https://github.com/<username>/sukabanjar-webprofile.git
-cd sukabanjar-webprofile
+git clone https://github.com/<username>/Suka Banjar-webprofile.git
+cd Suka Banjar-webprofile
 
 # Install dependencies
 npm install

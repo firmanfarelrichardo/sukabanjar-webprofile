@@ -1,6 +1,6 @@
-# Environment Variables — Website Profil Desa Sukabanjar
+# Environment Variables — Website Profil Desa Suka Banjar
 
-Dokumen ini menjelaskan seluruh variabel lingkungan (*environment variables*) yang digunakan pada aplikasi Website Profil Desa Sukabanjar.
+Dokumen ini menjelaskan seluruh variabel lingkungan (*environment variables*) yang digunakan pada aplikasi Website Profil Desa Suka Banjar.
 
 ---
 
@@ -8,7 +8,7 @@ Dokumen ini menjelaskan seluruh variabel lingkungan (*environment variables*) ya
 
 ### `NEXT_PUBLIC_BASE_URL`
 - **Deskripsi:** URL utama aplikasi Next.js.
-- **Format:** URL string (misal: `http://localhost:3000` di lokal, `https://sukabanjar.vercel.app` di production).
+- **Format:** URL string (misal: `http://localhost:3000` di lokal, `https://Suka Banjar.vercel.app` di production).
 - **Default:** `http://localhost:3000`
 - **Secret:** Tidak (Public).
 
@@ -55,7 +55,7 @@ Dokumen ini menjelaskan seluruh variabel lingkungan (*environment variables*) ya
 
 ### `COMPOSE_PROJECT_NAME`
 - **Deskripsi:** Nama project Docker Compose.
-- **Default:** `sukabanjar_webprofile`
+- **Default:** `Suka Banjar_webprofile`
 
 ### `APP_PORT`
 - **Deskripsi:** Port host yang diekspos untuk Next.js application.

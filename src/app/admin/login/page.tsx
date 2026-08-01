@@ -76,7 +76,7 @@ export default function AdminLoginPage() {
                 CMS Admin Desa
               </h1>
               <p className="text-slate-400 text-xs mt-1">
-                Masuk ke panel pengelolaan Desa Sukabanjar
+                Masuk ke panel pengelolaan Desa Suka Banjar
               </p>
             </div>
           </div>

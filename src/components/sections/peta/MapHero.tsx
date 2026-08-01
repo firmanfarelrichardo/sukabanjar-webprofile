@@ -33,7 +33,7 @@ export default function MapHero({ totalLocations = 6 }: MapHeroProps) {
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-heading leading-tight text-balance">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-heading leading-tight text-balance text-white">
           Peta Interaktif{' '}
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-400 via-emerald-300 to-accent-400">
             Fasilitas Desa

@@ -69,7 +69,7 @@ export default function StatsCountUp({ stats }: StatsProps) {
       value: `${stats.areaSize || 4.52}`,
       unit: 'km²',
       icon: Map,
-      description: 'Wilayah Desa Sukabanjar',
+      description: 'Wilayah Desa Suka Banjar',
     },
     {
       label: 'Total Penduduk',
@@ -116,10 +116,10 @@ export default function StatsCountUp({ stats }: StatsProps) {
             Statistik Desa
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-heading text-white">
-            Sukabanjar Dalam Angka
+            Suka Banjar Dalam Angka
           </h2>
           <p className="text-slate-400 text-sm">
-            Data statistik ringkas wilayah dan potensi kemasyarakatan Desa Sukabanjar
+            Data statistik ringkas wilayah dan potensi kemasyarakatan Desa Suka Banjar
           </p>
         </div>
 

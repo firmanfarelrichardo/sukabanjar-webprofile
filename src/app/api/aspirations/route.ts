@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       ? 'Anonim'
       : senderName && senderName.trim()
         ? senderName.trim()
-        : 'Warga Sukabanjar';
+        : 'Warga Suka Banjar';
 
     // Simpan ke Prisma database
     const newAspiration = await prisma.aspiration.create({
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Pesan aspirasi Anda telah berhasil terkirim langsung ke Balai Desa Sukabanjar.',
+      message: 'Pesan aspirasi Anda telah berhasil terkirim langsung ke Balai Desa Suka Banjar.',
       data: {
         id: newAspiration.id,
         createdAt: newAspiration.createdAt.toISOString(),

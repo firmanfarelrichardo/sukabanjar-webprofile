@@ -47,18 +47,18 @@ async function getLandingData() {
 
     return {
       profile: profile || {
-        name: 'Sukabanjar',
+        name: 'Suka Banjar',
         subdistrict: 'Sidomulyo',
         district: 'Lampung Selatan',
         province: 'Lampung',
         heroImageUrl: null,
         heroSubtitle:
-          'Portal resmi pelayanan digital, pengaduan warga, serta informasi potensi UMKM dan pariwisata Desa Sukabanjar.',
+          'Portal resmi pelayanan digital, pengaduan warga, serta informasi potensi UMKM dan galeri pemandangan Desa Suka Banjar.',
         vision:
-          'Terwujudnya Desa Sukabanjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
+          'Terwujudnya Desa Suka Banjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
         phone: '081234567890',
-        email: 'desa.sukabanjar@gmail.com',
-        address: 'Jl. Raya Desa Sukabanjar, Kec. Sidomulyo, Kab. Lampung Selatan',
+        email: 'desa.Suka Banjar@gmail.com',
+        address: 'Jl. Raya Desa Suka Banjar, Kec. Sidomulyo, Kab. Lampung Selatan',
       },
       stats: {
         areaSize: 4.52,
@@ -77,18 +77,18 @@ async function getLandingData() {
     console.error('Error loading landing page data:', error);
     return {
       profile: {
-        name: 'Sukabanjar',
+        name: 'Suka Banjar',
         subdistrict: 'Sidomulyo',
         district: 'Lampung Selatan',
         province: 'Lampung',
         heroImageUrl: null,
         heroSubtitle:
-          'Portal resmi pelayanan digital, pengaduan warga, serta informasi potensi UMKM dan pariwisata Desa Sukabanjar.',
+          'Portal resmi pelayanan digital, pengaduan warga, serta informasi potensi UMKM dan galeri pemandangan Desa Suka Banjar.',
         vision:
-          'Terwujudnya Desa Sukabanjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
+          'Terwujudnya Desa Suka Banjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
         phone: '081234567890',
-        email: 'desa.sukabanjar@gmail.com',
-        address: 'Jl. Raya Desa Sukabanjar, Kec. Sidomulyo, Kab. Lampung Selatan',
+        email: 'desa.Suka Banjar@gmail.com',
+        address: 'Jl. Raya Desa Suka Banjar, Kec. Sidomulyo, Kab. Lampung Selatan',
       },
       stats: {
         areaSize: 4.52,

@@ -1,4 +1,4 @@
-# Progress — Website Profil Desa Sukabanjar
+# Progress — Website Profil Desa Suka Banjar
 
 Overall: 100% (SELESAI)
 
@@ -9,7 +9,7 @@ Overall: 100% (SELESAI)
 - [x] Inisialisasi project Next.js 14 + TypeScript + Tailwind CSS
 - [x] Setup Prisma ORM + Supabase PostgreSQL Cloud
 - [x] Migrasi 8 tabel database ke Supabase PostgreSQL Cloud (`npx prisma db push`)
-- [x] Seeding data awal Profil Desa Sukabanjar & Akun Admin (`npx prisma db seed`)
+- [x] Seeding data awal Profil Desa Suka Banjar & Akun Admin (`npx prisma db seed`)
 - [x] Penetapan standar Mobile-First Approach & Responsive Design
 - [x] Helper singleton `prisma.ts`, `supabase.ts`, `theme.ts`
 - [x] Perbaikan layout header top-bar running text agar tidak bertabrakan dengan Navbar

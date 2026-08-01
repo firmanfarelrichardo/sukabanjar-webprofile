@@ -11,7 +11,7 @@ export async function GET() {
       orderBy: { orderNum: 'asc' },
     });
 
-    // 3. Data demografi desa (Statistik Desa Sukabanjar)
+    // 3. Data demografi desa (Statistik Desa Suka Banjar)
     const demographics = {
       totalPopulation: 3420,
       totalHouseholds: 890,
@@ -41,7 +41,7 @@ export async function GET() {
       success: true,
       data: {
         profile: profile || {
-          name: 'Sukabanjar',
+          name: 'Suka Banjar',
           subdistrict: 'Sidomulyo',
           district: 'Lampung Selatan',
           province: 'Lampung',
@@ -49,23 +49,23 @@ export async function GET() {
           historyCardQuote:
             'Menjaga peninggalan nilai luhur pendiri desa, membangun tatanan kemasyarakatan yang harmonis dan sejalan dengan perkembangan jaman digital.',
           history:
-            'Desa Sukabanjar didirikan dengan semangat kebersamaan dan gotong royong warga. Terletak di wilayah strategis Kecamatan Sidomulyo, desa ini kaya akan potensi pertanian, perkebunan, dan UMKM olahan pangan lokal.',
+            'Desa Suka Banjar didirikan dengan semangat kebersamaan dan gotong royong warga. Terletak di wilayah strategis Kecamatan Sidomulyo, desa ini kaya akan potensi pertanian, perkebunan, dan UMKM olahan pangan lokal.',
           vision:
-            'Terwujudnya Desa Sukabanjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
+            'Terwujudnya Desa Suka Banjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
           missions: [
             'Meningkatkan kualitas pelayanan publik dan tata kelola pemerintahan desa yang transparan.',
             'Mengembangkan potensi UMKM lokal dan sektor pertanian untuk kesejahteraan warga.',
             'Meningkatkan infrastruktur fasilitas publik dan saluran aspirasi warga berbasis digital.',
           ],
           phone: '081234567890',
-          email: 'desa.sukabanjar@gmail.com',
-          address: 'Jl. Raya Desa Sukabanjar, Kec. Sidomulyo, Kab. Lampung Selatan',
+          email: 'desa.Suka Banjar@gmail.com',
+          address: 'Jl. Raya Desa Suka Banjar, Kec. Sidomulyo, Kab. Lampung Selatan',
         },
         apparatus: apparatus.length > 0 ? apparatus : [
           {
             id: '1',
             name: 'Nama Kepala Desa',
-            role: 'Kepala Desa Sukabanjar',
+            role: 'Kepala Desa Suka Banjar',
             orderNum: 1,
             imageUrl: null,
           },

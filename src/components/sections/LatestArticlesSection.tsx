@@ -44,7 +44,7 @@ export default function LatestArticlesSection({ articles }: LatestArticlesProps)
               Berita & Pengumuman Terbaru
             </h2>
             <p className="text-slate-500 text-sm max-w-xl">
-              Ikuti kabar perkembangan kegiatan, pengumuman publik, dan program kerja Desa Sukabanjar.
+              Ikuti kabar perkembangan kegiatan, pengumuman publik, dan program kerja Desa Suka Banjar.
             </p>
           </div>
 

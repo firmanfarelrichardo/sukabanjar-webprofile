@@ -22,15 +22,15 @@
 export const primary = {
   50:  '#f0fdf4',
   100: '#dcfce7',
-  200: '#bbf7d0',
-  300: '#86efac',
-  400: '#4ade80',
-  500: '#22c55e',  // ← Warna dasar utama
-  600: '#16a34a',
-  700: '#15803d',
-  800: '#166534',
-  900: '#14532d',
-  950: '#052e16',
+  200: '#0086C9',
+  300: '#0086C9',
+  400: '#0086C9',
+  500: '#0086C9',  // ← Warna dasar utama
+  600: '#0086C9',
+  700: '#0086C9',
+  800: '#0086C9',
+  900: '#0086C9',
+  950: '#00aaffff',
 } as const;
 
 // ─── ACCENT: Warna aksen / penekanan ────────────────────────
@@ -52,9 +52,9 @@ export const accent = {
 // Default: Slate — tone biru-abu profesional.
 // Extend saja shade custom, Tailwind sudah punya slate bawaan.
 export const neutralExtend = {
-  850: '#172033',
-  925: '#0d1526',
-  950: '#080f1e',
+  850: '#275a98ff',
+  925: '#0086C9',
+  950: '#0086C9',
 } as const;
 
 // ─── SEMANTIC: Warna dengan makna fungsional ────────────────
@@ -84,7 +84,7 @@ export const moduleColors = {
   aspirasi: 'from-blue-500 to-indigo-600',
   peta:     'from-amber-500 to-orange-600',
   umkm:     'from-rose-500 to-pink-600',
-  wisata:   'from-teal-500 to-cyan-600',
+  galeri:   'from-teal-500 to-cyan-600',
   berita:   'from-violet-500 to-purple-600',
 } as const;
 

@@ -38,7 +38,7 @@ export default function TourismCardGrid({ places }: TourismCardGridProps) {
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-slate-900 via-primary-950 to-slate-800 flex flex-col items-center justify-center text-white/30 p-6 text-center">
                     <Palmtree size={56} className="text-emerald-400/40 mb-2" />
-                    <span className="text-xs text-slate-400 font-medium">Pemandangan Alam Sukabanjar</span>
+                    <span className="text-xs text-slate-400 font-medium">Pemandangan Alam Suka Banjar</span>
                   </div>
                 )}
 

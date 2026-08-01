@@ -8,7 +8,7 @@ interface ProfileHeroProps {
 }
 
 export default function ProfileHero({
-  villageName = 'Sukabanjar',
+  villageName = 'Suka Banjar',
   subdistrict = 'Sidomulyo',
   district = 'Lampung Selatan',
 }: ProfileHeroProps) {
@@ -39,7 +39,7 @@ export default function ProfileHero({
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-heading leading-tight text-balance">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-heading leading-tight text-balance text-white">
           Profil & Identitas{' '}
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-400 via-emerald-300 to-accent-400">
             Desa {villageName}
@@ -48,7 +48,7 @@ export default function ProfileHero({
 
         {/* Subtitle */}
         <p className="text-slate-300 text-sm sm:text-base md:text-lg leading-relaxed text-balance">
-          Mengenal lebih dekat sejarah berdiri, visi-misi, susunan organisasi pemerintahan, serta gambaran umum demografi penduduk Desa Sukabanjar.
+          Mengenal lebih dekat sejarah berdiri, visi-misi, susunan organisasi pemerintahan, serta gambaran umum demografi penduduk Desa Suka Banjar.
         </p>
 
         {/* Location Info */}

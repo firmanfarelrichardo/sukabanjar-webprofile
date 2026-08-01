@@ -1,6 +1,6 @@
-# Context — Website Profil Desa Sukabanjar
+# Context — Website Profil Desa Suka Banjar
 
-Folder `context/` adalah **Single Source of Truth (SSOT)** dan **AI Context Repository** untuk seluruh dokumentasi, spesifikasi, dan knowledge base project Website Profil & Portal Digital Desa Sukabanjar.
+Folder `context/` adalah **Single Source of Truth (SSOT)** dan **AI Context Repository** untuk seluruh dokumentasi, spesifikasi, dan knowledge base project Website Profil & Portal Digital Desa Suka Banjar.
 
 ---
 

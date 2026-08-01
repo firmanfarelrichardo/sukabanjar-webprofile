@@ -14,7 +14,7 @@ export default function VisionMissionSection({ vision, missions }: VisionMission
 
   const defaultVision =
     vision ||
-    'Terwujudnya Desa Sukabanjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.';
+    'Terwujudnya Desa Suka Banjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.';
 
   const defaultMissions =
     missions && missions.length > 0
@@ -70,7 +70,7 @@ export default function VisionMissionSection({ vision, missions }: VisionMission
             Visi & Misi Desa
           </h2>
           <p className="text-slate-600 text-sm sm:text-base">
-            Pedoman dan prioritas utama pemerintahan Desa Sukabanjar demi terwujudnya kesejahteraan warga.
+            Pedoman dan prioritas utama pemerintahan Desa Suka Banjar demi terwujudnya kesejahteraan warga.
           </p>
         </div>
 
@@ -117,7 +117,7 @@ export default function VisionMissionSection({ vision, missions }: VisionMission
 
               <div className="pt-8 relative z-10 border-t border-white/10 mt-6 flex items-center gap-2 text-xs text-slate-300">
                 <Compass size={16} className="text-accent-400 shrink-0" />
-                <span>Desa Sukabanjar, Kec. Sidomulyo</span>
+                <span>Desa Suka Banjar, Kec. Sidomulyo</span>
               </div>
             </div>
           </div>
