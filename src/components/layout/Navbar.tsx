@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { NAV_ITEMS, SITE_INFO } from '@/constants';
-import MobileMenu from './MobileMenu';
+import { ShieldCheck } from 'lucide-react';
+import { useVillageProfile } from '@/context/VillageProfileContext';
+import { useAdmin } from '@/context/AdminContext';
+import GlassSurface from '@/components/ui/GlassSurface';
+import BubbleMenu from '@/components/ui/BubbleMenu';
 import AnnouncementTicker from '@/components/sections/AnnouncementTicker';
 
 interface Announcement {
@@ -16,186 +17,152 @@ interface Announcement {
   createdAt: string;
 }
 
+const DEFAULT_TICKER_ITEMS: Announcement[] = [
+  {
+    id: 'ticker-1',
+    title: 'Selamat Datang di Portal Resmi Desa Suka Banjar, Kecamatan Sidomulyo',
+    slug: '#',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'ticker-2',
+    title: 'Layanan Pengaduan & E-Aspirasi Warga Kini Dibuka Secara Online',
+    slug: '#',
+    createdAt: new Date().toISOString(),
+  },
+];
+
 export default function Navbar() {
   const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const { profile } = useVillageProfile();
+  const { isAdmin } = useAdmin();
 
-  // Fetch announcements untuk top bar ticker
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [announcements, setAnnouncements] = useState<Announcement[]>(DEFAULT_TICKER_ITEMS);
+
   useEffect(() => {
     async function fetchAnnouncements() {
       try {
         const res = await fetch('/api/landing');
         if (res.ok) {
           const json = await res.json();
-          if (json.success && json.data?.announcements) {
-            setAnnouncements(json.data.announcements);
+          if (json.success && json.data?.announcements && json.data.announcements.length > 0) {
+            setAnnouncements([
+              ...DEFAULT_TICKER_ITEMS,
+              ...json.data.announcements,
+            ]);
           }
         }
       } catch (err) {
-        // Fallback default announcement jika error
-        setAnnouncements([
-          {
-            id: 'demo-1',
-            title: 'Selamat Datang di Portal Resmi Desa Sukabanjar, Kecamatan Sidomulyo',
-            slug: '#',
-            createdAt: new Date().toISOString(),
-          },
-          {
-            id: 'demo-2',
-            title: 'Layanan Pengaduan & E-Aspirasi Warga Kini Dibuka Secara Online',
-            slug: '#',
-            createdAt: new Date().toISOString(),
-          },
-        ]);
+        setAnnouncements(DEFAULT_TICKER_ITEMS);
       }
     }
     fetchAnnouncements();
-  }, []);
-
-  // Scroll listener untuk efek navbar solid
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Tutup mobile menu saat resize ke desktop
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsMobileOpen(false);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Lock body scroll saat mobile menu terbuka
-  useEffect(() => {
-    if (isMobileOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isMobileOpen]);
-
-  const toggleMobile = useCallback(() => {
-    setIsMobileOpen((prev) => !prev);
-  }, []);
-
-  const closeMobile = useCallback(() => {
-    setIsMobileOpen(false);
   }, []);
 
   if (pathname?.startsWith('/admin')) return null;
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 shadow-md">
-        {/* Row 1: Announcement Ticker Top Bar */}
+      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        {/* Row 1: Ticker Top Bar */}
         {announcements.length > 0 && (
           <AnnouncementTicker announcements={announcements} />
         )}
 
-        {/* Row 2: Main Navigation Bar */}
-        <nav
-          className={cn(
-            'transition-all duration-300',
-            isScrolled
-              ? 'navbar-solid'
-              : 'bg-slate-900/85 backdrop-blur-md border-b border-white/10'
-          )}
-        >
-          <div className="container-section">
-            <div className="flex items-center justify-between h-16">
-              {/* Logo & Nama Desa */}
-              <Link
-                href="/"
-                className="flex items-center gap-2.5 group"
-                aria-label="Beranda Desa Sukabanjar"
-              >
-                {/* Icon placeholder logo */}
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-md shadow-primary-500/20 group-hover:shadow-primary-500/40 transition-shadow">
-                  <span className="text-white font-bold text-sm font-heading">S</span>
-                </div>
-                <div className="flex flex-col">
-                  <span
-                    className={cn(
-                      'font-heading font-bold text-sm leading-tight transition-colors',
-                      isScrolled ? 'text-slate-900' : 'text-white'
-                    )}
-                  >
-                    {SITE_INFO.name}
-                  </span>
-                  <span
-                    className={cn(
-                      'text-[10px] leading-tight transition-colors',
-                      isScrolled ? 'text-slate-500' : 'text-white/70'
-                    )}
-                  >
-                    Kec. Sidomulyo, Lampung Selatan
-                  </span>
-                </div>
-              </Link>
+        {/* Row 2: Glass Surface Main Navigation Bar */}
+        <div className="container-section pt-3 px-4 sm:px-6">
+          <GlassSurface
+            width="100%"
+            height={74}
+            borderRadius={26}
+            blur={14}
+            brightness={45}
+            opacity={0.88}
+            className="border border-white/20 shadow-2xl"
+          >
+            <div className="w-full h-full flex items-center justify-between px-4 sm:px-6 relative">
+              {/* Left Group: Round Bubble Menu Toggle Button */}
+              <div className="flex items-center">
+                <button
+                  type="button"
+                  onClick={() => setIsMenuOpen((prev) => !prev)}
+                  className="bubble-toggle-btn group relative flex items-center justify-center shrink-0 cursor-pointer"
+                  aria-label={isMenuOpen ? 'Tutup Navigasi Menu' : 'Buka Navigasi Menu'}
+                >
+                  <div className="flex flex-col items-center justify-center gap-1.5 w-6 h-6">
+                    <span
+                      className={`block w-5 h-0.5 bg-slate-900 rounded-full transition-transform duration-300 ${
+                        isMenuOpen ? 'rotate-45 translate-y-1' : ''
+                      }`}
+                    />
+                    <span
+                      className={`block w-3.5 h-0.5 bg-slate-900 rounded-full transition-all duration-300 ${
+                        isMenuOpen ? 'opacity-0 scale-0' : 'group-hover:w-5'
+                      }`}
+                    />
+                    <span
+                      className={`block w-5 h-0.5 bg-slate-900 rounded-full transition-transform duration-300 ${
+                        isMenuOpen ? '-rotate-45 -translate-y-1' : ''
+                      }`}
+                    />
+                  </div>
+                </button>
+              </div>
 
-              {/* Desktop Navigation Links */}
-              <ul className="hidden md:flex items-center gap-1">
-                {NAV_ITEMS.map((item) => {
-                  const isActive = pathname === item.href;
-                  return (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          'px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
-                          isActive
-                            ? isScrolled
-                              ? 'text-primary-600 bg-primary-50 font-semibold'
-                              : 'text-white bg-primary-600/30 border border-primary-500/30 font-semibold'
-                            : isScrolled
-                              ? 'text-slate-600 hover:text-primary-600 hover:bg-slate-50'
-                              : 'text-white/80 hover:text-white hover:bg-white/10'
-                        )}
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
+              {/* Center: Dynamic Village Icon Logo & Title (Centering Presisi) */}
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-auto">
+                <Link
+                  href="/"
+                  className="flex items-center gap-3 group px-3 py-1.5 rounded-2xl hover:bg-white/10 transition-colors"
+                  aria-label="Beranda Desa Suka Banjar"
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center overflow-hidden shadow-lg group-hover:scale-105 transition-transform shrink-0">
+                    {profile.logoUrl ? (
+                      <img
+                        src={profile.logoUrl}
+                        alt={profile.name}
+                        className="w-full h-full object-contain p-0.5"
+                      />
+                    ) : (
+                      <span className="text-white font-black text-xl font-heading">S</span>
+                    )}
+                  </div>
 
-              {/* Mobile Hamburger Button */}
-              <button
-                type="button"
-                onClick={toggleMobile}
-                className={cn(
-                  'md:hidden p-2 rounded-lg transition-colors',
-                  isScrolled
-                    ? 'text-slate-700 hover:bg-slate-100'
-                    : 'text-white hover:bg-white/10'
+                  <div className="flex flex-col text-left">
+                    <span className="font-heading font-extrabold text-base sm:text-lg text-white tracking-wide leading-tight group-hover:text-amber-300 transition-colors whitespace-nowrap">
+                      {profile.name || 'DESA SUKA BANJAR'}
+                    </span>
+                    <span className="text-[11px] text-slate-300 font-medium leading-tight whitespace-nowrap">
+                      {profile.subdistrict || 'Sidomulyo'}, {profile.district || 'Lampung Selatan'}
+                    </span>
+                  </div>
+                </Link>
+              </div>
+
+              {/* Right Group: Mode Admin (Jika sedang Login Admin) */}
+              <div className="flex items-center gap-2">
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold hover:bg-amber-500/30 transition-colors shadow-sm"
+                    title="Kembali ke Dashboard Admin"
+                  >
+                    <ShieldCheck size={14} />
+                    <span className="hidden sm:inline">Mode Admin</span>
+                  </Link>
                 )}
-                aria-label={isMobileOpen ? 'Tutup menu' : 'Buka menu'}
-                aria-expanded={isMobileOpen}
-              >
-                {isMobileOpen ? <X size={22} /> : <Menu size={22} />}
-              </button>
+              </div>
             </div>
-          </div>
-        </nav>
+          </GlassSurface>
+        </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
-      <MobileMenu
-        isOpen={isMobileOpen}
-        onClose={closeMobile}
-        pathname={pathname}
+      {/* Bubble Menu Full-Screen Overlay */}
+      <BubbleMenu
+        isMenuOpen={isMenuOpen}
+        onToggleMenu={() => setIsMenuOpen((prev) => !prev)}
+        onCloseMenu={() => setIsMenuOpen(false)}
       />
     </>
   );

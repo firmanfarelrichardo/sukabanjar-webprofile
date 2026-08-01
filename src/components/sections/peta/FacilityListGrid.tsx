@@ -46,7 +46,7 @@ export default function FacilityListGrid({ facilities }: FacilityListGridProps) 
                     {item.name}
                   </h4>
                   <p className="text-slate-500 text-xs leading-relaxed">
-                    {item.address || 'Desa Sukabanjar, Kec. Sidomulyo'}
+                    {item.address || 'Desa Suka Banjar, Kec. Sidomulyo'}
                   </p>
                 </div>
               </div>

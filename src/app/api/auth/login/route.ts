@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     // Create session response
     const response = NextResponse.json({
       success: true,
-      message: 'Login berhasil. Selamat datang di CMS Desa Sukabanjar.',
+      message: 'Login berhasil. Selamat datang di CMS Desa Suka Banjar.',
       user: {
         id: user.id,
         username: user.username,

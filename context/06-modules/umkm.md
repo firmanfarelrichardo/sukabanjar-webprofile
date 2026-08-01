@@ -2,7 +2,7 @@
 
 ## Overview
 
-Modul UMKM mempublikasikan potensi ekonomi dan produk unggulan warga Desa Sukabanjar (kuliner, kerajinan tangan, olahan hasil tani). Modul ini terintegrasi secara langsung dengan fitur **Direct WhatsApp** untuk mempermudah pengunjung memesan produk atau menghubungi pemilik UMKM secara langsung.
+Modul UMKM mempublikasikan potensi ekonomi dan produk unggulan warga Desa Suka Banjar (kuliner, kerajinan tangan, olahan hasil tani). Modul ini terintegrasi secara langsung dengan fitur **Direct WhatsApp** untuk mempermudah pengunjung memesan produk atau menghubungi pemilik UMKM secara langsung.
 
 ---
 
@@ -29,7 +29,7 @@ Modul UMKM mempublikasikan potensi ekonomi dan produk unggulan warga Desa Sukaba
 - **FR-UMK-001:** Listing katalog produk UMKM dalam format grid card dinamis.
 - **FR-UMK-002:** Detail card produk: Foto produk, Nama Produk, Nama Pemilik Usaha, Deskripsi, dan Harga.
 - **FR-UMK-003:** Tombol *"Beli / Hubungi Penjual"* yang membuka aplikasi/web WhatsApp langsung ke nomor pemilik UMKM dengan format pesan default:
-  `"Halo, saya tertarik dengan produk [Nama Produk] di Website Desa Sukabanjar. Apakah masih tersedia?"`
+  `"Halo, saya tertarik dengan produk [Nama Produk] di Website Desa Suka Banjar. Apakah masih tersedia?"`
 - **FR-UMK-004:** Form Admin untuk Menambah, Mengedit, dan Menghapus data UMKM.
 
 ---

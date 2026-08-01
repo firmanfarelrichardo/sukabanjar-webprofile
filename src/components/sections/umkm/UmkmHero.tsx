@@ -33,10 +33,10 @@ export default function UmkmHero({ totalProducts = 6 }: UmkmHeroProps) {
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-heading leading-tight text-balance">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-heading leading-tight text-balance text-white">
           Produk Olahan & Usaha{' '}
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-400 via-emerald-300 to-accent-400">
-            Warga Sukabanjar
+            Warga Suka Banjar
           </span>
         </h1>
 

@@ -1,4 +1,4 @@
-# Current Project State — Website Profil Desa Sukabanjar
+# Current Project State — Website Profil Desa Suka Banjar
 
 **Terakhir Diperbarui:** 2026-07-31
 

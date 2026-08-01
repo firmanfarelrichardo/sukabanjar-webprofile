@@ -1,4 +1,4 @@
-# API Documentation — Website Profil Desa Sukabanjar
+# API Documentation — Website Profil Desa Suka Banjar
 
 ## Base URL
 
@@ -40,7 +40,7 @@ Mengambil data identitas & profil desa.
   "success": true,
   "data": {
     "id": "uuid",
-    "name": "Sukabanjar",
+    "name": "Suka Banjar",
     "subdistrict": "Sidomulyo",
     "district": "Lampung Selatan",
     "province": "Lampung",
@@ -63,7 +63,7 @@ Memperbarui data profil desa. **[Auth Required: Admin]**
 **Request Body:**
 ```json
 {
-  "name": "Sukabanjar",
+  "name": "Suka Banjar",
   "vision": "Visi baru...",
   "missions": ["Misi 1", "Misi 2", "Misi 3"],
   "history": "Sejarah diperbarui...",
@@ -209,7 +209,7 @@ Menambah data UMKM baru. **[Auth Required: Admin]**
 {
   "title": "Keripik Pisang Bu Siti",
   "ownerName": "Siti Aisyah",
-  "description": "Keripik pisang renyah khas Sukabanjar...",
+  "description": "Keripik pisang renyah khas Suka Banjar...",
   "price": "Rp 15.000",
   "whatsapp": "6281234567890",
   "imageUrl": "https://..."
@@ -235,7 +235,7 @@ Menambah destinasi wisata baru. **[Auth Required: Admin]**
 **Request Body:**
 ```json
 {
-  "title": "Bukit Panorama Sukabanjar",
+  "title": "Bukit Panorama Suka Banjar",
   "description": "Pemandangan sawah terasering...",
   "location": "Dusun 2, RT 03",
   "imageUrl": "https://..."
@@ -261,7 +261,7 @@ Menambah titik fasilitas baru. **[Auth Required: Admin]**
 **Request Body:**
 ```json
 {
-  "name": "SDN 1 Sukabanjar",
+  "name": "SDN 1 Suka Banjar",
   "category": "Pendidikan",
   "latitude": -5.7891,
   "longitude": 105.6543,

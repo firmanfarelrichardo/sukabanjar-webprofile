@@ -1,4 +1,4 @@
-# Arsitektur Teknis — Website Profil Desa Sukabanjar
+# Arsitektur Teknis — Website Profil Desa Suka Banjar
 
 ## Diagram Arsitektur
 

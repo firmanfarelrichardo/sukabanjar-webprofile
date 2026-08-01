@@ -5,7 +5,7 @@ import {
   MessageSquareText,
   MapPin,
   ShoppingBag,
-  Palmtree,
+  Camera,
   Newspaper,
   type LucideIcon,
 } from 'lucide-react';
@@ -27,7 +27,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Aspirasi', href: '/aspirasi', icon: MessageSquareText },
   { label: 'Peta', href: '/peta', icon: MapPin },
   { label: 'UMKM', href: '/umkm', icon: ShoppingBag },
-  { label: 'Wisata', href: '/wisata', icon: Palmtree },
+  { label: 'Galeri', href: '/galeri', icon: Camera },
   { label: 'Berita', href: '/berita', icon: Newspaper },
 ];
 
@@ -36,14 +36,14 @@ export const NAV_ITEMS: NavItem[] = [
    ================================================================ */
 
 export const SITE_INFO = {
-  name: 'Desa Sukabanjar',
-  fullName: 'Desa Sukabanjar, Kecamatan Sidomulyo',
+  name: 'Desa Suka Banjar',
+  fullName: 'Desa Suka Banjar, Kecamatan Sidomulyo',
   tagline: 'Website Profil & Portal Digital',
   description:
-    'Portal resmi Desa Sukabanjar, Kecamatan Sidomulyo, Kabupaten Lampung Selatan, Provinsi Lampung.',
-  address: 'Jl. Raya Desa Sukabanjar, Kec. Sidomulyo, Kab. Lampung Selatan, Lampung',
+    'Portal resmi Desa Suka Banjar, Kecamatan Sidomulyo, Kabupaten Lampung Selatan, Provinsi Lampung.',
+  address: 'Jl. Raya Desa Suka Banjar, Kec. Sidomulyo, Kab. Lampung Selatan, Lampung',
   phone: '081234567890',
-  email: 'desa.sukabanjar@gmail.com',
+  email: 'desa.Suka Banjar@gmail.com',
   year: new Date().getFullYear(),
 } as const;
 
@@ -57,6 +57,6 @@ export const FOOTER_NAV_ITEMS = [
   { label: 'Aspirasi Warga', href: '/aspirasi' },
   { label: 'Peta Fasilitas', href: '/peta' },
   { label: 'UMKM Desa', href: '/umkm' },
-  { label: 'Destinasi Wisata', href: '/wisata' },
+  { label: 'Galeri Desa', href: '/galeri' },
   { label: 'Berita & Artikel', href: '/berita' },
 ];

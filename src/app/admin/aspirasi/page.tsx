@@ -131,7 +131,7 @@ export default function AdminAspirasiPage() {
             Moderasi Aspirasi Warga
           </h1>
           <p className="text-slate-500 text-xs sm:text-sm">
-            Kelola, baca, dan tandai pesan pengaduan yang dikirimkan warga Desa Sukabanjar.
+            Kelola, baca, dan tandai pesan pengaduan yang dikirimkan warga Desa Suka Banjar.
           </p>
         </div>
 

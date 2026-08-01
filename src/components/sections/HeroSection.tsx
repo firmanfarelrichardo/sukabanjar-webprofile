@@ -26,7 +26,7 @@ export default function HeroSection({
 
   const defaultSubtitle =
     heroSubtitle ||
-    'Portal resmi pelayanan digital, pengaduan warga, serta informasi potensi UMKM dan pariwisata Desa Sukabanjar.';
+    'Portal resmi pelayanan digital, pengaduan warga, serta informasi potensi UMKM dan pariwisata Desa Suka Banjar.';
 
   const [subtitleText, setSubtitleText] = useState(defaultSubtitle);
 

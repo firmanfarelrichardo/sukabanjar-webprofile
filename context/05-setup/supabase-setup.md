@@ -1,12 +1,12 @@
-# Supabase Database & Storage Setup — Website Profil Desa Sukabanjar
+# Supabase Database & Storage Setup — Website Profil Desa Suka Banjar
 
-Dokumen ini berisi panduan lengkap pembuatan dan konfigurasi **Supabase Free Tier** dari nol untuk database PostgreSQL dan Supabase Storage media gambar pada Website Profil Desa Sukabanjar.
+Dokumen ini berisi panduan lengkap pembuatan dan konfigurasi **Supabase Free Tier** dari nol untuk database PostgreSQL dan Supabase Storage media gambar pada Website Profil Desa Suka Banjar.
 
 ---
 
 ## Prerequisites & Kuota Free Tier
 
-| Komponen | Kuota Free Tier | Penggunaan di Desa Sukabanjar |
+| Komponen | Kuota Free Tier | Penggunaan di Desa Suka Banjar |
 |---|---|---|
 | Database PostgreSQL | 500 MB | Menyimpan 8 tabel data desa (profil, berita, UMKM, aspirasi, dll.) |
 | Storage Bucket | 1 GB | Penyimpanan foto berita, UMKM, destinasi wisata, & foto bukti aspirasi |
@@ -20,8 +20,8 @@ Dokumen ini berisi panduan lengkap pembuatan dan konfigurasi **Supabase Free Tie
 1. Buka [supabase.com](https://supabase.com) dan login/register menggunakan akun GitHub.
 2. Pada Dashboard Supabase, klik tombol **"New Project"**.
 3. Isi formulir konfigurasi project:
-   - **Organization:** Pilih nama organisasi Anda (misal: `KKN-Sukabanjar` / Personal).
-   - **Name:** `sukabanjar-webprofile` (atau `desa-sukabanjar`).
+   - **Organization:** Pilih nama organisasi Anda (misal: `KKN-Suka Banjar` / Personal).
+   - **Name:** `Suka Banjar-webprofile` (atau `desa-Suka Banjar`).
    - **Database Password:** Buat password database yang kuat dan **catat/simpan password ini**.
    - **Region:** Pilih **Singapore (`ap-southeast-1`)** untuk latensi terendah dari Indonesia.
    - **Pricing Plan:** Pilih **Free ($0/month)**.
@@ -105,13 +105,13 @@ Supabase Storage digunakan untuk menyimpan foto aset berita, UMKM, wisata, dan b
 ### 1. Membuat Bucket Media Utama
 1. Buka Supabase Dashboard → **Storage**.
 2. Klik tombol **"New bucket"**.
-3. Isi nama bucket: **`sukabanjar-assets`**.
+3. Isi nama bucket: **`Suka Banjar-assets`**.
 4. Aktifkan opsi **"Public bucket"** (agar foto dapat diakses dan ditampilkan di browser publik).
 5. Klik **"Save"**.
 
 ### 2. Aturan Akses (Storage Policies / RLS)
 Secara default, public bucket mengizinkan dibaca oleh siapa saja. Jika ingin memperketat unggahan foto:
-- Buka **Storage** → **Policies** → pilih bucket `sukabanjar-assets`.
+- Buka **Storage** → **Policies** → pilih bucket `Suka Banjar-assets`.
 - **Policy 1 (Public Read):** Allow `SELECT` for `anon` & `authenticated` (ALL users).
 - **Policy 2 (Upload Foto Bukti Aspirasi):** Allow `INSERT` for `anon` (agar warga bisa upload foto bukti laporan).
 - **Policy 3 (Admin Manage Assets):** Allow `INSERT`, `UPDATE`, `DELETE` for `authenticated` (Admin Desa).
@@ -124,5 +124,5 @@ Secara default, public bucket mengizinkan dibaca oleh siapa saja. Jika ingin mem
 - [ ] Connection String `DATABASE_URL` di `.env.local` sudah terisi password yang benar.
 - [ ] Running `npx prisma db push` berhasil tanpa error connection.
 - [ ] 8 tabel terbukti muncul di Supabase **Table Editor**.
-- [ ] Storage Bucket `sukabanjar-assets` sudah dibuat dan diset ke **Public**.
+- [ ] Storage Bucket `Suka Banjar-assets` sudah dibuat dan diset ke **Public**.
 - [ ] `npm run dev` dapat mengakses data dari Supabase tanpa hambatan.

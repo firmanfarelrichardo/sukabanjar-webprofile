@@ -31,7 +31,7 @@ export default function FeaturedUmkmSection({ products }: FeaturedUmkmProps) {
               Produk UMKM Unggulan
             </h2>
             <p className="text-slate-500 text-sm max-w-xl">
-              Dukung perekonomian warga Desa Sukabanjar dengan membeli produk olahan pertanian dan kerajinan lokal secara langsung.
+              Dukung perekonomian warga Desa Suka Banjar dengan membeli produk olahan pertanian dan kerajinan lokal secara langsung.
             </p>
           </div>
 
@@ -52,7 +52,7 @@ export default function FeaturedUmkmSection({ products }: FeaturedUmkmProps) {
               ? '62' + waNumber.slice(1)
               : waNumber;
             const waMessage = encodeURIComponent(
-              `Halo kak, saya tertarik dengan produk UMKM "${item.title}" di Portal Desa Sukabanjar.`
+              `Halo kak, saya tertarik dengan produk UMKM "${item.title}" di Portal Desa Suka Banjar.`
             );
             const waUrl = `https://wa.me/${waFormatted}?text=${waMessage}`;
 

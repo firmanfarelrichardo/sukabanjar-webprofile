@@ -2,7 +2,7 @@
 
 ## Overview
 
-Modul Peta Interaktif Fasilitas Publik menyajikan peta digital Desa Sukabanjar berbasis **Leaflet.js + OpenStreetMap** secara 100% gratis tanpa lisensi API Key (Zero-Cost Stack). Warga dan pengunjung dapat melihat penanda lokasi bangunan penting desa (Balai Desa, Sekolah, Posyandu, Tempat Ibadah, Titik UMKM, dan Wisata) beserta detail popup-nya.
+Modul Peta Interaktif Fasilitas Publik menyajikan peta digital Desa Suka Banjar berbasis **Leaflet.js + OpenStreetMap** secara 100% gratis tanpa lisensi API Key (Zero-Cost Stack). Warga dan pengunjung dapat melihat penanda lokasi bangunan penting desa (Balai Desa, Sekolah, Posyandu, Tempat Ibadah, Titik UMKM, dan Wisata) beserta detail popup-nya.
 
 ---
 
@@ -40,7 +40,7 @@ Modul Peta Interaktif Fasilitas Publik menyajikan peta digital Desa Sukabanjar b
 
 ## Business Rules
 
-- **BR-FAC-001:** Koordinat awal (center map) default diarahkan ke area geografis Desa Sukabanjar, Kecamatan Sidomulyo.
+- **BR-FAC-001:** Koordinat awal (center map) default diarahkan ke area geografis Desa Suka Banjar, Kecamatan Sidomulyo.
 - **BR-FAC-002:** Menggunakan tile server OpenStreetMap standar (bebas lisensi & gratis).
 
 ---
@@ -90,10 +90,10 @@ Modul Peta Interaktif Fasilitas Publik menyajikan peta digital Desa Sukabanjar b
 ## API Endpoints
 
 ### GET `/api/facilities`
-- **Response (200):** `{ "success": true, "data": [ { "id": "...", "name": "Balai Desa Sukabanjar", "category": "Pemerintahan", "latitude": -5.789, "longitude": 105.654 } ] }`
+- **Response (200):** `{ "success": true, "data": [ { "id": "...", "name": "Balai Desa Suka Banjar", "category": "Pemerintahan", "latitude": -5.789, "longitude": 105.654 } ] }`
 
 ### POST `/api/facilities`
-- **Request Body:** `{ "name": "SDN 1 Sukabanjar", "category": "Pendidikan", "latitude": -5.789, "longitude": 105.654 }`
+- **Request Body:** `{ "name": "SDN 1 Suka Banjar", "category": "Pendidikan", "latitude": -5.789, "longitude": 105.654 }`
 - **Response (201):** `{ "success": true, "data": { ... } }`
 
 ---

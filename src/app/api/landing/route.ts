@@ -71,7 +71,7 @@ export async function GET() {
     const totalFacilities = await prisma.facility.count();
 
     const stats = {
-      areaSize: 4.52,      // km² (Statistik Desa Sukabanjar)
+      areaSize: 4.52,      // km² (Statistik Desa Suka Banjar)
       totalPopulation: 3420, // Jiwa
       totalHamlet: 6,       // Dusun
       totalUmkm: totalUmkm || 18,
@@ -82,20 +82,20 @@ export async function GET() {
       success: true,
       data: {
         profile: profile || {
-          name: 'Sukabanjar',
+          name: 'Suka Banjar',
           subdistrict: 'Sidomulyo',
           district: 'Lampung Selatan',
           province: 'Lampung',
           heroImageUrl: null,
-          vision: 'Terwujudnya Desa Sukabanjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
+          vision: 'Terwujudnya Desa Suka Banjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
           phone: '081234567890',
-          email: 'desa.sukabanjar@gmail.com',
-          address: 'Jl. Raya Desa Sukabanjar, Kec. Sidomulyo, Kab. Lampung Selatan',
+          email: 'desa.Suka Banjar@gmail.com',
+          address: 'Jl. Raya Desa Suka Banjar, Kec. Sidomulyo, Kab. Lampung Selatan',
         },
         announcements: announcements.length > 0 ? announcements : [
           {
             id: 'demo-1',
-            title: 'Selamat Datang di Portal Resmi Desa Sukabanjar, Kecamatan Sidomulyo',
+            title: 'Selamat Datang di Portal Resmi Desa Suka Banjar, Kecamatan Sidomulyo',
             slug: '#',
             createdAt: new Date().toISOString(),
           },

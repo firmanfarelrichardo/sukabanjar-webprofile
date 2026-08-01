@@ -1,4 +1,4 @@
-# Decisions — Website Profil Desa Sukabanjar
+# Decisions — Website Profil Desa Suka Banjar
 
 Catatan keputusan penting yang mempengaruhi arsitektur, desain, atau implementasi project.
 

@@ -22,7 +22,7 @@ interface LeafletMapProps {
   zoom?: number;
 }
 
-// Map center default Desa Sukabanjar (Sidomulyo, Lampung Selatan)
+// Map center default Desa Suka Banjar (Sidomulyo, Lampung Selatan)
 const DEFAULT_CENTER: [number, number] = [-5.5562, 105.4718];
 
 // Helper function untuk generate custom HTML DivIcon Leaflet

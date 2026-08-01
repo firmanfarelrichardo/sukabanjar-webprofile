@@ -2,7 +2,7 @@
 
 ## Overview
 
-Modul Profil Desa mengelola seluruh data identitas utama Desa Sukabanjar, mencakup Sejarah Desa, Visi & Misi, data alamat kantor, kontak, serta data demografi warga desa. Modul ini mendukung pengelolaan 100% Full Dynamic CMS.
+Modul Profil Desa mengelola seluruh data identitas utama Desa Suka Banjar, mencakup Sejarah Desa, Visi & Misi, data alamat kantor, kontak, serta data demografi warga desa. Modul ini mendukung pengelolaan 100% Full Dynamic CMS.
 
 ---
 
@@ -64,7 +64,7 @@ Modul Profil Desa mengelola seluruh data identitas utama Desa Sukabanjar, mencak
 | Column | Type | Constraint | Deskripsi |
 |---|---|---|---|
 | id | String | PK, UUID | Primary Key |
-| name | String | Default: "Sukabanjar" | Nama Desa |
+| name | String | Default: "Suka Banjar" | Nama Desa |
 | subdistrict | String | Default: "Sidomulyo" | Kecamatan |
 | district | String | Default: "Lampung Selatan" | Kabupaten |
 | province | String | Default: "Lampung" | Provinsi |
@@ -91,10 +91,10 @@ Modul Profil Desa mengelola seluruh data identitas utama Desa Sukabanjar, mencak
 ## API Endpoints
 
 ### GET `/api/village-profile`
-- **Response (200):** `{ "success": true, "data": { "name": "Sukabanjar", "history": "...", "vision": "...", "missions": ["..."] } }`
+- **Response (200):** `{ "success": true, "data": { "name": "Suka Banjar", "history": "...", "vision": "...", "missions": ["..."] } }`
 
 ### PUT `/api/village-profile`
-- **Request Body:** `{ "name": "Sukabanjar", "vision": "...", "missions": ["Misi 1", "Misi 2"] }`
+- **Request Body:** `{ "name": "Suka Banjar", "vision": "...", "missions": ["Misi 1", "Misi 2"] }`
 - **Response (200):** `{ "success": true, "data": { ... } }`
 
 ---

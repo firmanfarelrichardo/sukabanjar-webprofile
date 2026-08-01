@@ -32,13 +32,13 @@ export default function AspirationHero() {
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-heading leading-tight text-balance">
           Suarakan Aspirasi Anda untuk{' '}
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-400 via-emerald-300 to-accent-400">
-            Desa Sukabanjar
+            Desa Suka Banjar
           </span>
         </h1>
 
         {/* Subtitle */}
         <p className="text-slate-300 text-sm sm:text-base md:text-lg leading-relaxed text-balance">
-          Sampaikan masukan, pengaduan fasilitas publik, atau saran secara langsung kepada Balai Desa Sukabanjar. Aman, cepat, dan opsi anonim tersedia.
+          Sampaikan masukan, pengaduan fasilitas publik, atau saran secara langsung kepada Balai Desa Suka Banjar. Aman, cepat, dan opsi anonim tersedia.
         </p>
 
         {/* Feature Pills */}

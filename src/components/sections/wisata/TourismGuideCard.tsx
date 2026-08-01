@@ -32,7 +32,7 @@ export default function TourismGuideCard() {
                 Himbauan & Etika Pengunjung
               </h3>
               <p className="text-slate-500 text-xs sm:text-sm">
-                Panduan untuk menjaga keasrian dan keindahan alam Desa Sukabanjar
+                Panduan untuk menjaga keasrian dan keindahan alam Desa Suka Banjar
               </p>
             </div>
           </div>

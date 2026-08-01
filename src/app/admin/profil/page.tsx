@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Building2, Save, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 
 export default function AdminProfilEditorPage() {
-  const [name, setName] = useState('Sukabanjar');
+  const [name, setName] = useState('Suka Banjar');
   const [subdistrict, setSubdistrict] = useState('Sidomulyo');
   const [district, setDistrict] = useState('Lampung Selatan');
   const [province, setProvince] = useState('Lampung');
@@ -12,8 +12,8 @@ export default function AdminProfilEditorPage() {
   const [vision, setVision] = useState('');
   const [missions, setMissions] = useState<string[]>(['']);
   const [phone, setPhone] = useState('081234567890');
-  const [email, setEmail] = useState('desa.sukabanjar@gmail.com');
-  const [address, setAddress] = useState('Jl. Raya Desa Sukabanjar, Kec. Sidomulyo, Kab. Lampung Selatan');
+  const [email, setEmail] = useState('desa.Suka Banjar@gmail.com');
+  const [address, setAddress] = useState('Jl. Raya Desa Suka Banjar, Kec. Sidomulyo, Kab. Lampung Selatan');
 
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -27,7 +27,7 @@ export default function AdminProfilEditorPage() {
           const json = await res.json();
           if (json.success && json.data?.profile) {
             const p = json.data.profile;
-            setName(p.name || 'Sukabanjar');
+            setName(p.name || 'Suka Banjar');
             setSubdistrict(p.subdistrict || 'Sidomulyo');
             setDistrict(p.district || 'Lampung Selatan');
             setProvince(p.province || 'Lampung');
@@ -74,7 +74,7 @@ export default function AdminProfilEditorPage() {
       if (res.ok && json.success) {
         setStatusMessage({
           type: 'success',
-          text: 'Data profil Desa Sukabanjar telah berhasil diperbarui.',
+          text: 'Data profil Desa Suka Banjar telah berhasil diperbarui.',
         });
       } else {
         setStatusMessage({

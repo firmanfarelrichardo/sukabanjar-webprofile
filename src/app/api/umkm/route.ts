@@ -28,11 +28,11 @@ export async function GET(request: Request) {
       },
       {
         id: 'umkm-2',
-        title: 'Madu Hutan Murni Sukabanjar',
+        title: 'Madu Hutan Murni Suka Banjar',
         ownerName: 'Bapak Darmawan',
         category: 'Olahan Tani',
         description:
-          'Madu murni alami tanpa pemanis buatan yang dipanen langsung dari vegetasi hutan kawasan Sukabanjar.',
+          'Madu murni alami tanpa pemanis buatan yang dipanen langsung dari vegetasi hutan kawasan Suka Banjar.',
         price: 'Rp 85.000 / botol',
         whatsapp: '6281234567891',
         imageUrl: null,
@@ -46,7 +46,7 @@ export async function GET(request: Request) {
         ownerName: 'Ibu Wati',
         category: 'Kuliner',
         description:
-          'Sambal botol siap saji dengan kepedasan gurih khas resep turun-temurun warga desa Sukabanjar.',
+          'Sambal botol siap saji dengan kepedasan gurih khas resep turun-temurun warga desa Suka Banjar.',
         price: 'Rp 18.000 / jar',
         whatsapp: '6281234567892',
         imageUrl: null,
@@ -90,7 +90,7 @@ export async function POST(request: Request) {
         title,
         ownerName,
         category: category || 'Lainnya',
-        description: description || 'Usaha lokal warga Desa Sukabanjar.',
+        description: description || 'Usaha lokal warga Desa Suka Banjar.',
         price: price || 'Hubungi Penjual',
         whatsapp: whatsapp.replace(/[^0-9]/g, ''),
         imageUrl: imageUrl || (Array.isArray(imageUrls) && imageUrls.length > 0 ? imageUrls[0] : null),

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Modul Wisata mempublikasikan destinasi tempat wisata, keindahan alam, dan spot potensial di Desa Sukabanjar (sawah terasering, perbukitan, saung kumpul, dan area sungai). Modul ini membantu menarik kunjungan wisatawan serta memperkenalkan potensi pariwisata desa secara visual.
+Modul Wisata mempublikasikan destinasi tempat wisata, keindahan alam, dan spot potensial di Desa Suka Banjar (sawah terasering, perbukitan, saung kumpul, dan area sungai). Modul ini membantu menarik kunjungan wisatawan serta memperkenalkan potensi pariwisata desa secara visual.
 
 ---
 
@@ -81,7 +81,7 @@ Modul Wisata mempublikasikan destinasi tempat wisata, keindahan alam, dan spot p
 ## API Endpoints
 
 ### GET `/api/tourism`
-- **Response (200):** `{ "success": true, "data": [ { "id": "...", "title": "Bukit Panorama Sukabanjar", "description": "...", "location": "Dusun 2" } ] }`
+- **Response (200):** `{ "success": true, "data": [ { "id": "...", "title": "Bukit Panorama Suka Banjar", "description": "...", "location": "Dusun 2" } ] }`
 
 ### POST `/api/tourism`
 - **Request Body:** `{ "title": "Bukit Panorama", "description": "...", "location": "Dusun 2", "imageUrl": "..." }`

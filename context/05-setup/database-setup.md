@@ -1,4 +1,4 @@
-# Database Setup — Website Profil Desa Sukabanjar
+# Database Setup — Website Profil Desa Suka Banjar
 
 ## Database Engine
 
@@ -16,7 +16,7 @@ DATABASE_URL="postgresql://postgres:[PASSWORD]@db.[PROJECT_REF].supabase.co:5432
 
 Jika menggunakan Docker / Local PostgreSQL:
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/sukabanjar_db?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/Suka Banjar_db?schema=public"
 ```
 
 ---

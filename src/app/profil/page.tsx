@@ -8,7 +8,7 @@ import ApparatusSection from '@/components/sections/profil/ApparatusSection';
 export const metadata: Metadata = {
   title: 'Profil Desa',
   description:
-    'Sejarah, visi & misi, serta struktur organisasi perangkat desa Desa Sukabanjar, Kecamatan Sidomulyo.',
+    'Sejarah, visi & misi, serta struktur organisasi perangkat desa Desa Suka Banjar, Kecamatan Sidomulyo.',
 };
 
 export const revalidate = 0; // Dynamic real-time data for profile page
@@ -22,7 +22,7 @@ async function getProfilePageData() {
 
     return {
       profile: profile || {
-        name: 'Sukabanjar',
+        name: 'Suka Banjar',
         subdistrict: 'Sidomulyo',
         district: 'Lampung Selatan',
         province: 'Lampung',
@@ -30,9 +30,9 @@ async function getProfilePageData() {
         historyCardQuote:
           'Menjaga peninggalan nilai luhur pendiri desa, membangun tatanan kemasyarakatan yang harmonis dan sejalan dengan perkembangan jaman digital.',
         history:
-          'Desa Sukabanjar didirikan dengan semangat kebersamaan dan gotong royong warga masyarakat. Nama "Sukabanjar" memiliki makna filosofis yang mendalam, di mana "Suka" melambangkan kedamaian dan kegembiraan, serta "Banjar" melambangkan perkampungan atau tatanan sosial yang teratur dan harmonis.\n\nSecara historis, wilayah ini awalnya berkembang dari pemukiman warga berbasis sektor pertanian dan perkebunan. Berkat kegigihan para tokoh pendiri desa, Sukabanjar tumbuh menjadi salah satu wilayah yang mandiri dan berdaya saing di Kecamatan Sidomulyo, Kabupaten Lampung Selatan.',
+          'Desa Suka Banjar didirikan dengan semangat kebersamaan dan gotong royong warga masyarakat. Nama "Suka Banjar" memiliki makna filosofis yang mendalam, di mana "Suka" melambangkan kedamaian dan kegembiraan, serta "Banjar" melambangkan perkampungan atau tatanan sosial yang teratur dan harmonis.\n\nSecara historis, wilayah ini awalnya berkembang dari pemukiman warga berbasis sektor pertanian dan perkebunan. Berkat kegigihan para tokoh pendiri desa, Suka Banjar tumbuh menjadi salah satu wilayah yang mandiri dan berdaya saing di Kecamatan Sidomulyo, Kabupaten Lampung Selatan.',
         vision:
-          'Terwujudnya Desa Sukabanjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
+          'Terwujudnya Desa Suka Banjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
         missions: [
           'Meningkatkan kualitas pelayanan publik dan tata kelola pemerintahan desa yang transparan, akuntabel, dan berbasis digital.',
           'Mengembangkan potensi UMKM lokal, ekonomi kreatif, dan hasil sektor pertanian untuk meningkatkan kesejahteraan warga.',
@@ -46,7 +46,7 @@ async function getProfilePageData() {
     console.error('Error fetching profile page data:', error);
     return {
       profile: {
-        name: 'Sukabanjar',
+        name: 'Suka Banjar',
         subdistrict: 'Sidomulyo',
         district: 'Lampung Selatan',
         province: 'Lampung',
@@ -54,9 +54,9 @@ async function getProfilePageData() {
         historyCardQuote:
           'Menjaga peninggalan nilai luhur pendiri desa, membangun tatanan kemasyarakatan yang harmonis dan sejalan dengan perkembangan jaman digital.',
         history:
-          'Desa Sukabanjar didirikan dengan semangat kebersamaan dan gotong royong warga masyarakat. Berlokasi strategis di Kecamatan Sidomulyo, Lampung Selatan.',
+          'Desa Suka Banjar didirikan dengan semangat kebersamaan dan gotong royong warga masyarakat. Berlokasi strategis di Kecamatan Sidomulyo, Lampung Selatan.',
         vision:
-          'Terwujudnya Desa Sukabanjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
+          'Terwujudnya Desa Suka Banjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
         missions: [
           'Meningkatkan kualitas pelayanan publik dan tata kelola pemerintahan desa.',
           'Mengembangkan potensi UMKM lokal dan sektor pertanian.',

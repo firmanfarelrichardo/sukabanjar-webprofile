@@ -36,7 +36,7 @@ export default function TourismHero({ totalSpots = 4 }: TourismHeroProps) {
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-heading leading-tight text-balance">
           Keindahan Alam{' '}
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-400 via-emerald-300 to-accent-400">
-            Desa Sukabanjar
+            Desa Suka Banjar
           </span>
         </h1>
 

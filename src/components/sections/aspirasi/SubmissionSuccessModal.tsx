@@ -49,14 +49,14 @@ export default function SubmissionSuccessModal({ isOpen, onClose }: ModalProps) 
                   Aspirasi Berhasil Terkirim!
                 </h3>
                 <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
-                  Terima kasih atas partisipasi Anda. Pesan aspirasi/pengaduan Anda telah langsung diterima oleh tim Balai Desa Sukabanjar.
+                  Terima kasih atas partisipasi Anda. Pesan aspirasi/pengaduan Anda telah langsung diterima oleh tim Balai Desa Suka Banjar.
                 </p>
               </div>
 
               {/* Info Note */}
               <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 text-left">
                 <span className="font-semibold block text-slate-800 mb-0.5">Catatan Penting:</span>
-                Setiap masukan warga akan ditinjau secara berkala oleh perangkat desa demi perbaikan pelayanan dan pembangunan Desa Sukabanjar.
+                Setiap masukan warga akan ditinjau secara berkala oleh perangkat desa demi perbaikan pelayanan dan pembangunan Desa Suka Banjar.
               </div>
 
               {/* Action Button */}

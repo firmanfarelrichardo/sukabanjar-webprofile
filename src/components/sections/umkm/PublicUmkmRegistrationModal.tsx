@@ -112,7 +112,7 @@ export default function PublicUmkmRegistrationModal({
             Pendaftaran Produk UMKM Warga
           </h3>
           <p className="text-xs text-slate-500">
-            Isi formulir di bawah ini untuk mengusulkan produk atau usaha Anda agar dapat dipromosikan gratis di katalog Desa Sukabanjar.
+            Isi formulir di bawah ini untuk mengusulkan produk atau usaha Anda agar dapat dipromosikan gratis di katalog Desa Suka Banjar.
           </p>
         </div>
 
@@ -143,7 +143,7 @@ export default function PublicUmkmRegistrationModal({
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Contoh: Kripik Pisang Karamel Sukabanjar"
+              placeholder="Contoh: Kripik Pisang Karamel Suka Banjar"
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
             />
           </div>

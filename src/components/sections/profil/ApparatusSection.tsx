@@ -27,7 +27,7 @@ export default function ApparatusSection({ apparatus }: ApparatusSectionProps) {
             Struktur Organisasi Desa
           </h2>
           <p className="text-slate-600 text-sm sm:text-base">
-            Perangkat Desa Sukabanjar yang siap memberikan pelayanan terbaik kepada seluruh warga.
+            Perangkat Desa Suka Banjar yang siap memberikan pelayanan terbaik kepada seluruh warga.
           </p>
         </div>
 
@@ -68,7 +68,7 @@ export default function ApparatusSection({ apparatus }: ApparatusSectionProps) {
               {/* Status Badge */}
               <div className="mt-5 pt-3 border-t border-slate-100 w-full flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
                 <Shield size={12} className="text-emerald-500" />
-                <span>Pemerintah Desa Sukabanjar</span>
+                <span>Pemerintah Desa Suka Banjar</span>
               </div>
             </div>
           ))}
