@@ -1,6 +1,6 @@
-# Website Profil & Portal Digital Desa Sukabanjar
+# Website Profil & Portal Digital Desa Suka Banjar
 
-Website profil dan portal informasi digital untuk Desa Sukabanjar, Kecamatan Sidomulyo, Kabupaten Lampung Selatan, Lampung.
+Website profil dan portal informasi digital untuk Desa Suka Banjar, Kecamatan Sidomulyo, Kabupaten Lampung Selatan, Lampung.
 
 Dibangun sebagai Program Kerja (Progja) Kuliah Kerja Nyata (KKN) dengan prinsip **Zero-Cost Infrastructure** (Rp 0/bulan).
 
@@ -19,6 +19,7 @@ Platform web yang menyajikan profil desa, potensi UMKM, destinasi wisata, peta i
 3. **Pemetaan Fasilitas Publik** — Peta interaktif berbasis OpenStreetMap
 4. **Kearsipan Digital** — Portal berita, artikel, dan pengumuman
 5. **Kemandirian Pengelolaan** — Full Dynamic CMS untuk Perangkat Desa
+6. **Mobile-First & Responsive UX** — Tampilan fleksibel & optimal di seluruh layar (HP, Tablet, Laptop, Desktop)
 
 ---
 
@@ -54,7 +55,7 @@ Platform web yang menyajikan profil desa, potensi UMKM, destinasi wisata, peta i
 ## Folder Structure
 
 ```text
-sukabanjar-webprofile/
+Suka Banjar-webprofile/
 ├── context/                    ← Knowledge Base & AI Context (SSOT)
 │   ├── PRD.md                  ← Product Requirement Document Utama
 │   ├── PROJECT_STATE.md        ← Kondisi project saat ini
@@ -123,4 +124,4 @@ npm run dev
 
 ## License
 
-Project ini dikembangkan untuk kepentingan Program KKN di Desa Sukabanjar.
+Project ini dikembangkan untuk kepentingan Program KKN di Desa Suka Banjar.

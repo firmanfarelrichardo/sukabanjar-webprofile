@@ -1,20 +1,20 @@
-Berikut adalah pembaruan dokumen **Product Requirement Document (PRD)** untuk Website Profil Desa Sukabanjar.
+Berikut adalah pembaruan dokumen **Product Requirement Document (PRD)** untuk Website Profil Desa Suka Banjar.
 
 ---
 
 # PRODUCT REQUIREMENT DOCUMENT (PRD) — v2.0
 
-## Website Profile & Portal Digital Desa Sukabanjar
+## Website Profile & Portal Digital Desa Suka Banjar
 
 ---
 
 ## 1. Identitas Proyek & Ringkasan Eksekutif
 
-* **Nama Proyek:** Website Profil & Portal Informasi Digital Desa Sukabanjar
-* **Lokasi:** Desa Sukabanjar, Kecamatan Sidomulyo, Kabupaten Lampung Selatan, Lampung
+* **Nama Proyek:** Website Profil & Portal Informasi Digital Desa Suka Banjar
+* **Lokasi:** Desa Suka Banjar, Kecamatan Sidomulyo, Kabupaten Lampung Selatan, Lampung
 * **Konteks:** Program Kerja (Progja) Kuliah Kerja Nyata (KKN)
 * **Target Biaya Operasional:** **Rp 0 / Bulan (Zero-Cost Infrastructure)**
-* **Prinsip Utama UI/UX:** Clean, Minimalis, Responsive, Accessibility-friendly, serta diperkaya mikro-interaksi modern berbasis **React Bits**.
+* **Prinsip Utama UI/UX:** Clean, Minimalis, **Mobile-First Approach** (Desain responsif & fleksibel 100% pada seluruh ukuran layar: Smartphone, Tablet, Laptop, Desktop), Accessibility-friendly, serta diperkaya mikro-interaksi modern berbasis **React Bits**.
 * **Prinsip Pengembangan:** 100% Full Dynamic CMS, Clean Code, Type-Safe, Scalable, dan Maintainable pasca-penarikan KKN.
 
 ---
@@ -117,7 +117,7 @@ Sistem membagi pengguna ke dalam 2 kategori utama dengan tingkat akses berbeda:
 
 #### 6. Modul Wisata & Pemandangan Alam
 
-* **Listing Destinasi:** Daftar tempat wisata dan keindahan alam Sukabanjar (sawah, bukit, saung kumpul, area sungai).
+* **Listing Destinasi:** Daftar tempat wisata dan keindahan alam Suka Banjar (sawah, bukit, saung kumpul, area sungai).
 * **Galeri Foto & Informasi Akses:** Foto resolusi tinggi, jam operasional, biaya masuk (jika ada), dan rute lokasi.
 
 #### 7. Modul Artikel, Berita & Pengumuman
@@ -170,9 +170,9 @@ Pemanfaatan komponen **React Bits** untuk menciptakan tampilan estetik, modern, 
 
 ```
 +-----------------------------------------------------------------------------------+
-|  REACT BITS COMPONENT    | IMPLEMENTASI PADA PROFIL DESA SUKABANJAR               |
+|  REACT BITS COMPONENT    | IMPLEMENTASI PADA PROFIL DESA Suka Banjar               |
 +-----------------------------------------------------------------------------------+
-|  Text Pressure / Split   | Title Hero "Selamat Datang di Desa Sukabanjar"         |
+|  Text Pressure / Split   | Title Hero "Selamat Datang di Desa Suka Banjar"         |
 |  Tilted Card             | Card Katalog UMKM & Card Destinasi Wisata             |
 |  Spotlight Card          | Card Profil Perangkat Desa & Preview Pesan Aspirasi    |
 |  Count Up                | Angka Statistik Penduduk, Luas Desa, & Total UMKM      |
@@ -203,7 +203,7 @@ generator client {
 // 1. Data Identitas Desa & Visi Misi
 model VillageProfile {
   id           String   @id @default(uuid())
-  name         String   @default("Sukabanjar")
+  name         String   @default("Suka Banjar")
   subdistrict  String   @default("Sidomulyo")
   district     String   @default("Lampung Selatan")
   province     String   @default("Lampung")

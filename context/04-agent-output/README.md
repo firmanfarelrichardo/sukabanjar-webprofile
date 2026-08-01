@@ -1,4 +1,4 @@
-# Agent Output — Website Profil Desa Sukabanjar
+# Agent Output — Website Profil Desa Suka Banjar
 
 Folder ini menyimpan seluruh output yang dihasilkan oleh AI Agent selama pengembangan project.
 

@@ -1,4 +1,4 @@
-# Tech Stack — Website Profil Desa Sukabanjar
+# Tech Stack — Website Profil Desa Suka Banjar
 
 ## Prinsip Pemilihan Teknologi
 
@@ -63,7 +63,7 @@
 
 | Komponen React Bits | Implementasi |
 |---|---|
-| Text Pressure / Split | Title Hero "Selamat Datang di Desa Sukabanjar" |
+| Text Pressure / Split | Title Hero "Selamat Datang di Desa Suka Banjar" |
 | Tilted Card | Card Katalog UMKM & Card Destinasi Wisata |
 | Spotlight Card | Card Profil Perangkat Desa & Preview Pesan Aspirasi |
 | Count Up | Angka Statistik Penduduk, Luas Desa, & Total UMKM |

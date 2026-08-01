@@ -2,7 +2,7 @@
 
 ## Overview
 
-Modul Autentikasi menangani akses keamanan ke Panel Admin CMS Desa Sukabanjar. Modul ini memastikan hanya pengguna terautentikasi dengan peran Admin yang dapat melakukan perubahan data (CRUD) pada seluruh modul CMS.
+Modul Autentikasi menangani akses keamanan ke Panel Admin CMS Desa Suka Banjar. Modul ini memastikan hanya pengguna terautentikasi dengan peran Admin yang dapat melakukan perubahan data (CRUD) pada seluruh modul CMS.
 
 ---
 

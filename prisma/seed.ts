@@ -4,27 +4,27 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Seeding initial data for Desa Sukabanjar...');
+  console.log('Seeding initial data for Desa Suka Banjar...');
 
   // 1. Seed VillageProfile
   const profileCount = await prisma.villageProfile.count();
   if (profileCount === 0) {
     await prisma.villageProfile.create({
       data: {
-        name: 'Sukabanjar',
+        name: 'Suka Banjar',
         subdistrict: 'Sidomulyo',
         district: 'Lampung Selatan',
         province: 'Lampung',
-        history: 'Desa Sukabanjar didirikan dengan semangat kebersamaan dan gotong royong...',
-        vision: 'Terwujudnya Desa Sukabanjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
+        history: 'Desa Suka Banjar didirikan dengan semangat kebersamaan dan gotong royong...',
+        vision: 'Terwujudnya Desa Suka Banjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
         missions: [
           'Meningkatkan kualitas pelayanan publik dan tata kelola pemerintahan desa yang transparan.',
           'Mengembangkan potensi UMKM lokal dan sektor pertanian untuk kesejahteraan warga.',
           'Meningkatkan infrastruktur fasilitas publik dan saluran aspirasi warga berbasis digital.'
         ],
         phone: '081234567890',
-        email: 'desa.sukabanjar@gmail.com',
-        address: 'Jl. Raya Desa Sukabanjar, Kec. Sidomulyo, Kab. Lampung Selatan',
+        email: 'desa.Suka Banjar@gmail.com',
+        address: 'Jl. Raya Desa Suka Banjar, Kec. Sidomulyo, Kab. Lampung Selatan',
       },
     });
     console.log('✔ Default VillageProfile created.');

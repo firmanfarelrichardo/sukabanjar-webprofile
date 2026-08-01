@@ -1,4 +1,4 @@
-# Local Development Setup — Website Profil Desa Sukabanjar
+# Local Development Setup — Website Profil Desa Suka Banjar
 
 ## Prerequisites
 
@@ -29,8 +29,8 @@ docker compose exec app npx prisma db push
 ## Clone Repository
 
 ```sh
-git clone https://github.com/<username>/sukabanjar-webprofile.git
-cd sukabanjar-webprofile
+git clone https://github.com/<username>/Suka Banjar-webprofile.git
+cd Suka Banjar-webprofile
 ```
 
 ---

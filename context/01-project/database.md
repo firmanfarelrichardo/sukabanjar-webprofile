@@ -1,4 +1,4 @@
-# Database — Website Profil Desa Sukabanjar
+# Database — Website Profil Desa Suka Banjar
 
 ## Teknologi Database
 
@@ -136,7 +136,7 @@ erDiagram
 | Field | Type | Constraint | Deskripsi |
 |---|---|---|---|
 | id | String | PK, UUID auto-generate | Primary key |
-| name | String | Default: "Sukabanjar" | Nama desa |
+| name | String | Default: "Suka Banjar" | Nama desa |
 | subdistrict | String | Default: "Sidomulyo" | Kecamatan |
 | district | String | Default: "Lampung Selatan" | Kabupaten |
 | province | String | Default: "Lampung" | Provinsi |
@@ -261,7 +261,7 @@ generator client {
 // 1. Data Identitas Desa & Visi Misi
 model VillageProfile {
   id           String   @id @default(uuid())
-  name         String   @default("Sukabanjar")
+  name         String   @default("Suka Banjar")
   subdistrict  String   @default("Sidomulyo")
   district     String   @default("Lampung Selatan")
   province     String   @default("Lampung")

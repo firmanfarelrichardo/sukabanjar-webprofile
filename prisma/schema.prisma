@@ -9,20 +9,24 @@ generator client {
 
 // 1. Data Identitas Desa & Visi Misi
 model VillageProfile {
-  id           String   @id @default(uuid())
-  name         String   @default("Sukabanjar")
-  subdistrict  String   @default("Sidomulyo")
-  district     String   @default("Lampung Selatan")
-  province     String   @default("Lampung")
-  logoUrl      String?
-  heroImageUrl String?
-  history      String   @db.Text
-  vision       String   @db.Text
-  missions     String[] // Array String untuk poin-poin misi
-  phone        String?
-  email        String?
-  address      String?
-  updatedAt    DateTime @updatedAt
+  id               String   @id @default(uuid())
+  name             String   @default("Suka Banjar")
+  subdistrict      String   @default("Sidomulyo")
+  district         String   @default("Lampung Selatan")
+  province         String   @default("Lampung")
+  logoUrl          String?
+  heroImageUrl     String?
+  heroSubtitle     String?  @default("Portal resmi pelayanan digital, pengaduan warga, serta informasi potensi UMKM dan pariwisata Desa Suka Banjar.")
+  history          String   @db.Text
+  historyCardTitle String?  @default("Warisan Nilai & Gotong Royong")
+  historyCardQuote String?  @default("Menjaga peninggalan nilai luhur pendiri desa, membangun tatanan kemasyarakatan yang harmonis dan sejalan dengan perkembangan jaman digital.")
+  vision           String   @db.Text
+  missions         String[] // Array String untuk poin-poin misi
+  phone            String?
+  email            String?
+  address          String?
+  socialMedia      String?  @db.Text // JSON string untul sosial media dinamis (Instagram, YouTube, Facebook, TikTok, dll)
+  updatedAt        DateTime @updatedAt
 }
 
 // 2. Modul E-Aspirasi & Pengaduan Warga (Simple Text Message Model)
@@ -69,21 +73,26 @@ model Umkm {
   id          String   @id @default(uuid())
   title       String
   ownerName   String
+  category    String   @default("Lainnya") // Olahan Tani, Kuliner, Kerajinan, Kopi & Minuman, Lainnya
   description String   @db.Text
   price       String
   whatsapp    String
   imageUrl    String?
+  imageUrls   String[] // Array URL gambar produk (multi-gambar carousel)
+  isApproved  Boolean  @default(true) // Public submission defaults to false, Admin defaults to true
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
-// 6. Modul Wisata & Pemandangan
-model Tourism {
+// 6. Modul Galeri Desa & Pemandangan
+model Gallery {
   id          String   @id @default(uuid())
   title       String
-  description String   @db.Text
-  location    String
-  imageUrl    String?
+  category    String   @default("Pemandangan Alam") // Pemandangan Alam, Kegiatan Desa, Fasilitas Publik, UMKM & Tradisi
+  description String?  @db.Text
+  location    String?  @default("Desa Suka Banjar")
+  imageUrl    String
+  height      Int      @default(400) // Aspect height ratio for Masonry layout
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

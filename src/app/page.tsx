@@ -1,17 +1,134 @@
-export default function Home() {
+import { prisma } from '@/lib/prisma';
+import HeroSection from '@/components/sections/HeroSection';
+import QuickAccessGrid from '@/components/sections/QuickAccessGrid';
+import StatsCountUp from '@/components/sections/StatsCountUp';
+import LatestArticlesSection from '@/components/sections/LatestArticlesSection';
+import FeaturedUmkmSection from '@/components/sections/FeaturedUmkmSection';
+
+export const revalidate = 0; // Dynamic real-time landing page
+
+async function getLandingData() {
+  try {
+    const profile = await prisma.villageProfile.findFirst();
+
+    const latestArticles = await prisma.article.findMany({
+      where: { isDraft: false },
+      orderBy: { createdAt: 'desc' },
+      take: 3,
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        content: true,
+        category: true,
+        imageUrl: true,
+        createdAt: true,
+        author: true,
+      },
+    });
+
+    const featuredUmkm = await prisma.umkm.findMany({
+      where: { isApproved: true },
+      orderBy: { createdAt: 'desc' },
+      take: 3,
+      select: {
+        id: true,
+        title: true,
+        ownerName: true,
+        description: true,
+        price: true,
+        whatsapp: true,
+        imageUrl: true,
+      },
+    });
+
+    const totalUmkm = await prisma.umkm.count({ where: { isApproved: true } });
+    const totalFacilities = await prisma.facility.count();
+
+    return {
+      profile: profile || {
+        name: 'Suka Banjar',
+        subdistrict: 'Sidomulyo',
+        district: 'Lampung Selatan',
+        province: 'Lampung',
+        heroImageUrl: null,
+        heroSubtitle:
+          'Portal resmi pelayanan digital, pengaduan warga, serta informasi potensi UMKM dan galeri pemandangan Desa Suka Banjar.',
+        vision:
+          'Terwujudnya Desa Suka Banjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
+        phone: '081234567890',
+        email: 'desa.Suka Banjar@gmail.com',
+        address: 'Jl. Raya Desa Suka Banjar, Kec. Sidomulyo, Kab. Lampung Selatan',
+      },
+      stats: {
+        areaSize: 4.52,
+        totalPopulation: 3420,
+        totalHamlet: 6,
+        totalUmkm: totalUmkm || 18,
+        totalFacilities: totalFacilities || 12,
+      },
+      latestArticles: latestArticles.map((art) => ({
+        ...art,
+        createdAt: art.createdAt.toISOString(),
+      })),
+      featuredUmkm,
+    };
+  } catch (error) {
+    console.error('Error loading landing page data:', error);
+    return {
+      profile: {
+        name: 'Suka Banjar',
+        subdistrict: 'Sidomulyo',
+        district: 'Lampung Selatan',
+        province: 'Lampung',
+        heroImageUrl: null,
+        heroSubtitle:
+          'Portal resmi pelayanan digital, pengaduan warga, serta informasi potensi UMKM dan galeri pemandangan Desa Suka Banjar.',
+        vision:
+          'Terwujudnya Desa Suka Banjar yang Mandiri, Sejahtera, Berdaya Saing, dan Berkelanjutan Berbasis Potensi Lokal.',
+        phone: '081234567890',
+        email: 'desa.Suka Banjar@gmail.com',
+        address: 'Jl. Raya Desa Suka Banjar, Kec. Sidomulyo, Kab. Lampung Selatan',
+      },
+      stats: {
+        areaSize: 4.52,
+        totalPopulation: 3420,
+        totalHamlet: 6,
+        totalUmkm: 18,
+        totalFacilities: 12,
+      },
+      latestArticles: [],
+      featuredUmkm: [],
+    };
+  }
+}
+
+export default async function Home() {
+  const data = await getLandingData();
+
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-gradient-to-b from-slate-900 to-slate-950 text-white">
-      <div className="max-w-3xl space-y-6">
-        <span className="px-4 py-1.5 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20">
-          Website Profil & Portal Digital
-        </span>
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
-          Selamat Datang di Desa Sukabanjar
-        </h1>
-        <p className="text-slate-400 text-lg md:text-xl">
-          Kecamatan Sidomulyo, Kabupaten Lampung Selatan, Lampung.
-        </p>
-      </div>
-    </main>
+    <div className="flex flex-col min-h-screen">
+      {/* Hero Banner Dinamis */}
+      <HeroSection
+        name={data.profile.name}
+        subdistrict={data.profile.subdistrict}
+        district={data.profile.district}
+        province={data.profile.province}
+        heroImageUrl={data.profile.heroImageUrl}
+        heroSubtitle={data.profile.heroSubtitle}
+      />
+
+      {/* Quick Access Grid */}
+      <QuickAccessGrid />
+
+      {/* Statistik Ringkas Count Up */}
+      <StatsCountUp stats={data.stats} />
+
+      {/* Berita & Artikel Terbaru */}
+      <LatestArticlesSection articles={data.latestArticles} />
+
+      {/* Produk UMKM Unggulan */}
+      <FeaturedUmkmSection products={data.featuredUmkm} />
+    </div>
   );
 }
