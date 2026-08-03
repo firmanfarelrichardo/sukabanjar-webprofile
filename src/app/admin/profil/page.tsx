@@ -222,7 +222,7 @@ export default function AdminProfilEditorPage() {
               onClick={addMissionRow}
               className="text-xs font-bold text-primary-600 hover:underline"
             >
-              + Tambah Poin Misi
+              Tambah Poin Misi
             </button>
           </div>
 

@@ -183,7 +183,7 @@ export default function InlineEditModal() {
                 className="inline-flex items-center gap-1 text-xs font-bold text-primary-600 hover:text-primary-700"
               >
                 <Plus size={14} />
-                <span>+ Tambah Poin Misi</span>
+                <span>Tambah Poin Misi</span>
               </button>
             </div>
 
