@@ -1,6 +1,6 @@
 'use client';
 
-import { useVillageProfile, SocialMediaItem } from '@/context/VillageProfileContext';
+import { useVillageProfile, SocialMediaItem, formatSocialUrl } from '@/context/VillageProfileContext';
 import { usePathname } from 'next/navigation';
 import {
   Instagram,
@@ -38,10 +38,11 @@ export default function FloatingSocialWidget() {
     <div className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-3.5 pointer-events-auto">
       {socialItems.map((item: SocialMediaItem) => {
         const IconComponent = getPlatformIcon(item.platform);
+        const finalUrl = formatSocialUrl(item.url);
         return (
           <a
             key={item.id || item.platform}
-            href={item.url}
+            href={finalUrl}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={item.label || item.platform}

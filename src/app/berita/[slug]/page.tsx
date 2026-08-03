@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
-import { ChevronRight, Share2, Bookmark, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import SocialShareButtons from '@/components/sections/berita/SocialShareButtons';
+import { parseJsonArray, formatSocialUrl } from '@/lib/utils';
 
 export const revalidate = 60; // Revalidate data every 60 seconds
 
@@ -129,6 +130,24 @@ async function getPopularArticles(currentSlug: string) {
   ];
 }
 
+async function getVillageProfileSocialMedia() {
+  try {
+    const profile = await (prisma as any).villageProfile.findFirst();
+    if (profile && profile.socialMedia) {
+      const parsed = parseJsonArray(profile.socialMedia);
+      if (parsed.length > 0) return parsed;
+    }
+  } catch (err) {
+    console.error('Error fetching village profile socialMedia:', err);
+  }
+  return [
+    { platform: 'facebook', label: 'Facebook', url: 'https://facebook.com/desasukabanjar' },
+    { platform: 'instagram', label: 'Instagram', url: 'https://instagram.com/desa.sukabanjar' },
+    { platform: 'tiktok', label: 'TikTok', url: 'https://tiktok.com/@desasukabanjar' },
+    { platform: 'twitter', label: 'X / Twitter', url: 'https://x.com/desasukabanjar' },
+  ];
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -157,6 +176,15 @@ export default async function ArticleDetailPage({
   }
 
   const popularArticles = await getPopularArticles(params.slug);
+  const socialMediaList = await getVillageProfileSocialMedia();
+
+  const getSocialUrl = (platform: string, fallbackUrl: string) => {
+    const match = socialMediaList.find(
+      (sm: any) => sm.platform?.toLowerCase() === platform.toLowerCase()
+    );
+    const rawUrl = match && match.url ? match.url : fallbackUrl;
+    return formatSocialUrl(rawUrl);
+  };
 
   const formattedDate = new Date(article.createdAt).toLocaleDateString('id-ID', {
     day: 'numeric',
@@ -181,41 +209,22 @@ export default async function ArticleDetailPage({
           </Link>
         </div>
 
-        {/* 2-Column Main Layout Grid (Presisi Sesuai Gambar Referensi Website Berita) */}
+        {/* 2-Column Main Layout Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Left Column: Main Article Detail Content (~68% width) */}
           <div className="lg:col-span-8 space-y-6">
-            {/* Breadcrumb Navigation */}
-            <nav className="flex items-center gap-2 text-xs text-slate-500 font-medium overflow-x-auto pb-1">
-              <Link href="/berita" className="hover:text-slate-900 transition-colors">
-                News
-              </Link>
-              <ChevronRight size={13} className="text-slate-400 shrink-0" />
-              <span className="hover:text-slate-900 transition-colors">{article.category}</span>
-              <ChevronRight size={13} className="text-slate-400 shrink-0" />
-              <span className="text-slate-900 font-semibold truncate max-w-[200px]">Article</span>
-            </nav>
+            {/* Article Big Title & Meta Line */}
+            <div className="space-y-3 border-b border-slate-100 pb-6">
+              <span className="inline-block px-3 py-1 rounded-md text-[11px] font-extrabold bg-amber-100 text-amber-900 uppercase tracking-wider">
+                {article.category}
+              </span>
 
-            {/* Article Big Title & Top Meta Actions */}
-            <div className="space-y-4 border-b border-slate-100 pb-6">
-              <div className="flex items-start justify-between gap-4">
-                <h1 className="font-heading font-black text-2xl sm:text-4xl text-slate-900 tracking-tight leading-snug">
-                  {article.title}
-                </h1>
-
-                {/* Bookmark & Share Actions */}
-                <div className="flex items-center gap-1.5 shrink-0 pt-1">
-                  <button className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-rose-500 transition-colors cursor-pointer" title="Simpan Artikel">
-                    <Bookmark size={18} />
-                  </button>
-                  <button className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer" title="Bagikan">
-                    <Share2 size={18} />
-                  </button>
-                </div>
-              </div>
+              <h1 className="font-heading font-black text-2xl sm:text-4xl text-slate-900 tracking-tight leading-snug">
+                {article.title}
+              </h1>
 
               {/* By Line & Date */}
-              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 font-medium">
+              <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 font-medium pt-1">
                 <div>
                   <span className="text-slate-400 font-normal">By: </span>
                   <span className="font-bold text-slate-800">{article.author || 'Tim Redaksi Desa'}</span>
@@ -260,9 +269,9 @@ export default async function ArticleDetailPage({
             </div>
           </div>
 
-          {/* Right Column: Sidebar (~32% width - Presisi Gambar Referensi Website Berita) */}
+          {/* Right Column: Sidebar (~32% width - Dynamic Follow us & Popular news) */}
           <div className="lg:col-span-4 space-y-8 sticky top-28">
-            {/* Widget 1: Follow us (4 Colorful Action Buttons) */}
+            {/* Widget 1: Follow us (4 Dynamic Colorful Action Buttons) */}
             <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200/80 space-y-4 shadow-sm">
               <h3 className="font-heading font-black text-lg text-slate-900 tracking-wide">
                 Follow us
@@ -271,7 +280,7 @@ export default async function ArticleDetailPage({
               <div className="grid grid-cols-2 gap-3">
                 {/* Facebook Button */}
                 <a
-                  href="https://facebook.com/desasukabanjar"
+                  href={getSocialUrl('facebook', 'https://facebook.com/desasukabanjar')}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-[#3b5998] hover:bg-[#324b80] text-white font-bold text-xs shadow-md transition-transform hover:scale-105"
@@ -284,7 +293,7 @@ export default async function ArticleDetailPage({
 
                 {/* Twitter / X Button */}
                 <a
-                  href="https://x.com/desasukabanjar"
+                  href={getSocialUrl('twitter', 'https://x.com/desasukabanjar')}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-[#1da1f2] hover:bg-[#1a91da] text-white font-bold text-xs shadow-md transition-transform hover:scale-105"
@@ -297,7 +306,7 @@ export default async function ArticleDetailPage({
 
                 {/* TikTok Button */}
                 <a
-                  href="https://tiktok.com/@desasukabanjar"
+                  href={getSocialUrl('tiktok', 'https://tiktok.com/@desasukabanjar')}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-transform hover:scale-105"
@@ -310,7 +319,7 @@ export default async function ArticleDetailPage({
 
                 {/* Instagram Button */}
                 <a
-                  href="https://instagram.com/desa.sukabanjar"
+                  href={getSocialUrl('instagram', 'https://instagram.com/desa.sukabanjar')}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:opacity-90 text-white font-bold text-xs shadow-md transition-transform hover:scale-105"
@@ -323,7 +332,7 @@ export default async function ArticleDetailPage({
               </div>
             </div>
 
-            {/* Widget 2: Popular news (Berita Terkait / Populer - Presisi Referensi) */}
+            {/* Widget 2: Popular news (Berita Terkait / Populer - Dynamic) */}
             <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200/80 space-y-6 shadow-sm">
               <h3 className="font-heading font-black text-lg text-slate-900 tracking-wide">
                 Popular news
