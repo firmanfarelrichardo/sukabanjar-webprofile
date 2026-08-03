@@ -624,7 +624,7 @@ export default function AdminDashboardPage() {
       {activeTab === 'edit-website' && (
         <div className="space-y-8 animate-fadeIn">
           {/* Guide Banner for Live Visual Editing */}
-          <div className="rounded-3xl bg-primary-600 to-br from-primary-900 via-primary-850 to-primary-950 text-white p-8 border-2 border-primary-400/50 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="rounded-3xl bg-gradient-to-br from-primary-900 via-primary-850 to-primary-950 text-white p-8 border-2 border-primary-400/50 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2 max-w-xl text-center md:text-left">
               <h2 className="text-2xl font-extrabold font-heading text-white">
                 Edit Teks Langsung di Tampilan Asli Website
