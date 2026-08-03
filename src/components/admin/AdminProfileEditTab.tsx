@@ -10,14 +10,10 @@ import {
   Phone,
   Mail,
   Image as ImageIcon,
-  Instagram,
-  Facebook,
-  Youtube,
-  Video,
-  Twitter,
   ExternalLink,
   Edit3,
 } from 'lucide-react';
+import { getSocialPlatformIcon } from '@/components/ui/SocialIcons';
 
 export default function AdminProfileEditTab() {
   const { profile, updateProfile, refreshProfile } = useVillageProfile();
@@ -41,19 +37,14 @@ export default function AdminProfileEditTab() {
     }
   }, [profile]);
 
-  const getPlatformIcon = (platform: string) => {
-    const p = platform.toLowerCase();
-    if (p.includes('facebook')) return Facebook;
-    if (p.includes('instagram')) return Instagram;
-    if (p.includes('tiktok')) return Video;
-    if (p.includes('youtube')) return Youtube;
-    if (p.includes('twitter') || p.includes('x')) return Twitter;
-    return Globe;
-  };
-
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (file.size > 1 * 1024 * 1024) {
+      alert(`Ukuran gambar logo "${file.name}" melebihi batas maksimum 1MB (Ukuran: ${(file.size / 1024 / 1024).toFixed(2)} MB). Silakan kompres gambar terlebih dahulu.`);
+      return;
+    }
 
     try {
       setIsUploading(true);
@@ -149,122 +140,116 @@ export default function AdminProfileEditTab() {
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-6">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-semibold">
-            <ShieldCheck size={14} />
-            <span>Fitur Pengelolaan Identitas & Sosial Media Desa</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-bold border border-amber-200">
+            <ShieldCheck size={14} className="text-amber-600" />
+            <span>Pengaturan Identitas & Kontak Resmi</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">
-            Menu 4. Edit Profil, Ikon & Sosial Media Desa
+          <h2 className="font-heading font-black text-2xl text-slate-900">
+            Profil, Ikon Logo & Sosial Media Desa
           </h2>
-          <p className="text-slate-500 text-xs sm:text-sm">
-            Kelola gambar logo ikon desa (favicon & header), nomor telepon, email, serta URL 5 akun sosial media resmi desa.
+          <p className="text-xs text-slate-500">
+            Kelola logo resmi desa (favicon/header), kontak publik (telepon & email), serta 5 akun sosial media resmi.
           </p>
         </div>
 
         {savedSuccess && (
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-emerald-100 text-emerald-800 font-extrabold text-xs animate-bounce shadow">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-emerald-50 text-emerald-700 font-bold text-xs border border-emerald-200 shadow-sm animate-fadeIn">
             <Check size={16} />
-            <span>Perubahan Berhasil Disimpan!</span>
+            <span>Perubahan Profil Berhasil Disimpan!</span>
           </div>
         )}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Row 1: Gambar Ikon Desa (Favicon & Website Logo) */}
-        <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-200/60 pb-3">
-            <label className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-              <ImageIcon size={18} className="text-primary-600" />
-              <span>1. Gambar Ikon Desa (Tampil di Seluruh Website & Favicon Browser)</span>
+        {/* Section 1: Logo & Contacts */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Logo Upload Card */}
+          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-4">
+            <label className="block text-xs font-extrabold text-slate-800 flex items-center gap-1.5 font-heading">
+              <ImageIcon size={15} className="text-amber-600" />
+              <span>Gambar Ikon Logo Desa</span>
             </label>
-            <span className="text-xs text-slate-500 font-medium">Format: PNG, JPG, WebP</span>
+
+            <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-slate-200 space-y-3">
+              <div className="w-20 h-20 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shadow-inner">
+                {logoUrl ? (
+                  <img src={logoUrl} alt="Preview Logo" className="w-full h-full object-contain p-1" />
+                ) : (
+                  <span className="text-slate-400 font-bold text-2xl font-heading">S</span>
+                )}
+              </div>
+
+              <label className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer transition-colors shadow-md">
+                <Upload size={14} />
+                <span>{isUploading ? 'Mengunggah...' : 'Upload Logo Baru'}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  disabled={isUploading}
+                  className="hidden"
+                />
+              </label>
+            </div>
+            <p className="text-[11px] text-slate-500 leading-relaxed">
+              Gambar ikon ini akan ditampilkan pada Header, Footer, serta sebagai <strong>Favicon Tab Browser</strong> secara otomatis untuk seluruh pengunjung website.
+            </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-6 pt-2">
-            {/* Logo Preview Box */}
-            <div className="w-24 h-24 rounded-3xl bg-white border-2 border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-md">
-              {logoUrl ? (
-                <img src={logoUrl} alt="Logo Ikon Desa" className="w-full h-full object-contain p-2" />
-              ) : (
-                <span className="text-3xl font-black text-primary-600 font-heading">S</span>
-              )}
-            </div>
+          {/* Contact Fields */}
+          <div className="md:col-span-2 p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-4">
+            <h3 className="text-xs font-extrabold text-slate-800 flex items-center gap-1.5 font-heading">
+              <Phone size={15} className="text-amber-600" />
+              <span>Kontak Resmi Pelayanan Desa</span>
+            </h3>
 
-            <div className="space-y-3 flex-1 w-full">
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Gambar ikon ini akan ditampilkan pada Header, Footer, serta sebagai <strong>Favicon Tab Browser</strong> secara otomatis untuk seluruh pengunjung website.
-              </p>
-
-              <div className="flex flex-wrap items-center gap-3">
-                <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-bold transition-all shadow-md cursor-pointer">
-                  <Upload size={15} />
-                  <span>{isUploading ? 'Mengunggah...' : 'Upload File Ikon Baru'}</span>
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,image/svg+xml"
-                    onChange={handleFileUpload}
-                    disabled={isUploading}
-                    className="hidden"
-                  />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Telepon */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 flex items-center gap-1">
+                  <Phone size={13} className="text-slate-400" />
+                  <span>Nomor Telepon / WhatsApp Desa:</span>
                 </label>
-                <span className="text-xs text-slate-400">atau</span>
                 <input
                   type="text"
-                  placeholder="Masukkan URL Gambar (https://...)"
-                  value={logoUrl}
-                  onChange={(e) => setLogoUrl(e.target.value)}
-                  className="flex-1 px-4 py-2 rounded-xl border border-slate-200 bg-white text-xs text-slate-900 focus:ring-2 focus:ring-primary-500 focus:outline-none min-w-[200px]"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="081234567890"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                />
+              </div>
+
+              {/* Email */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 flex items-center gap-1">
+                  <Mail size={13} className="text-slate-400" />
+                  <span>Alamat Email Resmi Desa:</span>
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="desa.sukabanjar@gmail.com"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Row 2: Kontak Resmi (Nomor Telepon & Email) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <label className="text-xs font-extrabold text-slate-800 flex items-center gap-2">
-              <Phone size={16} className="text-emerald-600" />
-              <span>Nomor Telepon Desa</span>
-            </label>
-            <input
-              type="text"
-              placeholder="081234567890"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 text-xs font-mono font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-            />
-          </div>
-
-          <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <label className="text-xs font-extrabold text-slate-800 flex items-center gap-2">
-              <Mail size={16} className="text-rose-600" />
-              <span>Email Resmi Desa</span>
-            </label>
-            <input
-              type="email"
-              placeholder="desa.sukabanjar@gmail.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 text-xs font-mono font-bold focus:ring-2 focus:ring-rose-500 focus:outline-none"
-            />
-          </div>
-        </div>
-
-        {/* Row 3: Pengelolaan 5 Sosial Media Standar (Fitur Edit URL) */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-200/60 pb-3">
-            <div>
-              <h3 className="text-base font-extrabold text-slate-900 font-heading flex items-center gap-2">
-                <Globe size={18} className="text-amber-500" />
+        {/* Section 2: 5 Fixed Social Media Cards */}
+        <div className="space-y-4 pt-4 border-t border-slate-100">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2 font-heading">
+                <Globe size={16} className="text-amber-600" />
                 <span>Pengelolaan URL Sosial Media Desa</span>
               </h3>
               <p className="text-xs text-slate-500">
                 Masukkan atau edit URL akun sosial media resmi desa. Biarkan kosong jika desa belum menggunakan platform tersebut.
               </p>
             </div>
-
-            <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-800 font-extrabold text-xs">
+            <span className="hidden sm:inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-[11px] font-extrabold">
               5 Platform Standar Sistem
             </span>
           </div>
@@ -272,7 +257,7 @@ export default function AdminProfileEditTab() {
           {/* 5 Fixed Social Media Cards with Edit URL Fields */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {socialMedia.map((sm) => {
-              const IconComponent = getPlatformIcon(sm.platform);
+              const IconComponent = getSocialPlatformIcon(sm.platform);
               return (
                 <div
                   key={sm.platform}

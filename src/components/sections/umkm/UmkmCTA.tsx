@@ -10,9 +10,9 @@ export default function UmkmCTA({ onOpenRegisterModal }: UmkmCTAProps) {
   return (
     <section className="pt-8 pb-16 bg-slate-50">
       <div className="container-section max-w-4xl mx-auto">
-        <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-850 to-primary-950 text-white p-8 sm:p-10 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="rounded-3xl bg-gradient-to-br from-primary-500 via-primary-600 to-primary-300 text-white p-8 sm:p-10 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Background Decorative Orb */}
-          <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-accent-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="space-y-3 relative z-10 max-w-xl text-center md:text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-accent-400 text-xs font-semibold">

@@ -5,7 +5,8 @@ interface OverviewData {
   malePopulation: number;
   femalePopulation: number;
   totalHouseholds: number;
-  totalAreaKm2: number;
+  totalAreaKm2?: number;
+  totalDusun?: number;
   sexRatio: number;
 }
 
@@ -48,25 +49,17 @@ export default function StatistikOverviewCards({ overview }: StatistikOverviewCa
       color: 'bg-amber-500',
     },
     {
-      title: 'Luas Wilayah Desa',
-      value: overview.totalAreaKm2.toLocaleString('id-ID'),
-      unit: 'Km²',
-      badge: '4 Wilayah Dusun',
-      icon: MapPin,
+      title: 'Total Dusun Desa',
+      value: (overview.totalDusun || 5).toLocaleString('id-ID'),
+      unit: 'Dusun',
+      badge: '5 Wilayah Dusun',
+      icon: Home,
       color: 'bg-indigo-500',
-    },
-    {
-      title: 'Rasio Jenis Kelamin',
-      value: overview.sexRatio.toString(),
-      unit: 'Rasio L/P',
-      badge: '106 Laki / 100 Wanita',
-      icon: Scale,
-      color: 'bg-rose-500',
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
       {cards.map((item, idx) => {
         const Icon = item.icon;
         return (
@@ -80,9 +73,6 @@ export default function StatistikOverviewCards({ overview }: StatistikOverviewCa
               >
                 <Icon size={24} />
               </div>
-              <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700">
-                {item.badge}
-              </span>
             </div>
 
             <div>

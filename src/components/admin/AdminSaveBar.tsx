@@ -90,7 +90,7 @@ export default function AdminSaveBar() {
               ) : (
                 <>
                   <Save size={16} />
-                  <span>💾 Simpan Semua Perubahan Teks</span>
+                  <span>Simpan Semua Perubahan Teks</span>
                 </>
               )}
             </button>

@@ -16,6 +16,8 @@ const CATEGORIES = [
   'Ekonomi',
   'Kesehatan',
   'Sosial & Budaya',
+  'KKN',
+  'Lainnya',
 ];
 
 export default function BeritaPage() {
@@ -66,7 +68,7 @@ export default function BeritaPage() {
   const latestArticles = filteredArticles.slice(6);
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-900 text-white font-sans selection:bg-amber-400 selection:text-slate-950">
+    <div className="flex flex-col min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-[#0086C9] selection:text-white">
       {/* Header Bar with Search & Category Filter */}
       <ArticleHeader
         searchQuery={searchQuery}
@@ -78,12 +80,12 @@ export default function BeritaPage() {
 
       {/* Main Content Sections */}
       {isLoading ? (
-        <div className="text-center py-32 text-slate-400 text-sm animate-pulse font-medium">
+        <div className="text-center py-32 text-slate-500 text-sm animate-pulse font-medium">
           Memuat portal berita & pengumuman Desa Suka Banjar...
         </div>
       ) : filteredArticles.length === 0 ? (
         <div className="text-center py-32 space-y-3">
-          <p className="text-slate-400 text-base font-semibold">
+          <p className="text-slate-600 text-base font-semibold">
             Tidak ditemukan berita dengan kata kunci atau kategori tersebut.
           </p>
           <button
@@ -91,14 +93,14 @@ export default function BeritaPage() {
               setSearchQuery('');
               setActiveCategory('Semua');
             }}
-            className="px-4 py-2 rounded-xl bg-amber-400 text-slate-950 font-extrabold text-xs shadow-md"
+            className="px-4 py-2 rounded-xl bg-[#0086C9] text-white font-extrabold text-xs shadow-md cursor-pointer hover:bg-[#006ca3]"
           >
             Reset Filter
           </button>
         </div>
       ) : (
         <main className="space-y-4">
-          {/* Top Featured Hero Section (Presisi Gambar Referensi) */}
+          {/* Top Featured Hero Section */}
           {mainArticle && (
             <ArticleFeaturedHero
               mainArticle={mainArticle}

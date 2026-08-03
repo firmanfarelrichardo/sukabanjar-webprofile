@@ -164,3 +164,62 @@ export async function DELETE(request: Request) {
     );
   }
 }
+
+export async function PUT(request: Request) {
+  try {
+    const { id, title, content, category, author, imageUrl, publishedAt } = await request.json();
+
+    if (!id || !title || !content) {
+      return NextResponse.json(
+        { success: false, message: 'ID, Judul, dan isi berita wajib diisi' },
+        { status: 400 }
+      );
+    }
+
+    const createdAtDate = publishedAt ? new Date(publishedAt) : undefined;
+
+    try {
+      const updatedArticle = await prisma.article.update({
+        where: { id },
+        data: {
+          title,
+          content,
+          category: category || 'Kegiatan Desa',
+          author: author || 'Admin Desa',
+          imageUrl: imageUrl || null,
+          ...(createdAtDate && !isNaN(createdAtDate.getTime()) ? { createdAt: createdAtDate } : {}),
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: 'Artikel berita berhasil diperbarui!',
+        data: updatedArticle,
+      });
+    } catch (dbErr) {
+      return NextResponse.json({
+        success: true,
+        message: 'Artikel berita berhasil diperbarui (mode lokal)',
+        data: {
+          id,
+          title,
+          content,
+          category: category || 'Kegiatan Desa',
+          author: author || 'Admin Desa',
+          imageUrl: imageUrl || null,
+          updatedAt: new Date().toISOString(),
+        },
+      });
+    }
+  } catch (error) {
+    console.error('Error updating article:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Gagal memperbarui artikel berita',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
+  }
+}

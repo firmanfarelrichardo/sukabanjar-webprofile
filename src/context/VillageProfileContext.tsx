@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { formatSocialUrl, parseJsonArray } from '@/lib/utils';
 
 export interface SocialMediaItem {
   id: string;
@@ -28,21 +29,7 @@ interface VillageProfileContextType {
   refreshProfile: () => Promise<void>;
 }
 
-export const parseJsonArray = (raw: any): any[] => {
-  if (!raw) return [];
-  if (Array.isArray(raw)) return raw;
-  let current = raw;
-  let attempts = 0;
-  while (typeof current === 'string' && attempts < 3) {
-    try {
-      current = JSON.parse(current);
-    } catch (e) {
-      break;
-    }
-    attempts++;
-  }
-  return Array.isArray(current) ? current : [];
-};
+export { formatSocialUrl, parseJsonArray };
 
 export const DEFAULT_5_SOCIAL_MEDIA: SocialMediaItem[] = [
   { id: 'sm-facebook', platform: 'facebook', label: 'Facebook', url: 'https://facebook.com/desasukabanjar' },
@@ -77,7 +64,7 @@ export function VillageProfileProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<VillageProfileData>(DEFAULT_PROFILE_DATA);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Ensures the 5 default platforms always exist, with custom URLs preserved
+  // Ensures the 5 default platforms always exist, with custom formatted URLs preserved
   const mergeWithDefault5 = (inputItems: any): SocialMediaItem[] => {
     const itemsArray = parseJsonArray(inputItems);
 
@@ -87,9 +74,10 @@ export function VillageProfileProvider({ children }: { children: ReactNode }) {
           item &&
           (item.platform?.toLowerCase() === def.platform.toLowerCase() || item.id === def.id)
       );
+      const rawUrl = match && match.url !== undefined && match.url !== null ? match.url : def.url;
       return {
         ...def,
-        url: match && match.url !== undefined && match.url !== null ? match.url : def.url,
+        url: formatSocialUrl(rawUrl),
         label: match?.label || def.label,
       };
     });
