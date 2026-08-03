@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
@@ -22,7 +23,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validate all files first
+    // Validate all files first (Size limit & allowed types)
     for (const file of files) {
       if (file.size > maxSizeBytes) {
         const maxKbDisplay = (maxSizeBytes / 1024).toFixed(0);
@@ -47,26 +48,68 @@ export async function POST(request: Request) {
       }
     }
 
-    // Ensure upload directory exists
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'berita');
-    await mkdir(uploadDir, { recursive: true });
-
     const uploadedUrls: string[] = [];
 
     for (const file of files) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
-
-      // Generate unique filename
       const timestamp = Date.now();
       const randomStr = Math.random().toString(36).substring(2, 8);
       const ext = file.name.split('.').pop() || 'jpg';
-      const filename = `berita_${timestamp}_${randomStr}.${ext}`;
+      const filename = `img_${timestamp}_${randomStr}.${ext}`;
 
-      const filepath = path.join(uploadDir, filename);
-      await writeFile(filepath, buffer);
+      let fileUploadedUrl: string | null = null;
 
-      uploadedUrls.push(`/uploads/berita/${filename}`);
+      // Strategi 1: Upload ke Supabase Storage (Sangat Cocok & Stabil di Vercel Production)
+      if (
+        process.env.NEXT_PUBLIC_SUPABASE_URL &&
+        (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+      ) {
+        try {
+          const bucketName = 'uploads';
+          const filePathInBucket = `berita/${filename}`;
+
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from(bucketName)
+            .upload(filePathInBucket, buffer, {
+              contentType: file.type || 'image/jpeg',
+              upsert: true,
+            });
+
+          if (!uploadError && uploadData) {
+            const { data: publicUrlData } = supabase.storage
+              .from(bucketName)
+              .getPublicUrl(filePathInBucket);
+
+            if (publicUrlData?.publicUrl) {
+              fileUploadedUrl = publicUrlData.publicUrl;
+            }
+          }
+        } catch (supabaseErr) {
+          console.warn('Supabase Storage upload fallback triggered:', supabaseErr);
+        }
+      }
+
+      // Strategi 2: Simpan ke Local Filesystem (Khusus saat di localhost & bukan di lingkungan read-only Vercel)
+      if (!fileUploadedUrl && process.env.VERCEL !== '1') {
+        try {
+          const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'berita');
+          await mkdir(uploadDir, { recursive: true });
+          const filepath = path.join(uploadDir, filename);
+          await writeFile(filepath, buffer);
+          fileUploadedUrl = `/uploads/berita/${filename}`;
+        } catch (localFsErr) {
+          console.warn('Local FS upload error:', localFsErr);
+        }
+      }
+
+      // Strategi 3: Base64 Data URI Fallback (100% Bekerja di Vercel tanpa butuh sistem file lokal)
+      if (!fileUploadedUrl) {
+        const mimeType = file.type || 'image/jpeg';
+        fileUploadedUrl = `data:${mimeType};base64,${buffer.toString('base64')}`;
+      }
+
+      uploadedUrls.push(fileUploadedUrl);
     }
 
     return NextResponse.json({
