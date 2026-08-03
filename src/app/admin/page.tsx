@@ -380,7 +380,7 @@ export default function AdminDashboardPage() {
             }`}
           >
             <Edit3 size={16} />
-            <span>Kelola Isi Konten</span>
+            <span>Kelola Website</span>
           </button>
 
           <button
@@ -624,11 +624,8 @@ export default function AdminDashboardPage() {
       {activeTab === 'edit-website' && (
         <div className="space-y-8 animate-fadeIn">
           {/* Guide Banner for Live Visual Editing */}
-          <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-850 to-amber-950 text-white p-8 border-2 border-amber-400/50 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="rounded-3xl bg-primary-600 to-br from-primary-900 via-primary-850 to-primary-950 text-white p-8 border-2 border-primary-400/50 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2 max-w-xl text-center md:text-left">
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-400 text-slate-950">
-                Fitur Unggulan: Live Visual In-Place Editor
-              </span>
               <h2 className="text-2xl font-extrabold font-heading text-white">
                 Edit Teks Langsung di Tampilan Asli Website
               </h2>
