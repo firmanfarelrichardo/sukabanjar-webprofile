@@ -75,7 +75,7 @@ export default function PetaPage() {
               className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#0086C9] hover:bg-[#006ca3] text-white font-extrabold text-xs shadow-md transition-all hover:scale-105 cursor-pointer shrink-0"
             >
               <Plus size={16} />
-              <span>+ Tambah Lokasi Fasilitas Baru</span>
+              <span>Tambah Lokasi Fasilitas Baru</span>
             </button>
           </div>
 

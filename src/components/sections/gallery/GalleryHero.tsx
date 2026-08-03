@@ -98,7 +98,7 @@ export default function GalleryHero({
                 className="inline-flex items-center gap-2 px-5 py-3.5 rounded-2xl bg-gradient-to-r from-[#0086C9] to-teal-500 hover:from-[#006ca3] hover:to-teal-400 text-white font-extrabold text-xs sm:text-sm shadow-xl transition-all hover:scale-105 cursor-pointer"
               >
                 <Plus size={18} />
-                <span>+ Tambah Foto Baru</span>
+                <span>Tambah Foto Baru</span>
               </button>
             </div>
           )}

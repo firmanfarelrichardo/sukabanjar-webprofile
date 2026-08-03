@@ -368,7 +368,7 @@ export default function AdminDashboardPage() {
             }`}
           >
             <LayoutDashboard size={16} />
-            <span>Dashboard Ringkasan</span>
+            <span>Dashboard</span>
           </button>
 
           <button
@@ -380,7 +380,7 @@ export default function AdminDashboardPage() {
             }`}
           >
             <Edit3 size={16} />
-            <span>Pengelolaan Isi (Berita, Galeri, UMKM & Peta)</span>
+            <span>Kelola Isi Konten</span>
           </button>
 
           <button
@@ -392,7 +392,7 @@ export default function AdminDashboardPage() {
             }`}
           >
             <BookOpen size={16} />
-            <span>Profil, Kontak & Sosmed</span>
+            <span>Profil</span>
           </button>
 
           <button
@@ -416,7 +416,7 @@ export default function AdminDashboardPage() {
             }`}
           >
             <Inbox size={16} />
-            <span>Inbox Aspirasi Warga</span>
+            <span>Inbox Aspirasi</span>
             {stats.unreadAspirations > 0 && (
               <span className="w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center animate-pulse">
                 {stats.unreadAspirations}
@@ -665,7 +665,7 @@ export default function AdminDashboardPage() {
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs shadow-md transition-all hover:scale-105 cursor-pointer shrink-0"
               >
                 <Plus size={16} />
-                <span>+ Terbit Artikel Berita Baru</span>
+                <span>Terbit Artikel Berita Baru</span>
               </button>
             </div>
 
@@ -757,7 +757,7 @@ export default function AdminDashboardPage() {
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-xs shadow-md transition-all hover:scale-105 cursor-pointer shrink-0"
               >
                 <Plus size={16} />
-                <span>+ Tambah Foto Galeri Baru</span>
+                <span>Tambah Foto Galeri Baru</span>
               </button>
             </div>
 
@@ -844,7 +844,7 @@ export default function AdminDashboardPage() {
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs shadow-md transition-all cursor-pointer"
                 >
                   <Plus size={16} />
-                  <span>+ Tambah Produk UMKM</span>
+                  <span>Tambah Produk UMKM</span>
                 </button>
               </div>
             </div>
@@ -935,7 +935,7 @@ export default function AdminDashboardPage() {
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0086C9] hover:bg-[#006ca3] text-white font-extrabold text-xs shadow-md transition-all hover:scale-105 cursor-pointer shrink-0"
               >
                 <Plus size={16} />
-                <span>+ Tambah Lokasi Fasilitas Baru</span>
+                <span>Tambah Lokasi Fasilitas Baru</span>
               </button>
             </div>
 
