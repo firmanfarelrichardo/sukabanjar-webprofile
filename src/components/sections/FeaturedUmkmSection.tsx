@@ -107,7 +107,7 @@ export default function FeaturedUmkmSection({ products }: FeaturedUmkmProps) {
                     href={waUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm transition-all duration-200 shadow-md shadow-emerald-600/20 cursor-pointer"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary-500 hover:bg-primary-700 text-white font-extrabold text-xs sm:text-sm transition-all duration-200 shadow-md shadow-emerald-600/20 cursor-pointer"
                   >
                     <MessageCircle size={16} />
                     Hubungi Penjual (WhatsApp)
