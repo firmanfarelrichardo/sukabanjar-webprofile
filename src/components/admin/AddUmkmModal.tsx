@@ -10,9 +10,10 @@ const UMKM_CATEGORIES = ['Olahan Tani', 'Kuliner', 'Kerajinan', 'Kopi & Minuman'
 interface AddUmkmModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export default function AddUmkmModal({ isOpen, onClose }: AddUmkmModalProps) {
+export default function AddUmkmModal({ isOpen, onClose, onSuccess }: AddUmkmModalProps) {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [ownerName, setOwnerName] = useState('');
@@ -54,6 +55,7 @@ export default function AddUmkmModal({ isOpen, onClose }: AddUmkmModalProps) {
           type: 'success',
           text: 'Produk UMKM berhasil ditambahkan ke katalog!',
         });
+        if (onSuccess) onSuccess();
         setTimeout(() => {
           setTitle('');
           setOwnerName('');
@@ -88,147 +90,171 @@ export default function AddUmkmModal({ isOpen, onClose }: AddUmkmModalProps) {
       <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto border-4 border-amber-400">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 flex items-center justify-center transition-colors"
         >
-          <X size={20} />
+          <X size={18} />
         </button>
 
-        <div className="space-y-1 text-center">
-          <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mx-auto">
-            <Store size={24} />
+        <div className="space-y-1 pr-8">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold">
+            <Store size={14} />
+            <span>Katalog UMKM Desa</span>
           </div>
-          <h3 className="text-2xl font-extrabold font-heading text-slate-900">
-            Tambah Produk UMKM (Admin)
+          <h3 className="text-xl font-extrabold text-slate-900 font-heading">
+            Tambah Produk UMKM Baru
           </h3>
           <p className="text-xs text-slate-500">
-            Tambah produk lokal warga langsung ke dalam katalog publik
+            Daftarkan produk usaha mikro warga Desa Suka Banjar ke katalog resmi.
           </p>
         </div>
 
         {statusMessage && (
           <div
-            className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
+            className={`p-4 rounded-2xl text-xs flex items-center gap-2 ${
               statusMessage.type === 'success'
-                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                : 'bg-rose-50 text-rose-700 border border-rose-200'
+                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                : 'bg-rose-50 text-rose-800 border border-rose-200'
             }`}
           >
             {statusMessage.type === 'success' ? (
-              <CheckCircle2 size={18} className="text-emerald-600" />
+              <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
             ) : (
-              <AlertCircle size={18} className="text-rose-600" />
+              <AlertCircle size={16} className="text-rose-600 shrink-0" />
             )}
             <span>{statusMessage.text}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1">
-            <label className="block text-xs font-bold text-slate-800">Nama Produk / Usaha *</label>
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs font-sans">
+          {/* Upload Foto Produk */}
+          <div className="space-y-1.5">
+            <label className="font-extrabold text-slate-800 block">
+              Foto Produk (Maks 3 Gambar, Max 1MB/foto)
+            </label>
+            <UmkmImageUpload
+              imageUrls={imageUrls}
+              onImagesChange={(urls: string[]) => setImageUrls(urls)}
+              maxFiles={3}
+              accentColor="amber"
+            />
+          </div>
+
+          {/* Nama Produk */}
+          <div className="space-y-1.5">
+            <label className="font-extrabold text-slate-800 block">
+              Nama Produk / Usaha <span className="text-rose-500">*</span>
+            </label>
             <input
               type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Contoh: Kopi Bubuk Robusta Sidomulyo"
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500 font-medium"
+              placeholder="Contoh: Keripik Pisang Coklat Lumer"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
             />
           </div>
 
-          {/* Kategori Usaha */}
-          <div className="space-y-1">
-            <label className="block text-xs font-bold text-slate-800">Kategori Usaha *</label>
-            <select
-              required
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500 bg-white cursor-pointer font-medium"
-            >
-              {UMKM_CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="block text-xs font-bold text-slate-800">Nama Pemilik Usaha *</label>
+          {/* Nama Pemilik & Kategori */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <label className="font-extrabold text-slate-800 block">
+                Nama Pemilik (Warga) <span className="text-rose-500">*</span>
+              </label>
               <input
                 type="text"
                 required
                 value={ownerName}
                 onChange={(e) => setOwnerName(e.target.value)}
-                placeholder="Contoh: Bapak Herman"
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500 font-medium"
+                placeholder="Contoh: Ibu Rohana (Dusun 2)"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
               />
             </div>
-            <div className="space-y-1">
-              <label className="block text-xs font-bold text-slate-800">Patokan Harga</label>
+
+            <div className="space-y-1.5">
+              <label className="font-extrabold text-slate-800 block">
+                Kategori Produk
+              </label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium bg-white"
+              >
+                {UMKM_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Harga & Nomor WhatsApp */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <label className="font-extrabold text-slate-800 block">
+                Perkiraan Harga
+              </label>
               <input
                 type="text"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                placeholder="Contoh: Rp 28.000 / 250gram"
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500 font-medium"
+                placeholder="Contoh: Rp 15.000 / bungkus"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="font-extrabold text-slate-800 block">
+                Nomor WhatsApp Penjual <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                value={whatsapp}
+                onChange={(e) => setWhatsapp(e.target.value)}
+                placeholder="Contoh: 081234567890"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
               />
             </div>
           </div>
 
-          <div className="space-y-1">
-            <label className="block text-xs font-bold text-slate-800">No. WhatsApp Penjual *</label>
-            <input
-              type="text"
-              required
-              value={whatsapp}
-              onChange={(e) => setWhatsapp(e.target.value)}
-              placeholder="Contoh: 081234567890"
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500 font-medium"
-            />
-          </div>
-
-          <div className="space-y-1">
-            <label className="block text-xs font-bold text-slate-800">Deskripsi Usaha</label>
+          {/* Deskripsi Singkat */}
+          <div className="space-y-1.5">
+            <label className="font-extrabold text-slate-800 block">
+              Deskripsi Produk & Keunggulan <span className="text-rose-500">*</span>
+            </label>
             <textarea
+              required
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Deskripsi keunggulan produk..."
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500 font-medium"
+              placeholder="Jelaskan bahan baku, keunggulan rasa, varian rasa, atau porsi..."
+              className="w-full p-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
             />
           </div>
 
-          {/* Image Upload */}
-          <UmkmImageUpload
-            imageUrls={imageUrls}
-            onImagesChange={setImageUrls}
-            maxFiles={5}
-            accentColor="amber"
-          />
-
-          <div className="pt-3 border-t border-slate-100 flex justify-end gap-3">
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs"
+              className="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold transition-colors"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/30 cursor-pointer disabled:bg-slate-300"
+              className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold shadow-md transition-all flex items-center gap-1.5"
             >
               {isLoading ? (
                 <>
-                  <Loader2 size={16} className="animate-spin" />
+                  <Loader2 size={15} className="animate-spin" />
                   <span>Menyimpan...</span>
                 </>
               ) : (
                 <>
-                  <Save size={16} />
-                  <span>Simpan Produk UMKM</span>
+                  <Save size={15} />
+                  <span>Simpan Produk</span>
                 </>
               )}
             </button>

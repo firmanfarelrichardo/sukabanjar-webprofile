@@ -12,9 +12,10 @@ interface EditUmkmModalProps {
   product: UmkmProduct | null;
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export default function EditUmkmModal({ product, isOpen, onClose }: EditUmkmModalProps) {
+export default function EditUmkmModal({ product, isOpen, onClose, onSuccess }: EditUmkmModalProps) {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [ownerName, setOwnerName] = useState('');
@@ -34,7 +35,7 @@ export default function EditUmkmModal({ product, isOpen, onClose }: EditUmkmModa
       setPrice(product.price || '');
       setWhatsapp(product.whatsapp || '');
       setDescription(product.description || '');
-      setImageUrls(product.imageUrls || []);
+      setImageUrls(product.imageUrls || (product.imageUrl ? [product.imageUrl] : []));
       setStatusMessage(null);
     }
   }, [product]);
@@ -71,6 +72,7 @@ export default function EditUmkmModal({ product, isOpen, onClose }: EditUmkmModa
           type: 'success',
           text: 'Data produk UMKM berhasil diperbarui!',
         });
+        if (onSuccess) onSuccess();
         setTimeout(() => {
           setStatusMessage(null);
           onClose();
@@ -98,7 +100,7 @@ export default function EditUmkmModal({ product, isOpen, onClose }: EditUmkmModa
       <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto border-4 border-amber-400">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+          className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
         >
           <X size={20} />
         </button>
@@ -124,9 +126,9 @@ export default function EditUmkmModal({ product, isOpen, onClose }: EditUmkmModa
             }`}
           >
             {statusMessage.type === 'success' ? (
-              <CheckCircle2 size={18} className="text-emerald-600" />
+              <CheckCircle2 size={18} className="text-emerald-600 shrink-0" />
             ) : (
-              <AlertCircle size={18} className="text-rose-600" />
+              <AlertCircle size={18} className="text-rose-600 shrink-0" />
             )}
             <span>{statusMessage.text}</span>
           </div>
@@ -207,7 +209,7 @@ export default function EditUmkmModal({ product, isOpen, onClose }: EditUmkmModa
           {/* Image Upload */}
           <UmkmImageUpload
             imageUrls={imageUrls}
-            onImagesChange={setImageUrls}
+            onImagesChange={(urls: string[]) => setImageUrls(urls)}
             maxFiles={5}
             accentColor="amber"
           />
@@ -216,14 +218,14 @@ export default function EditUmkmModal({ product, isOpen, onClose }: EditUmkmModa
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs"
+              className="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs transition-colors"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/30 cursor-pointer disabled:bg-slate-300"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md cursor-pointer disabled:bg-slate-300 transition-colors"
             >
               {isLoading ? (
                 <>

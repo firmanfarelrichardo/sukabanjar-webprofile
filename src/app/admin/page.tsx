@@ -22,11 +22,17 @@ import {
   Paperclip,
   Clock,
   Database,
+  Building2,
+  Store,
+  Check,
+  Eye,
 } from 'lucide-react';
 import { useAdmin } from '@/context/AdminContext';
 import AddUmkmModal from '@/components/admin/AddUmkmModal';
+import EditUmkmModal from '@/components/admin/EditUmkmModal';
 import AddGalleryModal from '@/components/admin/AddGalleryModal';
 import AddArticleModal from '@/components/admin/AddArticleModal';
+import AddFacilityModal from '@/components/admin/AddFacilityModal';
 import EditVillageProfileModal from '@/components/admin/EditVillageProfileModal';
 import AdminUmkmValidationModal from '@/components/sections/umkm/AdminUmkmValidationModal';
 import AdminProfileEditTab from '@/components/admin/AdminProfileEditTab';
@@ -42,25 +48,35 @@ export default function AdminDashboardPage() {
     totalArticles: 0,
     totalUmkm: 0,
     pendingUmkm: 0,
-    totalGallery: 8,
-    totalFacilities: 6,
+    totalGallery: 0,
+    totalFacilities: 0,
     recentAspirations: [] as any[],
   });
 
   const [aspirationsList, setAspirationsList] = useState<any[]>([]);
   const [articlesList, setArticlesList] = useState<any[]>([]);
   const [galleryList, setGalleryList] = useState<any[]>([]);
+  const [umkmList, setUmkmList] = useState<any[]>([]);
+  const [facilitiesList, setFacilitiesList] = useState<any[]>([]);
 
   const [inboxFilter, setInboxFilter] = useState<'all' | 'unread'>('all');
   const [selectedAspiration, setSelectedAspiration] = useState<any | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Modals state
   const [isAddUmkmOpen, setIsAddUmkmOpen] = useState(false);
+  const [isEditUmkmOpen, setIsEditUmkmOpen] = useState(false);
+  const [umkmToEdit, setUmkmToEdit] = useState<any | null>(null);
+
   const [isAddGalleryOpen, setIsAddGalleryOpen] = useState(false);
   const [galleryItemToEdit, setGalleryItemToEdit] = useState<any | null>(null);
 
   const [isAddArticleOpen, setIsAddArticleOpen] = useState(false);
   const [articleToEdit, setArticleToEdit] = useState<any | null>(null);
+
+  const [isAddFacilityOpen, setIsAddFacilityOpen] = useState(false);
+  const [facilityToEdit, setFacilityToEdit] = useState<any | null>(null);
 
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isUmkmValidationOpen, setIsUmkmValidationOpen] = useState(false);
@@ -117,21 +133,58 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const fetchUmkm = async () => {
+    try {
+      const res = await fetch('/api/umkm?all=true');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          setUmkmList(json.data);
+          const pendingCount = json.data.filter((u: any) => u.isApproved === false).length;
+          setStats((prev) => ({
+            ...prev,
+            totalUmkm: json.data.length,
+            pendingUmkm: pendingCount,
+          }));
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching UMKM list:', err);
+    }
+  };
+
+  const fetchFacilities = async () => {
+    try {
+      const res = await fetch('/api/facilities');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          setFacilitiesList(json.data);
+          setStats((prev) => ({ ...prev, totalFacilities: json.data.length }));
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching facilities:', err);
+    }
+  };
+
   useEffect(() => {
     async function loadStats() {
       try {
         setIsLoading(true);
-        const [aspRes, artRes, umkmRes, galRes] = await Promise.all([
+        const [aspRes, artRes, umkmRes, galRes, facRes] = await Promise.all([
           fetch('/api/admin/aspirations'),
           fetch('/api/articles'),
           fetch('/api/umkm?all=true'),
           fetch('/api/gallery'),
+          fetch('/api/facilities'),
         ]);
 
         let aspirations = [];
         let articles = [];
         let umkm = [];
         let gallery = [];
+        let facilities = [];
 
         if (aspRes.ok) {
           const json = await aspRes.json();
@@ -153,9 +206,16 @@ export default function AdminDashboardPage() {
           if (json.success && json.data) gallery = json.data;
         }
 
+        if (facRes.ok) {
+          const json = await facRes.json();
+          if (json.success && json.data) facilities = json.data;
+        }
+
         setAspirationsList(aspirations);
         setArticlesList(articles);
+        setUmkmList(umkm);
         setGalleryList(gallery);
+        setFacilitiesList(facilities);
 
         const unreadAsp = aspirations.filter((a: any) => !a.isRead).length;
         setUnreadCount(unreadAsp);
@@ -168,7 +228,7 @@ export default function AdminDashboardPage() {
           totalUmkm: umkm.length,
           pendingUmkm: pendingUmkmCount,
           totalGallery: gallery.length,
-          totalFacilities: 6,
+          totalFacilities: facilities.length,
           recentAspirations: aspirations.slice(0, 5),
         });
       } catch (err) {
@@ -238,6 +298,30 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleDeleteFacility = async (id: string, name: string) => {
+    if (!confirm(`Apakah Anda yakin ingin menghapus lokasi fasilitas "${name}"?`)) return;
+    try {
+      const res = await fetch(`/api/facilities?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchFacilities();
+      }
+    } catch (err) {
+      console.error('Error deleting facility:', err);
+    }
+  };
+
+  const handleDeleteUmkm = async (id: string, title: string) => {
+    if (!confirm(`Apakah Anda yakin ingin menghapus produk UMKM "${title}"?`)) return;
+    try {
+      const res = await fetch(`/api/umkm?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchUmkm();
+      }
+    } catch (err) {
+      console.error('Error deleting UMKM:', err);
+    }
+  };
+
   const filteredAspirations = aspirationsList.filter((item) => {
     if (inboxFilter === 'unread') return !item.isRead;
     return true;
@@ -245,7 +329,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto py-6 px-4 sm:px-6">
-      {/* Header Banner & Three Navigation Tabs */}
+      {/* Header Banner & Navigation Tabs */}
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-6">
           <div className="space-y-1">
@@ -257,7 +341,7 @@ export default function AdminDashboardPage() {
               Panel Pengelola Desa
             </h1>
             <p className="text-xs text-slate-500">
-              Kelola berita, foto galeri, profil desa, produk UMKM warga, dan tanggapi aspirasi publik.
+              Kelola berita, foto galeri, profil desa, produk UMKM warga, peta lokasi fasilitas, dan tanggapi aspirasi publik.
             </p>
           </div>
 
@@ -296,7 +380,7 @@ export default function AdminDashboardPage() {
             }`}
           >
             <Edit3 size={16} />
-            <span>Pengelolaan Isi & Berita / Galeri</span>
+            <span>Pengelolaan Isi (Berita, Galeri, UMKM & Peta)</span>
           </button>
 
           <button
@@ -346,7 +430,7 @@ export default function AdminDashboardPage() {
       {activeTab === 'dashboard' && (
         <div className="space-y-8 animate-fadeIn">
           {/* Stat Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
             {/* Card 1: Aspirasi Warga */}
             <div
               onClick={() => setActiveTab('inbox')}
@@ -438,6 +522,27 @@ export default function AdminDashboardPage() {
                 <span className="text-xs font-semibold text-slate-500">Koleksi Foto Galeri</span>
               </div>
             </div>
+
+            {/* Card 5: Peta Fasilitas */}
+            <div
+              onClick={() => setActiveTab('edit-website')}
+              className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 cursor-pointer hover:border-sky-300 transition-all hover:-translate-y-1"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                  <MapPin size={22} />
+                </div>
+                <span className="text-xs font-bold text-sky-600 bg-sky-50 px-2.5 py-1 rounded-full">
+                  Titik Peta
+                </span>
+              </div>
+              <div>
+                <span className="text-3xl font-black text-slate-900 font-heading block">
+                  {stats.totalFacilities}
+                </span>
+                <span className="text-xs font-semibold text-slate-500">Lokasi Fasilitas Desa</span>
+              </div>
+            </div>
           </div>
 
           {/* Table: Aspirasi Masuk Terbaru */}
@@ -452,7 +557,7 @@ export default function AdminDashboardPage() {
 
               <button
                 onClick={() => setActiveTab('inbox')}
-                className="inline-flex items-center gap-1 text-xs font-bold text-primary-600 hover:text-primary-700 transition-colors"
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#0086C9] hover:text-[#006ca3] transition-colors"
               >
                 <span>Buka Inbox Moderasi ({stats.unreadAspirations} Baru)</span>
                 <ArrowRight size={14} />
@@ -515,7 +620,7 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* MENU 2: EDIT & PENGELOLAAN ISI WEBSITE (BERITA & GALERI EDIT/HAPUS) */}
+      {/* MENU 2: EDIT & PENGELOLAAN ISI WEBSITE (BERITA, GALERI, UMKM & PETA) */}
       {activeTab === 'edit-website' && (
         <div className="space-y-8 animate-fadeIn">
           {/* Guide Banner for Live Visual Editing */}
@@ -541,7 +646,7 @@ export default function AdminDashboardPage() {
             </Link>
           </div>
 
-          {/* SECTION: PENGELOLAAN ARTIKEL BERITA (EDIT & HAPUS) */}
+          {/* SECTION 1: PENGELOLAAN ARTIKEL BERITA DENGAN PREVIEW GAMBAR */}
           <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
               <div>
@@ -549,7 +654,7 @@ export default function AdminDashboardPage() {
                   <Newspaper size={20} className="text-indigo-600" />
                   <span>Pengelolaan Berita & Pengumuman Desa</span>
                 </h3>
-                <p className="text-xs text-slate-500">Edit isi berita yang sudah ada atau hapus artikel yang tidak lagi diperlukan</p>
+                <p className="text-xs text-slate-500">Edit isi berita, gambar sampul, atau terbitkan berita baru</p>
               </div>
 
               <button
@@ -573,12 +678,25 @@ export default function AdminDashboardPage() {
                     key={art.id}
                     className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
                   >
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800">
+                    <div className="space-y-3">
+                      {/* PREVIEW GAMBAR BERITA (TAMPIL SEPERTI PADA GALERI) */}
+                      <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-900 relative">
+                        <img
+                          src={
+                            art.imageUrl ||
+                            'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=600&q=80'
+                          }
+                          alt={art.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <span className="absolute top-2 left-2 px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-[#0086C9] text-white shadow">
                           {art.category}
                         </span>
-                        <span className="text-[10px] text-slate-400 font-medium">
+                      </div>
+
+                      <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
+                        <span>Penulis: {art.author || 'Tim Redaksi'}</span>
+                        <span>
                           {new Date(art.createdAt).toLocaleDateString('id-ID', {
                             day: 'numeric',
                             month: 'short',
@@ -586,6 +704,7 @@ export default function AdminDashboardPage() {
                           })}
                         </span>
                       </div>
+
                       <h4 className="font-extrabold text-sm text-slate-900 line-clamp-2 leading-snug">
                         {art.title}
                       </h4>
@@ -619,7 +738,7 @@ export default function AdminDashboardPage() {
             )}
           </div>
 
-          {/* SECTION: PENGELOLAAN FOTO GALERI (EDIT & HAPUS) */}
+          {/* SECTION 2: PENGELOLAAN FOTO GALERI */}
           <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
               <div>
@@ -696,6 +815,192 @@ export default function AdminDashboardPage() {
               </div>
             )}
           </div>
+
+          {/* SECTION 3: PENGELOLAAN PRODUK UMKM WARGA (DENGAN TOMBOL EDIT & HAPUS) */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900 font-heading flex items-center gap-2">
+                  <Store size={20} className="text-amber-600" />
+                  <span>Pengelolaan Produk UMKM Warga</span>
+                </h3>
+                <p className="text-xs text-slate-500">Kelola katalog produk, edit rincian harga, foto, pemilik, dan validasi pendaftaran warga</p>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={() => setIsUmkmValidationOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs shadow-md transition-all cursor-pointer"
+                >
+                  <ShieldCheck size={16} />
+                  <span>Validasi Pendaftaran ({stats.pendingUmkm} Pending)</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setUmkmToEdit(null);
+                    setIsAddUmkmOpen(true);
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs shadow-md transition-all cursor-pointer"
+                >
+                  <Plus size={16} />
+                  <span>+ Tambah Produk UMKM</span>
+                </button>
+              </div>
+            </div>
+
+            {umkmList.length === 0 ? (
+              <p className="text-xs text-slate-400 py-6 text-center">Belum ada produk UMKM terdaftar.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {umkmList.map((item) => (
+                  <div
+                    key={item.id}
+                    className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
+                  >
+                    <div className="space-y-2">
+                      <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-900 relative">
+                        <img
+                          src={
+                            item.imageUrl ||
+                            (item.imageUrls && item.imageUrls.length > 0
+                              ? item.imageUrls[0]
+                              : 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=600&q=80')
+                          }
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <span
+                          className={`absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-extrabold text-white shadow ${
+                            item.isApproved ? 'bg-emerald-600' : 'bg-amber-600'
+                          }`}
+                        >
+                          {item.isApproved ? 'Disetujui' : 'Menunggu Validasi'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#0086C9]">{item.price || 'Sesuai Pesanan'}</span>
+                        <span className="text-[10px] text-slate-500 font-medium">Pemilik: {item.ownerName || 'Warga'}</span>
+                      </div>
+                      <h4 className="font-extrabold text-sm text-slate-900 line-clamp-1">
+                        {item.title}
+                      </h4>
+                      <p className="text-xs text-slate-500 line-clamp-2">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    {/* FITUR EDIT & HAPUS UMKM */}
+                    <div className="pt-3 border-t border-slate-200/80 flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => {
+                          setUmkmToEdit(item);
+                          setIsEditUmkmOpen(true);
+                        }}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors cursor-pointer"
+                      >
+                        <Edit3 size={13} />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteUmkm(item.id, item.title)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-xs border border-rose-200 transition-colors cursor-pointer"
+                      >
+                        <Trash2 size={13} />
+                        <span>Hapus</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* SECTION 4: PENGELOLAAN PETA & LOKASI FASILITAS DESA */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900 font-heading flex items-center gap-2">
+                  <MapPin size={20} className="text-[#0086C9]" />
+                  <span>Pengelolaan Peta & Fasilitas Desa</span>
+                </h3>
+                <p className="text-xs text-slate-500">Tambah lokasi fasilitas baru, upload foto sampul (maks 1MB), dan edit koordinat peta Leaflet/OpenStreetMap</p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setFacilityToEdit(null);
+                  setIsAddFacilityOpen(true);
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0086C9] hover:bg-[#006ca3] text-white font-extrabold text-xs shadow-md transition-all hover:scale-105 cursor-pointer shrink-0"
+              >
+                <Plus size={16} />
+                <span>+ Tambah Lokasi Fasilitas Baru</span>
+              </button>
+            </div>
+
+            {facilitiesList.length === 0 ? (
+              <p className="text-xs text-slate-400 py-6 text-center">Belum ada lokasi fasilitas desa yang ditambahkan.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {facilitiesList.map((item) => (
+                  <div
+                    key={item.id}
+                    className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
+                  >
+                    <div className="space-y-3">
+                      {/* PREVIEW GAMBAR SAMPUL FASILITAS */}
+                      <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-900 relative">
+                        <img
+                          src={
+                            item.imageUrl ||
+                            'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=600&q=80'
+                          }
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-[#0086C9] text-white shadow">
+                          {item.category}
+                        </span>
+                      </div>
+
+                      <div>
+                        <h4 className="font-extrabold text-sm text-slate-900 line-clamp-1">
+                          {item.name}
+                        </h4>
+                        <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                          {item.address || 'Desa Suka Banjar, Kec. Sidomulyo'}
+                        </p>
+                        <span className="text-[10px] text-slate-400 font-mono block mt-1">
+                          Koordinat: {item.latitude}, {item.longitude}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-200/80 flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => {
+                          setFacilityToEdit(item);
+                          setIsAddFacilityOpen(true);
+                        }}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors cursor-pointer"
+                      >
+                        <Edit3 size={13} />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteFacility(item.id, item.name)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-xs border border-rose-200 transition-colors cursor-pointer"
+                      >
+                        <Trash2 size={13} />
+                        <span>Hapus</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -705,7 +1010,7 @@ export default function AdminDashboardPage() {
       {/* MENU 4: SINKRONISASI & DEMOGRAFI SIPDESKEL */}
       {activeTab === 'sipdeskel' && <AdminSipdeskelTab />}
 
-      {/* MENU 4: INBOX ASPIRASI & PENGADUAN WARGA */}
+      {/* MENU 5: INBOX ASPIRASI & PENGADUAN WARGA */}
       {activeTab === 'inbox' && (
         <div className="space-y-6 animate-fadeIn">
           {/* Header & Filter Controls */}
@@ -762,7 +1067,7 @@ export default function AdminDashboardPage() {
                       }}
                       className={`p-5 rounded-3xl border transition-all cursor-pointer space-y-2 ${
                         isSelected
-                          ? 'bg-primary-50/80 border-primary-500 shadow-md ring-2 ring-primary-500/20'
+                          ? 'bg-[#0086C9]/10 border-[#0086C9] shadow-md ring-2 ring-[#0086C9]/20'
                           : item.isRead
                             ? 'bg-white border-slate-200/80 hover:border-slate-300'
                             : 'bg-rose-50/50 border-rose-200 hover:border-rose-300'
@@ -800,7 +1105,7 @@ export default function AdminDashboardPage() {
                           {item.category}
                         </span>
                         {item.attachment && (
-                          <span className="flex items-center gap-1 text-primary-600 font-bold">
+                          <span className="flex items-center gap-1 text-[#0086C9] font-bold">
                             <Paperclip size={12} /> Foto Bukti
                           </span>
                         )}
@@ -816,7 +1121,7 @@ export default function AdminDashboardPage() {
                 <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
                   <div className="flex items-start justify-between border-b border-slate-100 pb-5 gap-4">
                     <div className="space-y-1">
-                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-primary-50 text-primary-700">
+                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#0086C9]/10 text-[#0086C9]">
                         {selectedAspiration.category}
                       </span>
                       <h3 className="text-xl font-extrabold text-slate-900 font-heading">
@@ -898,7 +1203,21 @@ export default function AdminDashboardPage() {
       {/* MODALS */}
       <AddUmkmModal
         isOpen={isAddUmkmOpen}
-        onClose={() => setIsAddUmkmOpen(false)}
+        onClose={() => {
+          setIsAddUmkmOpen(false);
+          setUmkmToEdit(null);
+        }}
+        onSuccess={fetchUmkm}
+      />
+
+      <EditUmkmModal
+        isOpen={isEditUmkmOpen}
+        product={umkmToEdit}
+        onClose={() => {
+          setIsEditUmkmOpen(false);
+          setUmkmToEdit(null);
+        }}
+        onSuccess={fetchUmkm}
       />
 
       <AddGalleryModal
@@ -919,6 +1238,16 @@ export default function AdminDashboardPage() {
           setArticleToEdit(null);
         }}
         onSuccess={fetchArticles}
+      />
+
+      <AddFacilityModal
+        isOpen={isAddFacilityOpen}
+        facilityToEdit={facilityToEdit}
+        onClose={() => {
+          setIsAddFacilityOpen(false);
+          setFacilityToEdit(null);
+        }}
+        onSuccess={fetchFacilities}
       />
 
       <EditVillageProfileModal
