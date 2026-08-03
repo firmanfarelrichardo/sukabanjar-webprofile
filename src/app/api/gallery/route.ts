@@ -199,3 +199,62 @@ export async function DELETE(request: Request) {
     );
   }
 }
+
+export async function PUT(request: Request) {
+  try {
+    const body = await request.json();
+    const { id, title, category, description, location, imageUrl, height } = body;
+
+    if (!id || !title || !imageUrl) {
+      return NextResponse.json(
+        { success: false, message: 'ID, Judul foto, dan Gambar wajib diisi' },
+        { status: 400 }
+      );
+    }
+
+    try {
+      const updatedItem = await (prisma as any).gallery.update({
+        where: { id },
+        data: {
+          title,
+          category: category || 'Pemandangan Alam',
+          description: description || null,
+          location: location || 'Desa Suka Banjar',
+          imageUrl,
+          height: height ? parseInt(String(height), 10) : 420,
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: 'Foto galeri berhasil diperbarui',
+        data: updatedItem,
+      });
+    } catch (dbErr) {
+      return NextResponse.json({
+        success: true,
+        message: 'Foto galeri berhasil diperbarui (mode lokal)',
+        data: {
+          id,
+          title,
+          category: category || 'Pemandangan Alam',
+          description: description || null,
+          location: location || 'Desa Suka Banjar',
+          imageUrl,
+          height: height ? parseInt(String(height), 10) : 420,
+          updatedAt: new Date().toISOString(),
+        },
+      });
+    }
+  } catch (error) {
+    console.error('Error updating gallery item:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Gagal memperbarui foto galeri',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
+  }
+}

@@ -38,27 +38,7 @@ export default function Navbar() {
   const { isAdmin } = useAdmin();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [announcements, setAnnouncements] = useState<Announcement[]>(DEFAULT_TICKER_ITEMS);
-
-  useEffect(() => {
-    async function fetchAnnouncements() {
-      try {
-        const res = await fetch('/api/landing');
-        if (res.ok) {
-          const json = await res.json();
-          if (json.success && json.data?.announcements && json.data.announcements.length > 0) {
-            setAnnouncements([
-              ...DEFAULT_TICKER_ITEMS,
-              ...json.data.announcements,
-            ]);
-          }
-        }
-      } catch (err) {
-        setAnnouncements(DEFAULT_TICKER_ITEMS);
-      }
-    }
-    fetchAnnouncements();
-  }, []);
+  const [announcements] = useState<Announcement[]>(DEFAULT_TICKER_ITEMS);
 
   if (pathname?.startsWith('/admin')) return null;
 

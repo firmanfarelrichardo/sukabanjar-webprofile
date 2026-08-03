@@ -31,3 +31,8 @@ next-env.d.ts
 
 # AI Context / Knowledge Base Ignore
 Project-Knowledge Base with AI Context.md
+
+# Uploaded media files (Berita, UMKM, Galeri, dll)
+/public/uploads/*
+!/public/uploads/.gitkeep
+!/public/uploads/**/.gitkeep

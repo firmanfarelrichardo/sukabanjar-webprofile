@@ -247,7 +247,7 @@ export default function UmkmCardGrid({ products }: UmkmCardGridProps) {
                   href={waUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm transition-all duration-200 shadow-md shadow-emerald-600/20"
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary-500 hover:bg-primary-700 text-white font-semibold text-xs sm:text-sm transition-all duration-200 shadow-md shadow-emerald-600/20"
                 >
                   <MessageCircle size={17} />
                   Hubungi Penjual (WhatsApp)

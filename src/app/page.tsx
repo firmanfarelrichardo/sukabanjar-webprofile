@@ -62,9 +62,10 @@ async function getLandingData() {
       },
       stats: {
         areaSize: 4.52,
-        totalPopulation: 3420,
-        totalHamlet: 6,
-        totalUmkm: totalUmkm || 18,
+        totalPopulation: 5153,
+        totalHamlet: 5,
+        totalKK: 1388,
+        totalUmkm: totalUmkm || 1,
         totalFacilities: totalFacilities || 12,
       },
       latestArticles: latestArticles.map((art) => ({
@@ -92,9 +93,10 @@ async function getLandingData() {
       },
       stats: {
         areaSize: 4.52,
-        totalPopulation: 3420,
-        totalHamlet: 6,
-        totalUmkm: 18,
+        totalPopulation: 5153,
+        totalHamlet: 5,
+        totalKK: 1388,
+        totalUmkm: 1,
         totalFacilities: 12,
       },
       latestArticles: [],

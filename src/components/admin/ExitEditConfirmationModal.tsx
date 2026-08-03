@@ -105,7 +105,7 @@ export default function ExitEditConfirmationModal() {
             ) : (
               <>
                 <Save size={18} />
-                <span>💾 Simpan & Ke Dashboard</span>
+                <span>Simpan & Ke Dashboard</span>
               </>
             )}
           </button>
@@ -116,7 +116,7 @@ export default function ExitEditConfirmationModal() {
             className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs sm:text-sm border border-rose-200 transition-colors cursor-pointer"
           >
             <Trash2 size={16} />
-            <span>⚠️ Buang Perubahan & Ke Dashboard</span>
+            <span>Buang Perubahan & Ke Dashboard</span>
           </button>
 
           <button
