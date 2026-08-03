@@ -38,7 +38,7 @@ export default function AdminGlobalEditButton() {
         title="Klik untuk keluar dari mode edit dan kembali ke Dashboard Admin"
       >
         <CheckCircle2 size={18} className="text-slate-950 stroke-[2.5]" />
-        <span>⚡ Keluar Edit &amp; Ke Dashboard</span>
+        <span>Keluar Edit &amp; Ke Dashboard</span>
       </button>
     </div>
   );

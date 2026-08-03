@@ -1,19 +1,21 @@
 'use client';
 
 import { useAdmin } from '@/context/AdminContext';
-import { X, MapPin, Tag, Calendar, Trash2, ExternalLink } from 'lucide-react';
+import { X, MapPin, Tag, Calendar, Trash2, ExternalLink, Edit3 } from 'lucide-react';
 import { MasonryItem } from '@/components/ui/Masonry';
 
 interface GalleryLightboxModalProps {
   item: MasonryItem | null;
   onClose: () => void;
   onDelete?: (id: string) => void;
+  onEdit?: (item: MasonryItem) => void;
 }
 
 export default function GalleryLightboxModal({
   item,
   onClose,
   onDelete,
+  onEdit,
 }: GalleryLightboxModalProps) {
   const { isAdmin } = useAdmin();
 
@@ -22,6 +24,11 @@ export default function GalleryLightboxModal({
   const handleDelete = () => {
     if (!confirm(`Apakah Anda yakin ingin menghapus foto "${item.title}" dari galeri?`)) return;
     if (onDelete) onDelete(item.id);
+    onClose();
+  };
+
+  const handleEdit = () => {
+    if (onEdit) onEdit(item);
     onClose();
   };
 
@@ -107,13 +114,22 @@ export default function GalleryLightboxModal({
             </a>
 
             {isAdmin && (
-              <button
-                onClick={handleDelete}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-bold text-xs border border-rose-500/30 transition-colors cursor-pointer"
-              >
-                <Trash2 size={14} />
-                <span>Hapus Foto dari Galeri</span>
-              </button>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={handleEdit}
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition-colors cursor-pointer"
+                >
+                  <Edit3 size={14} />
+                  <span>Edit Foto</span>
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-bold text-xs border border-rose-500/30 transition-colors cursor-pointer"
+                >
+                  <Trash2 size={14} />
+                  <span>Hapus Foto</span>
+                </button>
+              </div>
             )}
           </div>
         </div>

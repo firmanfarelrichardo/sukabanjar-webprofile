@@ -21,6 +21,7 @@ import {
   Trash2,
   Paperclip,
   Clock,
+  Database,
 } from 'lucide-react';
 import { useAdmin } from '@/context/AdminContext';
 import AddUmkmModal from '@/components/admin/AddUmkmModal';
@@ -29,10 +30,11 @@ import AddArticleModal from '@/components/admin/AddArticleModal';
 import EditVillageProfileModal from '@/components/admin/EditVillageProfileModal';
 import AdminUmkmValidationModal from '@/components/sections/umkm/AdminUmkmValidationModal';
 import AdminProfileEditTab from '@/components/admin/AdminProfileEditTab';
+import AdminSipdeskelTab from '@/components/admin/AdminSipdeskelTab';
 
 export default function AdminDashboardPage() {
   const { openInboxModal, setIsEditMode, setUnreadCount } = useAdmin();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'edit-website' | 'inbox' | 'profile'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'edit-website' | 'sipdeskel' | 'inbox' | 'profile'>('dashboard');
 
   const [stats, setStats] = useState({
     totalAspirations: 0,
@@ -46,13 +48,20 @@ export default function AdminDashboardPage() {
   });
 
   const [aspirationsList, setAspirationsList] = useState<any[]>([]);
+  const [articlesList, setArticlesList] = useState<any[]>([]);
+  const [galleryList, setGalleryList] = useState<any[]>([]);
+
   const [inboxFilter, setInboxFilter] = useState<'all' | 'unread'>('all');
   const [selectedAspiration, setSelectedAspiration] = useState<any | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAddUmkmOpen, setIsAddUmkmOpen] = useState(false);
   const [isAddGalleryOpen, setIsAddGalleryOpen] = useState(false);
+  const [galleryItemToEdit, setGalleryItemToEdit] = useState<any | null>(null);
+
   const [isAddArticleOpen, setIsAddArticleOpen] = useState(false);
+  const [articleToEdit, setArticleToEdit] = useState<any | null>(null);
+
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isUmkmValidationOpen, setIsUmkmValidationOpen] = useState(false);
 
@@ -75,6 +84,36 @@ export default function AdminDashboardPage() {
       }
     } catch (err) {
       console.error('Error fetching aspirations:', err);
+    }
+  };
+
+  const fetchArticles = async () => {
+    try {
+      const res = await fetch('/api/articles');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          setArticlesList(json.data);
+          setStats((prev) => ({ ...prev, totalArticles: json.data.length }));
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching articles:', err);
+    }
+  };
+
+  const fetchGallery = async () => {
+    try {
+      const res = await fetch('/api/gallery');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          setGalleryList(json.data);
+          setStats((prev) => ({ ...prev, totalGallery: json.data.length }));
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching gallery:', err);
     }
   };
 
@@ -115,6 +154,9 @@ export default function AdminDashboardPage() {
         }
 
         setAspirationsList(aspirations);
+        setArticlesList(articles);
+        setGalleryList(gallery);
+
         const unreadAsp = aspirations.filter((a: any) => !a.isRead).length;
         setUnreadCount(unreadAsp);
         const pendingUmkmCount = umkm.filter((u: any) => u.isApproved === false).length;
@@ -130,13 +172,14 @@ export default function AdminDashboardPage() {
           recentAspirations: aspirations.slice(0, 5),
         });
       } catch (err) {
-        console.error('Error fetching dashboard stats:', err);
+        console.error('Error loading dashboard stats:', err);
       } finally {
         setIsLoading(false);
       }
     }
+
     loadStats();
-  }, []);
+  }, [setUnreadCount]);
 
   const handleMarkAsRead = async (id: string) => {
     try {
@@ -171,6 +214,30 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleDeleteArticle = async (id: string, title: string) => {
+    if (!confirm(`Apakah Anda yakin ingin menghapus artikel berita "${title}"?`)) return;
+    try {
+      const res = await fetch(`/api/articles?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchArticles();
+      }
+    } catch (err) {
+      console.error('Error deleting article:', err);
+    }
+  };
+
+  const handleDeleteGallery = async (id: string, title: string) => {
+    if (!confirm(`Apakah Anda yakin ingin menghapus foto "${title}" dari galeri?`)) return;
+    try {
+      const res = await fetch(`/api/gallery?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchGallery();
+      }
+    } catch (err) {
+      console.error('Error deleting gallery photo:', err);
+    }
+  };
+
   const filteredAspirations = aspirationsList.filter((item) => {
     if (inboxFilter === 'unread') return !item.isRead;
     return true;
@@ -189,210 +256,219 @@ export default function AdminDashboardPage() {
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">
               Panel Pengelola Desa
             </h1>
-            <p className="text-slate-500 text-xs sm:text-sm">
-              Kelola laporan pengaduan warga, publikasi informasi, dan pengeditan teks website desa.
+            <p className="text-xs text-slate-500">
+              Kelola berita, foto galeri, profil desa, produk UMKM warga, dan tanggapi aspirasi publik.
             </p>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            <Link
+              href="/"
+              target="_blank"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors"
+            >
+              <ExternalLink size={14} />
+              <span>Lihat Website Publik</span>
+            </Link>
           </div>
         </div>
 
-        {/* 3 MAIN NAVIGATION MENUS (Dashboard, Edit Website, Inbox Aspirasi) */}
-        <div className="flex items-center gap-2 border-b border-slate-200 overflow-x-auto">
+        {/* Navigation Tabs */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none">
           <button
             onClick={() => setActiveTab('dashboard')}
-            className={`flex items-center gap-2 px-5 py-3.5 font-extrabold text-xs sm:text-sm border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            className={`inline-flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'dashboard'
-                ? 'border-primary-600 text-primary-700 bg-primary-50/50 rounded-t-2xl'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/10'
+                : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
             }`}
           >
-            <LayoutDashboard size={18} />
-            <span>Dashboard</span>
+            <LayoutDashboard size={16} />
+            <span>Dashboard Ringkasan</span>
           </button>
 
           <button
             onClick={() => setActiveTab('edit-website')}
-            className={`flex items-center gap-2 px-5 py-3.5 font-extrabold text-xs sm:text-sm border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            className={`inline-flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'edit-website'
-                ? 'border-amber-500 text-amber-900 bg-amber-50/50 rounded-t-2xl'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20'
+                : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
             }`}
           >
-            <Edit3 size={18} className="text-amber-600" />
-            <span>Edit Website</span>
-            {stats.pendingUmkm > 0 && (
-              <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-500 text-slate-950 font-bold">
-                {stats.pendingUmkm} UMKM
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('inbox')}
-            className={`flex items-center gap-2 px-5 py-3.5 font-extrabold text-xs sm:text-sm border-b-2 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'inbox'
-                ? 'border-rose-500 text-rose-800 bg-rose-50/50 rounded-t-2xl'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <Inbox size={18} className="text-rose-600" />
-            <span>Inbox</span>
-            {stats.unreadAspirations > 0 ? (
-              <span className="px-2 py-0.5 rounded-full text-[10px] bg-rose-500 text-white font-bold animate-pulse">
-                {stats.unreadAspirations} Baru
-              </span>
-            ) : (
-              <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-600 font-semibold">
-                {stats.totalAspirations}
-              </span>
-            )}
+            <Edit3 size={16} />
+            <span>Pengelolaan Isi & Berita / Galeri</span>
           </button>
 
           <button
             onClick={() => setActiveTab('profile')}
-            className={`flex items-center gap-2 px-5 py-3.5 font-extrabold text-xs sm:text-sm border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            className={`inline-flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'profile'
-                ? 'border-teal-500 text-teal-800 bg-teal-50/50 rounded-t-2xl'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'bg-[#0086C9] text-white shadow-lg shadow-[#0086C9]/20'
+                : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
             }`}
           >
-            <ShieldCheck size={18} className="text-teal-600" />
-            <span>Edit Profil</span>
+            <BookOpen size={16} />
+            <span>Profil, Kontak & Sosmed</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('sipdeskel')}
+            className={`inline-flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'sipdeskel'
+                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <Database size={16} />
+            <span>Sinkronisasi SIPDeskel</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('inbox')}
+            className={`inline-flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap relative ${
+              activeTab === 'inbox'
+                ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20'
+                : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <Inbox size={16} />
+            <span>Inbox Aspirasi Warga</span>
+            {stats.unreadAspirations > 0 && (
+              <span className="w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center animate-pulse">
+                {stats.unreadAspirations}
+              </span>
+            )}
           </button>
         </div>
       </div>
 
-      {/* MENU 1: DASHBOARD RINGKASAN */}
+      {/* MENU 1: DASHBOARD STATISTIK RINGKASAN */}
       {activeTab === 'dashboard' && (
         <div className="space-y-8 animate-fadeIn">
-          {/* Summary Metric Cards */}
+          {/* Stat Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {/* Card 1: Aspirasi Warga */}
             <div
               onClick={() => setActiveTab('inbox')}
-              className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:border-primary-300 transition-all space-y-4 cursor-pointer group"
+              className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 cursor-pointer hover:border-rose-300 transition-all hover:-translate-y-1"
             >
               <div className="flex items-center justify-between">
-                <div className="w-11 h-11 rounded-2xl bg-primary-500 text-white flex items-center justify-center shadow-md">
+                <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center">
                   <Inbox size={22} />
                 </div>
-                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-rose-100 text-rose-700">
-                  {stats.unreadAspirations} Belum Dibaca
-                </span>
+                {stats.unreadAspirations > 0 && (
+                  <span className="px-2.5 py-1 rounded-full bg-rose-100 text-rose-700 text-[11px] font-extrabold">
+                    {stats.unreadAspirations} Baru
+                  </span>
+                )}
               </div>
               <div>
-                <span className="text-3xl font-extrabold text-slate-900 font-heading block">
+                <span className="text-3xl font-black text-slate-900 font-heading block">
                   {stats.totalAspirations}
                 </span>
-                <span className="text-xs font-semibold text-slate-500 group-hover:text-primary-600 transition-colors">
-                  Inbox Aspirasi Warga
-                </span>
+                <span className="text-xs font-semibold text-slate-500">Pesan Aspirasi Warga</span>
               </div>
             </div>
 
-            <Link
-              href="/umkm"
-              className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:border-amber-300 transition-all space-y-4 group"
+            {/* Card 2: Artikel Berita */}
+            <div
+              onClick={() => setActiveTab('edit-website')}
+              className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 cursor-pointer hover:border-indigo-300 transition-all hover:-translate-y-1"
             >
               <div className="flex items-center justify-between">
-                <div className="w-11 h-11 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center shadow-md">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                  <Newspaper size={22} />
+                </div>
+                <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
+                  Terpublikasi
+                </span>
+              </div>
+              <div>
+                <span className="text-3xl font-black text-slate-900 font-heading block">
+                  {stats.totalArticles}
+                </span>
+                <span className="text-xs font-semibold text-slate-500">Berita & Pengumuman</span>
+              </div>
+            </div>
+
+            {/* Card 3: Katalog UMKM */}
+            <div
+              onClick={() => setIsUmkmValidationOpen(true)}
+              className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 cursor-pointer hover:border-amber-300 transition-all hover:-translate-y-1"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
                   <ShoppingBag size={22} />
                 </div>
                 {stats.pendingUmkm > 0 ? (
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800">
-                    {stats.pendingUmkm} Pengajuan Warga
+                  <span className="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-[11px] font-extrabold animate-pulse">
+                    {stats.pendingUmkm} Pending
                   </span>
                 ) : (
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+                  <span className="text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full">
                     Aktif
                   </span>
                 )}
               </div>
               <div>
-                <span className="text-3xl font-extrabold text-slate-900 font-heading block">
+                <span className="text-3xl font-black text-slate-900 font-heading block">
                   {stats.totalUmkm}
                 </span>
-                <span className="text-xs font-semibold text-slate-500 group-hover:text-amber-600 transition-colors">
-                  Katalog UMKM Desa
-                </span>
+                <span className="text-xs font-semibold text-slate-500">Produk UMKM Terdaftar</span>
               </div>
-            </Link>
+            </div>
 
-            <Link
-              href="/galeri"
-              className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:border-teal-300 transition-all space-y-4 group"
+            {/* Card 4: Galeri Foto */}
+            <div
+              onClick={() => setActiveTab('edit-website')}
+              className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 cursor-pointer hover:border-teal-300 transition-all hover:-translate-y-1"
             >
               <div className="flex items-center justify-between">
-                <div className="w-11 h-11 rounded-2xl bg-teal-500 text-white flex items-center justify-center shadow-md">
+                <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center">
                   <Camera size={22} />
                 </div>
-                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
-                  Dokumentasi
+                <span className="text-xs font-bold text-teal-600 bg-teal-50 px-2.5 py-1 rounded-full">
+                  Foto Desa
                 </span>
               </div>
               <div>
-                <span className="text-3xl font-extrabold text-slate-900 font-heading block">
+                <span className="text-3xl font-black text-slate-900 font-heading block">
                   {stats.totalGallery}
                 </span>
-                <span className="text-xs font-semibold text-slate-500 group-hover:text-teal-600 transition-colors">
-                  Galeri Foto Desa
-                </span>
+                <span className="text-xs font-semibold text-slate-500">Koleksi Foto Galeri</span>
               </div>
-            </Link>
-
-            <Link
-              href="/berita"
-              className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all space-y-4 group"
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-11 h-11 rounded-2xl bg-indigo-500 text-white flex items-center justify-center shadow-md">
-                  <Newspaper size={22} />
-                </div>
-                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
-                  Pengumuman
-                </span>
-              </div>
-              <div>
-                <span className="text-3xl font-extrabold text-slate-900 font-heading block">
-                  {stats.totalArticles}
-                </span>
-                <span className="text-xs font-semibold text-slate-500 group-hover:text-indigo-600 transition-colors">
-                  Artikel Berita
-                </span>
-              </div>
-            </Link>
+            </div>
           </div>
 
-          {/* Recent Aspirations Table */}
-          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 sm:p-8 space-y-5">
-            <div className="flex items-center justify-between">
+          {/* Table: Aspirasi Masuk Terbaru */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
-                <h2 className="text-lg font-bold font-heading text-slate-900">
-                  Laporan Pengaduan & Aspirasi Warga Terbaru
-                </h2>
-                <p className="text-xs text-slate-500">
-                  Pesan masuk dari masyarakat yang dikirim melalui portal digital
-                </p>
+                <h3 className="text-lg font-extrabold text-slate-900 font-heading">
+                  Aspirasi Publik Terbaru
+                </h3>
+                <p className="text-xs text-slate-500">5 pesan pengaduan warga terakhir yang masuk</p>
               </div>
+
               <button
                 onClick={() => setActiveTab('inbox')}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-600 hover:text-rose-700 cursor-pointer"
+                className="inline-flex items-center gap-1 text-xs font-bold text-primary-600 hover:text-primary-700 transition-colors"
               >
-                <span>Buka Menu Inbox Moderasi</span>
+                <span>Buka Inbox Moderasi ({stats.unreadAspirations} Baru)</span>
                 <ArrowRight size={14} />
               </button>
             </div>
 
             {stats.recentAspirations.length === 0 ? (
-              <div className="text-center py-10 text-slate-400 text-xs">
-                Belum ada pesan aspirasi yang masuk.
-              </div>
+              <p className="text-xs text-slate-400 py-6 text-center">Belum ada pesan aspirasi masuk.</p>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs sm:text-sm">
+                <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-slate-100 text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+                    <tr className="border-b border-slate-200/80 text-slate-400 font-bold uppercase text-[10px]">
                       <th className="py-3 px-4">Pengirim</th>
                       <th className="py-3 px-4">Kategori</th>
-                      <th className="py-3 px-4">Judul Laporan</th>
+                      <th className="py-3 px-4">Judul Pesan</th>
                       <th className="py-3 px-4">Tanggal</th>
                       <th className="py-3 px-4 text-center">Status</th>
                     </tr>
@@ -439,7 +515,7 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* MENU 2: EDIT & PENGELOLAAN ISI WEBSITE */}
+      {/* MENU 2: EDIT & PENGELOLAAN ISI WEBSITE (BERITA & GALERI EDIT/HAPUS) */}
       {activeTab === 'edit-website' && (
         <div className="space-y-8 animate-fadeIn">
           {/* Guide Banner for Live Visual Editing */}
@@ -465,162 +541,171 @@ export default function AdminDashboardPage() {
             </Link>
           </div>
 
-          {/* Quick Management Cards per Page */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Card 1: Halaman Beranda / Landing */}
-            <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="w-10 h-10 rounded-2xl bg-primary-100 text-primary-600 flex items-center justify-center">
-                  <Home size={20} />
-                </div>
-                <h3 className="text-lg font-bold font-heading text-slate-900">
-                  Halaman Beranda (Landing Page)
+          {/* SECTION: PENGELOLAAN ARTIKEL BERITA (EDIT & HAPUS) */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900 font-heading flex items-center gap-2">
+                  <Newspaper size={20} className="text-indigo-600" />
+                  <span>Pengelolaan Berita & Pengumuman Desa</span>
                 </h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Kelola nama desa, tagline header, teks Visi Utama di banner, dan tombol Akses Cepat.
-                </p>
+                <p className="text-xs text-slate-500">Edit isi berita yang sudah ada atau hapus artikel yang tidak lagi diperlukan</p>
               </div>
-              <Link
-                href="/"
-                onClick={() => setIsEditMode(true)}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors"
-              >
-                <Edit3 size={14} />
-                Edit Beranda (Visual Live)
-              </Link>
-            </div>
 
-            {/* Card 2: Halaman Profil & Sejarah */}
-            <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                  <BookOpen size={20} />
-                </div>
-                <h3 className="text-lg font-bold font-heading text-slate-900">
-                  Profil, Ikon Logo & Sosmed Desa
-                </h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Ubah gambar Ikon Desa (Favicon & Header), nomor telepon, email, dan akun sosial media dinamis (Instagram, YouTube, TikTok, FB, dll).
-                </p>
-              </div>
-              <div className="space-y-2">
-                <button
-                  onClick={() => setIsEditProfileOpen(true)}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition-colors cursor-pointer"
-                >
-                  <Edit3 size={14} />
-                  <span>Edit Ikon Logo, Kontak & Sosmed</span>
-                </button>
-                <Link
-                  href="/profil"
-                  onClick={() => setIsEditMode(true)}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors"
-                >
-                  Edit Sejarah & Visi Misi (Visual Live)
-                </Link>
-              </div>
-            </div>
-
-            {/* Card 3: Katalog UMKM Desa */}
-            <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center">
-                  <ShoppingBag size={20} />
-                </div>
-                <h3 className="text-lg font-bold font-heading text-slate-900">
-                  Katalog UMKM Desa
-                </h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Validasi pengajuan UMKM warga, tambah produk usaha baru, atau edit detail UMKM yang terdaftar.
-                </p>
-              </div>
-              <div className="space-y-2">
-                <button
-                  onClick={() => setIsUmkmValidationOpen(true)}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-extrabold text-xs hover:bg-amber-400 transition-colors cursor-pointer"
-                >
-                  <span>Validasi Pengajuan Warga ({stats.pendingUmkm})</span>
-                </button>
-                <button
-                  onClick={() => setIsAddUmkmOpen(true)}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-500 transition-colors cursor-pointer"
-                >
-                  <Plus size={14} />
-                  <span>+ Tambah Produk UMKM</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Card 4: Galeri Foto Desa */}
-            <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="w-10 h-10 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center">
-                  <Camera size={20} />
-                </div>
-                <h3 className="text-lg font-bold font-heading text-slate-900">
-                  Galeri Foto Desa
-                </h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Unggah foto pemandangan alam, kegiatan kemasyarakatan, fasilitas, atau momen penting desa.
-                </p>
-              </div>
               <button
-                onClick={() => setIsAddGalleryOpen(true)}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs transition-colors cursor-pointer"
+                onClick={() => {
+                  setArticleToEdit(null);
+                  setIsAddArticleOpen(true);
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs shadow-md transition-all hover:scale-105 cursor-pointer shrink-0"
               >
-                <Plus size={14} />
-                <span>+ Tambah Foto Galeri</span>
-              </button>
-            </div>
-
-            {/* Card 5: Artikel Berita & Pengumuman */}
-            <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
-                  <Newspaper size={20} />
-                </div>
-                <h3 className="text-lg font-bold font-heading text-slate-900">
-                  Berita & Pengumuman Desa
-                </h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Terbitkan berita kegiatan desa, pengumuman gotong royong, atau laporan KKN mahasiswa.
-                </p>
-              </div>
-              <button
-                onClick={() => setIsAddArticleOpen(true)}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-colors cursor-pointer"
-              >
-                <Plus size={14} />
+                <Plus size={16} />
                 <span>+ Terbit Artikel Berita Baru</span>
               </button>
             </div>
 
-            {/* Card 6: Peta Fasilitas Desa */}
-            <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="w-10 h-10 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center">
-                  <MapPin size={20} />
-                </div>
-                <h3 className="text-lg font-bold font-heading text-slate-900">
-                  Peta Fasilitas Publik
-                </h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Kelola koordinat lokasi balai desa, sekolah, puskesmas, dan tempat ibadah di peta interaktif.
-                </p>
+            {articlesList.length === 0 ? (
+              <p className="text-xs text-slate-400 py-6 text-center">Belum ada artikel berita yang dibuat.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {articlesList.map((art) => (
+                  <div
+                    key={art.id}
+                    className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800">
+                          {art.category}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-medium">
+                          {new Date(art.createdAt).toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </span>
+                      </div>
+                      <h4 className="font-extrabold text-sm text-slate-900 line-clamp-2 leading-snug">
+                        {art.title}
+                      </h4>
+                      <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                        {art.content.replace(/[\#\*\_\`]/g, '')}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-200/80 flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => {
+                          setArticleToEdit(art);
+                          setIsAddArticleOpen(true);
+                        }}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors cursor-pointer"
+                      >
+                        <Edit3 size={13} />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteArticle(art.id, art.title)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-xs border border-rose-200 transition-colors cursor-pointer"
+                      >
+                        <Trash2 size={13} />
+                        <span>Hapus</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <Link
-                href="/peta"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors"
+            )}
+          </div>
+
+          {/* SECTION: PENGELOLAAN FOTO GALERI (EDIT & HAPUS) */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900 font-heading flex items-center gap-2">
+                  <Camera size={20} className="text-teal-600" />
+                  <span>Pengelolaan Galeri Foto Desa</span>
+                </h3>
+                <p className="text-xs text-slate-500">Edit keterangan, judul, atau hapus foto galeri desa</p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setGalleryItemToEdit(null);
+                  setIsAddGalleryOpen(true);
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-xs shadow-md transition-all hover:scale-105 cursor-pointer shrink-0"
               >
-                <ExternalLink size={14} />
-                Buka Peta Interaktif
-              </Link>
+                <Plus size={16} />
+                <span>+ Tambah Foto Galeri Baru</span>
+              </button>
             </div>
+
+            {galleryList.length === 0 ? (
+              <p className="text-xs text-slate-400 py-6 text-center">Belum ada foto galeri yang diunggah.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {galleryList.map((item) => (
+                  <div
+                    key={item.id}
+                    className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
+                  >
+                    <div className="space-y-2">
+                      <div className="w-full h-32 rounded-xl overflow-hidden bg-slate-900">
+                        <img
+                          src={item.imageUrl || item.img}
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-100 text-teal-800">
+                          {item.category}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-medium">
+                          {item.location || 'Desa'}
+                        </span>
+                      </div>
+                      <h4 className="font-extrabold text-xs text-slate-900 line-clamp-1">
+                        {item.title}
+                      </h4>
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-200/80 flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => {
+                          setGalleryItemToEdit(item);
+                          setIsAddGalleryOpen(true);
+                        }}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] transition-colors cursor-pointer"
+                      >
+                        <Edit3 size={12} />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteGallery(item.id, item.title)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-[11px] border border-rose-200 transition-colors cursor-pointer"
+                      >
+                        <Trash2 size={12} />
+                        <span>Hapus</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* MENU 3: INBOX ASPIRASI & PENGADUAN WARGA */}
+      {/* MENU 3: PROFIL DESA, KONTAK & SOSMED */}
+      {activeTab === 'profile' && <AdminProfileEditTab />}
+
+      {/* MENU 4: SINKRONISASI & DEMOGRAFI SIPDESKEL */}
+      {activeTab === 'sipdeskel' && <AdminSipdeskelTab />}
+
+      {/* MENU 4: INBOX ASPIRASI & PENGADUAN WARGA */}
       {activeTab === 'inbox' && (
         <div className="space-y-6 animate-fadeIn">
           {/* Header & Filter Controls */}
@@ -658,9 +743,8 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          {/* Inbox Split View (Left List, Right Selected Message Detail) */}
+          {/* Inbox Split View */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left Column: Messages List */}
             <div className="lg:col-span-5 space-y-3">
               {filteredAspirations.length === 0 ? (
                 <div className="bg-white rounded-3xl p-8 border border-slate-200 text-center text-slate-400 text-xs">
@@ -687,7 +771,7 @@ export default function AdminDashboardPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-xs text-slate-900">
-                            {item.isAnonymous ? '👤 Anonim' : item.senderName}
+                            {item.isAnonymous ? 'Anonim' : item.senderName}
                           </span>
                           {!item.isRead && (
                             <span className="px-2 py-0.5 rounded-full text-[10px] bg-rose-500 text-white font-bold">
@@ -727,7 +811,6 @@ export default function AdminDashboardPage() {
               )}
             </div>
 
-            {/* Right Column: Selected Message Detail */}
             <div className="lg:col-span-7">
               {selectedAspiration ? (
                 <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
@@ -753,66 +836,57 @@ export default function AdminDashboardPage() {
 
                     <button
                       onClick={() => handleDeleteAspiration(selectedAspiration.id)}
-                      className="p-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 transition-colors shrink-0 cursor-pointer"
-                      title="Hapus pesan aspirasi"
+                      className="p-2.5 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors shrink-0"
+                      title="Hapus Pesan Ini"
                     >
                       <Trash2 size={18} />
                     </button>
                   </div>
 
-                  {/* Body Content */}
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
-                      Isi Laporan / Pesan Aspirasi Warga:
+                      Isi Pesan / Aspirasi Warga:
                     </h4>
-                    <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 text-sm text-slate-800 leading-relaxed whitespace-pre-wrap font-sans">
+                    <p className="text-sm text-slate-800 leading-relaxed font-sans whitespace-pre-wrap bg-slate-50 p-5 rounded-2xl border border-slate-200/80">
                       {selectedAspiration.content}
-                    </div>
+                    </p>
                   </div>
 
-                  {/* Attachment if present */}
                   {selectedAspiration.attachment && (
-                    <div className="space-y-2 pt-2 border-t border-slate-100">
+                    <div className="space-y-2 pt-3 border-t border-slate-100">
                       <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
-                        Foto Bukti Laporan:
+                        Lampiran Foto Bukti:
                       </h4>
-                      <a
-                        href={selectedAspiration.attachment}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary-50 text-primary-700 font-bold text-xs border border-primary-200 hover:bg-primary-100 transition-colors"
-                      >
-                        <Paperclip size={14} />
-                        <span>Lihat Lampiran Foto Bukti Laporan Full-Size</span>
-                        <ExternalLink size={14} />
-                      </a>
+                      <div className="w-full max-h-80 rounded-2xl overflow-hidden border border-slate-200 bg-slate-900">
+                        <img
+                          src={selectedAspiration.attachment}
+                          alt="Lampiran Bukti"
+                          className="w-full h-full object-contain max-h-80"
+                        />
+                      </div>
                     </div>
                   )}
 
-                  {/* Bottom Controls */}
-                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-xs text-slate-400">
-                      Status: {selectedAspiration.isRead ? '✅ Telah Dibaca' : '🔴 Belum Dibaca'}
-                    </span>
-                    {!selectedAspiration.isRead && (
+                  {!selectedAspiration.isRead && (
+                    <div className="pt-4 border-t border-slate-100 flex justify-end">
                       <button
                         onClick={() => handleMarkAsRead(selectedAspiration.id)}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-500 transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 text-white font-extrabold text-xs shadow-md"
                       >
                         <CheckCircle2 size={16} />
                         <span>Tandai Sudah Dibaca</span>
                       </button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               ) : (
-                <div className="bg-white rounded-3xl p-12 border border-slate-200 text-center space-y-3">
-                  <Mail size={40} className="text-slate-300 mx-auto" />
-                  <h3 className="font-bold text-slate-700 text-base">
+                <div className="bg-white rounded-3xl p-12 border border-slate-200/80 text-center space-y-3">
+                  <Mail size={40} className="mx-auto text-slate-300" />
+                  <h4 className="text-base font-bold text-slate-800 font-heading">
                     Pilih Pesan Aspirasi di Sebelah Kiri
-                  </h3>
+                  </h4>
                   <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                    Klik salah satu pesan di sebelah kiri untuk membaca detail laporan dan melihat foto bukti lampiran dari warga.
+                    Klik salah satu daftar pesan untuk membaca rincian lengkap aspirasi dan melihat lampiran foto bukti dari warga.
                   </p>
                 </div>
               )}
@@ -821,14 +895,37 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* MENU 4: EDIT PROFIL, IKON & SOSMED DESA */}
-      {activeTab === 'profile' && <AdminProfileEditTab />}
+      {/* MODALS */}
+      <AddUmkmModal
+        isOpen={isAddUmkmOpen}
+        onClose={() => setIsAddUmkmOpen(false)}
+      />
 
-      {/* Modals */}
-      <AddUmkmModal isOpen={isAddUmkmOpen} onClose={() => setIsAddUmkmOpen(false)} />
-      <AddGalleryModal isOpen={isAddGalleryOpen} onClose={() => setIsAddGalleryOpen(false)} />
-      <AddArticleModal isOpen={isAddArticleOpen} onClose={() => setIsAddArticleOpen(false)} />
-      <EditVillageProfileModal isOpen={isEditProfileOpen} onClose={() => setIsEditProfileOpen(false)} />
+      <AddGalleryModal
+        isOpen={isAddGalleryOpen}
+        itemToEdit={galleryItemToEdit}
+        onClose={() => {
+          setIsAddGalleryOpen(false);
+          setGalleryItemToEdit(null);
+        }}
+        onSuccess={fetchGallery}
+      />
+
+      <AddArticleModal
+        isOpen={isAddArticleOpen}
+        articleToEdit={articleToEdit}
+        onClose={() => {
+          setIsAddArticleOpen(false);
+          setArticleToEdit(null);
+        }}
+        onSuccess={fetchArticles}
+      />
+
+      <EditVillageProfileModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+      />
+
       <AdminUmkmValidationModal
         isOpen={isUmkmValidationOpen}
         onClose={() => setIsUmkmValidationOpen(false)}

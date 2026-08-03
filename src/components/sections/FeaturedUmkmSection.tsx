@@ -19,25 +19,25 @@ export default function FeaturedUmkmSection({ products }: FeaturedUmkmProps) {
   if (!products || products.length === 0) return null;
 
   return (
-    <section className="section-padding bg-slate-50 border-t border-slate-200/60">
+    <section className="py-16 md:py-24 bg-[#f8fafc] border-b border-slate-200/80">
       <div className="container-section">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10 md:mb-12">
           <div className="space-y-2">
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-accent-100 text-accent-700 border border-accent-200">
+            <span className="px-3.5 py-1 rounded-full text-xs font-bold bg-[#0086C9]/10 text-[#0086C9] border border-[#0086C9]/20 inline-block">
               Potensi Ekonomi Lokal
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading tracking-tight">
               Produk UMKM Unggulan
             </h2>
-            <p className="text-slate-500 text-sm max-w-xl">
+            <p className="text-slate-600 text-sm max-w-xl">
               Dukung perekonomian warga Desa Suka Banjar dengan membeli produk olahan pertanian dan kerajinan lokal secara langsung.
             </p>
           </div>
 
           <Link
             href="/umkm"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors shrink-0 group"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold text-[#0086C9] hover:text-[#006ca3] transition-colors shrink-0 group cursor-pointer"
           >
             Lihat Semua Produk
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
@@ -59,7 +59,7 @@ export default function FeaturedUmkmSection({ products }: FeaturedUmkmProps) {
             return (
               <div
                 key={item.id}
-                className="group flex flex-col justify-between rounded-2xl bg-white border border-slate-200/80 overflow-hidden hover:shadow-xl hover:border-accent-300 transition-all duration-300 hover:-translate-y-1"
+                className="group flex flex-col justify-between rounded-2xl bg-white border border-slate-200 shadow-md hover:shadow-xl hover:border-[#0086C9]/40 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
               >
                 <div>
                   {/* Product Image / Placeholder */}
@@ -71,14 +71,14 @@ export default function FeaturedUmkmSection({ products }: FeaturedUmkmProps) {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-emerald-800 to-slate-900 flex items-center justify-center text-white/30">
+                      <div className="w-full h-full bg-gradient-to-br from-[#001929] to-[#0086C9] flex items-center justify-center text-white/30">
                         <ShoppingBag size={44} />
                       </div>
                     )}
 
                     {/* Price Tag */}
                     <div className="absolute bottom-3 right-3">
-                      <span className="px-3 py-1.5 rounded-lg text-xs font-bold bg-accent-500 text-slate-950 shadow-md">
+                      <span className="px-3 py-1.5 rounded-lg text-xs font-black bg-amber-400 text-slate-950 shadow-md">
                         {item.price}
                       </span>
                     </div>
@@ -86,16 +86,16 @@ export default function FeaturedUmkmSection({ products }: FeaturedUmkmProps) {
 
                   {/* Body Content */}
                   <div className="p-5 sm:p-6 space-y-2">
-                    <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                      <User size={13} />
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                      <User size={13} className="text-[#0086C9]" />
                       <span>Pemilik: {item.ownerName}</span>
                     </div>
 
-                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-primary-600 transition-colors line-clamp-1 font-heading">
+                    <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-[#0086C9] transition-colors line-clamp-1 font-heading">
                       {item.title}
                     </h3>
 
-                    <p className="text-slate-500 text-xs sm:text-sm line-clamp-2 leading-relaxed">
+                    <p className="text-slate-600 text-xs sm:text-sm line-clamp-2 leading-relaxed">
                       {item.description}
                     </p>
                   </div>
@@ -107,7 +107,7 @@ export default function FeaturedUmkmSection({ products }: FeaturedUmkmProps) {
                     href={waUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm transition-all duration-200 shadow-md shadow-emerald-600/20"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm transition-all duration-200 shadow-md shadow-emerald-600/20 cursor-pointer"
                   >
                     <MessageCircle size={16} />
                     Hubungi Penjual (WhatsApp)

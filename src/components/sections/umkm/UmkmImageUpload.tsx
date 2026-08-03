@@ -10,7 +10,7 @@ interface UmkmImageUploadProps {
   accentColor?: 'emerald' | 'amber';
 }
 
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB Maximum Per Image
 
 export default function UmkmImageUpload({
   imageUrls,
@@ -32,17 +32,17 @@ export default function UmkmImageUpload({
 
     setError(null);
 
-    // Check total count
+    // Check total count (Maksimal 5 gambar untuk UMKM)
     const remainingSlots = maxFiles - imageUrls.length;
     if (files.length > remainingSlots) {
-      setError(`Maksimum ${maxFiles} gambar. Anda hanya bisa menambah ${remainingSlots} gambar lagi.`);
+      setError(`Maksimum total ${maxFiles} gambar produk untuk UMKM. Anda hanya bisa menambah ${remainingSlots} gambar lagi.`);
       return;
     }
 
-    // Validate sizes client-side first
+    // Validate sizes client-side first (Maksimal 1 MB per gambar)
     for (const file of Array.from(files)) {
       if (file.size > MAX_FILE_SIZE) {
-        setError(`File "${file.name}" melebihi batas 2 MB (${(file.size / 1024 / 1024).toFixed(1)} MB).`);
+        setError(`File "${file.name}" melebihi batas ukuran maksimum 1 MB (Ukuran: ${(file.size / 1024 / 1024).toFixed(2)} MB). Silakan kompres gambar terlebih dahulu.`);
         return;
       }
     }
@@ -55,7 +55,7 @@ export default function UmkmImageUpload({
         formData.append('images', file);
       }
 
-      const res = await fetch('/api/upload', {
+      const res = await fetch('/api/upload?maxKb=1024', {
         method: 'POST',
         body: formData,
       });
@@ -87,7 +87,7 @@ export default function UmkmImageUpload({
   return (
     <div className="space-y-2">
       <label className="block text-xs font-bold text-slate-800">
-        Foto Produk <span className="text-slate-400 font-normal">(Maks. {maxFiles} gambar, maks. 2 MB/gambar)</span>
+        Foto Produk UMKM <span className="text-slate-400 font-normal">(Maks. {maxFiles} gambar, maks. 1 MB/gambar)</span>
       </label>
 
       {/* Image Previews */}

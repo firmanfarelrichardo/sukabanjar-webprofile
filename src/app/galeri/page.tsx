@@ -5,7 +5,7 @@ import GalleryHero from '@/components/sections/gallery/GalleryHero';
 import Masonry, { MasonryItem } from '@/components/ui/Masonry';
 import GalleryLightboxModal from '@/components/sections/gallery/GalleryLightboxModal';
 import AddGalleryModal from '@/components/admin/AddGalleryModal';
-import { Camera, Sparkles, RefreshCw } from 'lucide-react';
+import { Camera, RefreshCw } from 'lucide-react';
 
 const FALLBACK_ITEMS: MasonryItem[] = [
   {
@@ -67,6 +67,7 @@ const CATEGORIES = [
   'Fasilitas Publik',
   'UMKM & Tradisi',
   'Perayaan & Seni',
+  'Lainnya',
 ];
 
 export default function GalleryPage() {
@@ -78,6 +79,7 @@ export default function GalleryPage() {
 
   const [selectedItem, setSelectedItem] = useState<MasonryItem | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [itemToEdit, setItemToEdit] = useState<MasonryItem | null>(null);
 
   const fetchGallery = async () => {
     try {
@@ -125,7 +127,17 @@ export default function GalleryPage() {
     }
   };
 
-  const handleAddSuccess = (newItem?: any) => {
+  const handleOpenAdd = () => {
+    setItemToEdit(null);
+    setIsAddModalOpen(true);
+  };
+
+  const handleOpenEdit = (item: MasonryItem) => {
+    setItemToEdit(item);
+    setIsAddModalOpen(true);
+  };
+
+  const handleAddSuccess = () => {
     fetchGallery();
   };
 
@@ -143,7 +155,7 @@ export default function GalleryPage() {
   });
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-950 text-white">
+    <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
       {/* Header Banner & Filters */}
       <GalleryHero
         categories={CATEGORIES}
@@ -152,25 +164,25 @@ export default function GalleryPage() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         totalPhotos={galleryItems.length}
-        onOpenAddModal={() => setIsAddModalOpen(true)}
+        onOpenAddModal={handleOpenAdd}
       />
 
       {/* Main Masonry Grid Section */}
-      <section className="section-padding bg-slate-950 relative min-h-[60vh] py-12">
+      <section className="section-padding bg-slate-50 relative min-h-[60vh] py-12">
         <div className="container-section space-y-8">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20 text-slate-400 space-y-3">
-              <RefreshCw size={28} className="animate-spin text-primary-400" />
+              <RefreshCw size={28} className="animate-spin text-[#0086C9]" />
               <p className="text-xs font-semibold">Memuat koleksi foto galeri desa...</p>
             </div>
           ) : filteredItems.length === 0 ? (
-            <div className="text-center py-20 bg-white/5 rounded-3xl border border-white/10 space-y-4 max-w-md mx-auto">
-              <Camera size={44} className="text-slate-500 mx-auto" />
+            <div className="text-center py-20 bg-white rounded-3xl border border-slate-200 shadow-sm space-y-4 max-w-md mx-auto">
+              <Camera size={44} className="text-slate-400 mx-auto" />
               <div className="space-y-1">
-                <h3 className="text-lg font-bold text-white font-heading">
+                <h3 className="text-lg font-bold text-slate-900 font-heading">
                   Tidak Ada Foto Ditemukan
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500">
                   Tidak ditemukan foto yang sesuai dengan filter atau kata kunci pencarian Anda.
                 </p>
               </div>
@@ -179,7 +191,7 @@ export default function GalleryPage() {
                   setActiveCategory('Semua Foto');
                   setSearchQuery('');
                 }}
-                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold transition-colors"
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors"
               >
                 Reset Filter Pencarian
               </button>
@@ -205,12 +217,17 @@ export default function GalleryPage() {
         item={selectedItem}
         onClose={() => setSelectedItem(null)}
         onDelete={handleDeleteItem}
+        onEdit={handleOpenEdit}
       />
 
-      {/* Admin Add Gallery Photo Modal */}
+      {/* Admin Add / Edit Gallery Photo Modal */}
       <AddGalleryModal
         isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+        itemToEdit={itemToEdit}
+        onClose={() => {
+          setIsAddModalOpen(false);
+          setItemToEdit(null);
+        }}
         onSuccess={handleAddSuccess}
       />
     </div>

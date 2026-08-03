@@ -85,20 +85,31 @@ export default function BubbleMenu({
 
   return (
     <>
-      {/* Full Screen Overlay Menu */}
+      {/* Full Screen Overlay Menu with Sunset Landmark Background */}
       <div
         ref={overlayRef}
-        className="bubble-menu-overlay"
+        className="bubble-menu-overlay relative overflow-hidden"
         style={{ display: 'none' }}
         aria-hidden={!isMenuOpen}
       >
+        {/* Background Sunset Landmark Photo Layer */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <img
+            src="/images/bg/bubble_menu_bg.jpg"
+            alt="Menara Siger Sunset Landmark Background"
+            className="w-full h-full object-cover object-center scale-105 filter brightness-90 transition-transform duration-1000"
+          />
+          {/* Ambient Dark Gradient Overlay for Supreme Text Readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/85 backdrop-blur-[3px]" />
+        </div>
+
         {/* Overlay Top Bar (Exit Button X and Centered Title) */}
         <div className="w-full max-w-7xl mx-auto flex items-center justify-between px-6 py-4 absolute top-4 left-0 right-0 z-50">
           {/* Top-Left: Round White Exit / Close Button (X) */}
           <button
             type="button"
             onClick={onCloseMenu}
-            className="w-12 h-12 rounded-full bg-white text-slate-950 hover:bg-amber-400 flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer shrink-0"
+            className="w-12 h-12 rounded-full bg-white text-slate-950 hover:bg-[#0086C9] hover:text-white flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer shrink-0 border border-white/40"
             aria-label="Tutup Navigasi Menu"
           >
             <X size={24} className="stroke-[2.5]" />
@@ -110,7 +121,7 @@ export default function BubbleMenu({
             onClick={onCloseMenu}
             className="flex items-center gap-3 group"
           >
-            <div className="w-10 h-10 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center overflow-hidden shrink-0 shadow-md">
+            <div className="w-10 h-10 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center overflow-hidden shrink-0 shadow-lg backdrop-blur-md">
               {profile.logoUrl ? (
                 <img
                   src={profile.logoUrl}
@@ -121,7 +132,7 @@ export default function BubbleMenu({
                 <span className="text-white font-black text-lg font-heading">S</span>
               )}
             </div>
-            <span className="font-heading font-extrabold text-white text-sm sm:text-base tracking-wide group-hover:text-amber-300 transition-colors">
+            <span className="font-heading font-extrabold text-white text-sm sm:text-base tracking-wide group-hover:text-amber-300 transition-colors drop-shadow-md">
               {profile.name || 'DESA SUKA BANJAR'}
             </span>
           </Link>
@@ -131,8 +142,8 @@ export default function BubbleMenu({
         </div>
 
         {/* Main Content Area */}
-        <div className="bubble-menu-content flex-col pt-20">
-          {/* Main Large Typography Navigation Items (Huruf Besar: Beranda, Profil, Galeri, Berita) */}
+        <div className="bubble-menu-content flex-col pt-20 relative z-10">
+          {/* Main Large Typography Navigation Items */}
           <nav className="bubble-menu-main-links">
             {MAIN_LARGE_LINKS.map((item, idx) => {
               const isActive = pathname === item.href;
@@ -144,8 +155,8 @@ export default function BubbleMenu({
                   ref={(el) => {
                     linksRef.current[idx] = el;
                   }}
-                  className={`bubble-menu-item-link ${
-                    isActive ? 'text-amber-400 font-black opacity-100 scale-105' : ''
+                  className={`bubble-menu-item-link drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] ${
+                    isActive ? 'text-amber-300 font-black opacity-100 scale-105' : ''
                   }`}
                 >
                   {item.label}
@@ -154,8 +165,8 @@ export default function BubbleMenu({
             })}
           </nav>
 
-          {/* Sub-links with Arrow Indicators ↗ (Huruf Kecil: Statistik, Peta, UMKM, Aspirasi) */}
-          <div className="bubble-menu-sublinks">
+          {/* Sub-links with Arrow Indicators ↗ */}
+          <div className="bubble-menu-sublinks border-white/20">
             {SUB_LINKS.map((sub, idx) => {
               const isActive = pathname === sub.href;
               return (
@@ -164,11 +175,11 @@ export default function BubbleMenu({
                   href={sub.href}
                   onClick={onCloseMenu}
                   className={`bubble-menu-sublink-item ${
-                    isActive ? 'text-amber-400 font-extrabold' : ''
+                    isActive ? 'text-amber-300 font-extrabold' : 'text-slate-100 font-bold'
                   }`}
                 >
-                  <span>{sub.label}</span>
-                  <span className="text-amber-400 font-bold">{sub.arrow}</span>
+                  <span className="drop-shadow-md">{sub.label}</span>
+                  <span className="text-amber-300 font-bold">{sub.arrow}</span>
                 </Link>
               );
             })}

@@ -118,3 +118,57 @@ model User {
   role      String   @default("ADMIN")
   createdAt DateTime @default(now())
 }
+
+// 9. Modul Statistik Demografi SIPDeskel & Sync Log
+model SyncLog {
+  id           String   @id @default(cuid())
+  source       String   @default("SIPDeskel")
+  status       String   // SUCCESS, FAILED, PARTIAL
+  message      String?
+  totalRecords Int?
+  syncedAt     DateTime @default(now())
+}
+
+model DemografiUsia {
+  id          String    @id @default(cuid())
+  kategori    String
+  jumlah      Int
+  lakiLaki    Int
+  perempuan   Int
+  persentase  Float?
+  syncedAt    DateTime?
+  updatedAt   DateTime  @updatedAt
+}
+
+model DemografiPendidikan {
+  id          String    @id @default(cuid())
+  kategori    String
+  jumlah      Int
+  lakiLaki    Int
+  perempuan   Int
+  persentase  Float?
+  syncedAt    DateTime?
+  updatedAt   DateTime  @updatedAt
+}
+
+model DemografiPekerjaan {
+  id          String    @id @default(cuid())
+  kategori    String
+  jumlah      Int
+  lakiLaki    Int
+  perempuan   Int
+  persentase  Float?
+  syncedAt    DateTime?
+  updatedAt   DateTime  @updatedAt
+}
+
+model DemografiDusun {
+  id          String    @id @default(cuid())
+  namaDusun   String
+  jumlah      Int
+  lakiLaki    Int
+  perempuan   Int
+  jumlahKK    Int?
+  syncedAt    DateTime?
+  updatedAt   DateTime  @updatedAt
+}

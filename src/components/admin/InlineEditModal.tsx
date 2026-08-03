@@ -268,7 +268,7 @@ export default function InlineEditModal() {
               ) : (
                 <>
                   <Save size={18} />
-                  <span>💾 Simpan Perubahan Website</span>
+                  <span>Simpan Perubahan Website</span>
                 </>
               )}
             </button>

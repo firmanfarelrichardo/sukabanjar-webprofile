@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { X, Save, Newspaper, Loader2, CheckCircle2, AlertCircle, Upload, Calendar, Tag, User, Image as ImageIcon } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Save, Newspaper, Loader2, CheckCircle2, AlertCircle, Upload, Calendar, Tag, User, Image as ImageIcon, Edit3 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface AddArticleModalProps {
   isOpen: boolean;
   onClose: () => void;
+  articleToEdit?: any | null;
+  onSuccess?: () => void;
 }
 
 const CATEGORIES = [
@@ -18,9 +20,16 @@ const CATEGORIES = [
   'Ekonomi',
   'Kesehatan',
   'Sosial & Budaya',
+  'KKN',
+  'Lainnya',
 ];
 
-export default function AddArticleModal({ isOpen, onClose }: AddArticleModalProps) {
+export default function AddArticleModal({
+  isOpen,
+  onClose,
+  articleToEdit,
+  onSuccess,
+}: AddArticleModalProps) {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Kegiatan Desa');
@@ -33,6 +42,30 @@ export default function AddArticleModal({ isOpen, onClose }: AddArticleModalProp
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  useEffect(() => {
+    if (isOpen) {
+      setStatusMessage(null);
+      if (articleToEdit) {
+        setTitle(articleToEdit.title || '');
+        setCategory(articleToEdit.category || 'Kegiatan Desa');
+        setAuthor(articleToEdit.author || 'Tim Redaksi Desa');
+        const dateStr = articleToEdit.createdAt
+          ? new Date(articleToEdit.createdAt).toISOString().split('T')[0]
+          : new Date().toISOString().split('T')[0];
+        setPublishedAt(dateStr);
+        setContent(articleToEdit.content || '');
+        setImageUrl(articleToEdit.imageUrl || articleToEdit.img || '');
+      } else {
+        setTitle('');
+        setCategory('Kegiatan Desa');
+        setAuthor('Tim Redaksi Desa');
+        setPublishedAt(new Date().toISOString().split('T')[0]);
+        setContent('');
+        setImageUrl('');
+      }
+    }
+  }, [isOpen, articleToEdit]);
+
   if (!isOpen) return null;
 
   // File Upload Handler with strict 200KB limit validation
@@ -42,13 +75,13 @@ export default function AddArticleModal({ isOpen, onClose }: AddArticleModalProp
 
     setStatusMessage(null);
 
-    // Strict 200KB Check on Client Side
-    const MAX_SIZE_BYTES = 200 * 1024; // 200 KB
+    // Strict 1MB Check on Client Side
+    const MAX_SIZE_BYTES = 1 * 1024 * 1024; // 1 MB
     if (file.size > MAX_SIZE_BYTES) {
-      const fileKb = (file.size / 1024).toFixed(1);
+      const fileMb = (file.size / (1024 * 1024)).toFixed(2);
       setStatusMessage({
         type: 'error',
-        text: `Ukuran foto "${file.name}" adalah ${fileKb}KB (melebihi batas maksimum 200KB). Silakan kompres atau pilih foto lain yang berukuran < 200KB.`,
+        text: `Ukuran foto "${file.name}" adalah ${fileMb}MB (melebihi batas maksimum 1MB). Silakan kompres atau pilih foto lain yang berukuran < 1MB.`,
       });
       e.target.value = '';
       return;
@@ -59,7 +92,7 @@ export default function AddArticleModal({ isOpen, onClose }: AddArticleModalProp
       const formData = new FormData();
       formData.append('images', file);
 
-      const res = await fetch('/api/upload?maxKb=200', {
+      const res = await fetch('/api/upload?maxKb=1024', {
         method: 'POST',
         body: formData,
       });
@@ -69,7 +102,7 @@ export default function AddArticleModal({ isOpen, onClose }: AddArticleModalProp
         setImageUrl(json.data[0]);
         setStatusMessage({
           type: 'success',
-          text: 'Gambar cover berita (< 200KB) berhasil diunggah!',
+          text: 'Gambar cover berita (< 1MB) berhasil diunggah!',
         });
       } else {
         setStatusMessage({
@@ -102,10 +135,14 @@ export default function AddArticleModal({ isOpen, onClose }: AddArticleModalProp
 
     try {
       setIsLoading(true);
+      const isEditing = Boolean(articleToEdit && articleToEdit.id);
+      const method = isEditing ? 'PUT' : 'POST';
+
       const res = await fetch('/api/articles', {
-        method: 'POST',
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          id: isEditing ? articleToEdit.id : undefined,
           title,
           category,
           author,
@@ -120,20 +157,21 @@ export default function AddArticleModal({ isOpen, onClose }: AddArticleModalProp
       if (res.ok && json.success) {
         setStatusMessage({
           type: 'success',
-          text: 'Artikel berita berhasil diterbitkan!',
+          text: isEditing ? 'Artikel berita berhasil diperbarui!' : 'Artikel berita berhasil diterbitkan!',
         });
         setTimeout(() => {
           setTitle('');
           setContent('');
           setImageUrl('');
           setStatusMessage(null);
+          if (onSuccess) onSuccess();
           onClose();
           router.refresh();
-        }, 1200);
+        }, 1000);
       } else {
         setStatusMessage({
           type: 'error',
-          text: json.message || 'Gagal menerbitkan artikel berita.',
+          text: json.message || 'Gagal menyimpan artikel berita.',
         });
       }
     } catch (err) {
@@ -154,14 +192,16 @@ export default function AddArticleModal({ isOpen, onClose }: AddArticleModalProp
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-              <Newspaper size={24} />
+              {articleToEdit ? <Edit3 size={24} /> : <Newspaper size={24} />}
             </div>
             <div>
               <h3 className="text-xl font-extrabold font-heading text-slate-900">
-                Form Pop-Up Berita & Pengumuman Desa
+                {articleToEdit ? 'Form Edit Artikel Berita' : 'Form Pop-Up Berita & Pengumuman Desa'}
               </h3>
               <p className="text-xs text-slate-500">
-                Terbitkan berita resmi dengan gambar cover (Maks. 1 Foto, Ukuran Maks. 200KB)
+                {articleToEdit
+                  ? 'Ubah judul, kategori, tanggal, penulis, atau isi konten berita'
+                  : 'Terbitkan berita resmi dengan gambar cover (Maks. 1 Foto, Ukuran Maks. 200KB)'}
               </p>
             </div>
           </div>
@@ -336,12 +376,12 @@ export default function AddArticleModal({ isOpen, onClose }: AddArticleModalProp
               {isLoading ? (
                 <>
                   <Loader2 size={15} className="animate-spin" />
-                  <span>Menerbitkan...</span>
+                  <span>{articleToEdit ? 'Menyimpan...' : 'Menerbitkan...'}</span>
                 </>
               ) : (
                 <>
                   <Save size={15} />
-                  <span>Terbitkan Berita</span>
+                  <span>{articleToEdit ? 'Simpan Perubahan Berita' : 'Terbitkan Berita'}</span>
                 </>
               )}
             </button>
