@@ -68,7 +68,7 @@ export default function AddArticleModal({
 
   if (!isOpen) return null;
 
-  // File Upload Handler with strict 200KB limit validation
+  // File Upload Handler with strict 1MB limit validation
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -201,7 +201,7 @@ export default function AddArticleModal({
               <p className="text-xs text-slate-500">
                 {articleToEdit
                   ? 'Ubah judul, kategori, tanggal, penulis, atau isi konten berita'
-                  : 'Terbitkan berita resmi dengan gambar cover (Maks. 1 Foto, Ukuran Maks. 200KB)'}
+                  : 'Terbitkan berita resmi dengan gambar cover (Maks. 1 Foto, Ukuran Maks. 1MB)'}
               </p>
             </div>
           </div>
@@ -300,15 +300,15 @@ export default function AddArticleModal({
             </div>
           </div>
 
-          {/* 3. Upload Gambar Cover Berita (Maks 1 Foto, Ukuran Maks 200KB) */}
+          {/* 3. Upload Gambar Cover Berita (Maks 1 Foto, Ukuran Maks 1MB) */}
           <div className="space-y-2.5 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
             <div className="flex items-center justify-between">
               <label className="text-xs font-extrabold text-slate-800 flex items-center gap-1.5">
                 <ImageIcon size={15} className="text-amber-600" />
-                <span>Gambar Cover Berita (Maks 1 Foto, Max 200KB)</span>
+                <span>Gambar Cover Berita (Maks 1 Foto, Max 1MB)</span>
               </label>
               <span className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
-                Batas 200KB
+                Batas 1MB
               </span>
             </div>
 
@@ -325,7 +325,7 @@ export default function AddArticleModal({
               <div className="space-y-2 flex-1">
                 <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors cursor-pointer shadow-sm">
                   <Upload size={14} />
-                  <span>{isUploading ? 'Mengunggah...' : 'Upload Foto (< 200KB)'}</span>
+                  <span>{isUploading ? 'Mengunggah...' : 'Upload Foto (< 1MB)'}</span>
                   <input
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
