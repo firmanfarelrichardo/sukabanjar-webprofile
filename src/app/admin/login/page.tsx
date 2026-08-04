@@ -1,16 +1,37 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Lock, User, KeyRound, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useAdmin } from '@/context/AdminContext';
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const { setIsAdmin, setIsEditMode } = useAdmin();
   const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Jika admin sudah terautentikasi, otomatis redirect ke /admin
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.authenticated) {
+            setIsAdmin(true);
+            router.replace('/admin');
+          }
+        }
+      } catch (err) {
+        // Silent catch
+      }
+    }
+    checkAuth();
+  }, [router, setIsAdmin]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +54,9 @@ export default function AdminLoginPage() {
       const json = await res.json();
 
       if (res.ok && json.success) {
-        router.push('/');
+        setIsAdmin(true);
+        setIsEditMode(true);
+        router.push('/admin');
         router.refresh();
       } else {
         setErrorMessage(json.message || 'Login gagal. Periksa username dan password.');
