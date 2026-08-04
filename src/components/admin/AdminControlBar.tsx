@@ -33,7 +33,7 @@ export default function AdminControlBar() {
               await fetch('/api/auth/logout', { method: 'POST' });
               setIsAdmin(false);
               setIsEditMode(false);
-              router.push('/');
+              router.push('/admin/login');
               router.refresh();
             } catch (err) {
               console.error('Logout error:', err);
