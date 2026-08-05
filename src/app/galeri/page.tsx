@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import GalleryHero from '@/components/sections/gallery/GalleryHero';
 import Masonry, { MasonryItem } from '@/components/ui/Masonry';
 import GalleryLightboxModal from '@/components/sections/gallery/GalleryLightboxModal';
@@ -15,6 +15,7 @@ const FALLBACK_ITEMS: MasonryItem[] = [
     description: 'Hamparan pemandangan hijau sawah bertingkat Dusun 2 Desa Suka Banjar yang asri di pagi hari dengan udara sejuk pegunungan.',
     location: 'Dusun 2, Desa Suka Banjar',
     img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200&auto=format&fit=crop',
+    format: 'portrait', // 9:16
     height: 520,
     createdAt: new Date('2026-07-20').toISOString(),
   },
@@ -25,6 +26,7 @@ const FALLBACK_ITEMS: MasonryItem[] = [
     description: 'Pemandangan spektakuler matahari terbenam (sunset) di antara siluet deretan pohon kelapa tinggi khas pesisir Sidomulyo.',
     location: 'Dusun 3, Desa Suka Banjar',
     img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop',
+    format: 'landscape', // 16:9
     height: 380,
     createdAt: new Date('2026-07-18').toISOString(),
   },
@@ -35,6 +37,7 @@ const FALLBACK_ITEMS: MasonryItem[] = [
     description: 'Tradisi gotong royong warga desa merawat kebersihan lingkungan saluran irigasi sawah dan fasilitas desa.',
     location: 'Dusun 1, Desa Suka Banjar',
     img: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=1200&auto=format&fit=crop',
+    format: 'square', // 1:1
     height: 440,
     createdAt: new Date('2026-07-15').toISOString(),
   },
@@ -45,6 +48,7 @@ const FALLBACK_ITEMS: MasonryItem[] = [
     description: 'Spot favorit warga untuk bersantai menikmati gemericik air sungai alami berbalut bebatuan purba dan Saung KKN.',
     location: 'Dusun 1, Desa Suka Banjar',
     img: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1200&auto=format&fit=crop',
+    format: 'portrait', // 9:16
     height: 600,
     createdAt: new Date('2026-07-12').toISOString(),
   },
@@ -55,57 +59,65 @@ const FALLBACK_ITEMS: MasonryItem[] = [
     description: 'Pusat administrasi pelayanan publik digital dan balai pertemuan utama warga Desa Suka Banjar.',
     location: 'Pusat Desa Suka Banjar',
     img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200&auto=format&fit=crop',
+    format: 'landscape', // 16:9
     height: 360,
     createdAt: new Date('2026-07-10').toISOString(),
+  },
+  {
+    id: 'gal-6',
+    title: 'Produksi Kerajinan Anyaman Bambu UMKM',
+    category: 'UMKM & Tradisi',
+    description: 'Kerajinan tangan produk olahan bambu tradisional hasil karya ibu-ibu PKK dan perajin lokal Desa Suka Banjar.',
+    location: 'Dusun 2, Desa Suka Banjar',
+    img: 'https://images.unsplash.com/photo-1590736969955-71cc94801759?q=80&w=1200&auto=format&fit=crop',
+    format: 'square', // 1:1
+    height: 480,
+    createdAt: new Date('2026-07-08').toISOString(),
   },
 ];
 
 const CATEGORIES = [
   'Semua Foto',
-  'Pemandangan Alam',
   'Kegiatan Desa',
+  'Pemandangan Alam',
   'Fasilitas Publik',
   'UMKM & Tradisi',
-  'Perayaan & Seni',
   'Lainnya',
 ];
 
-export default function GalleryPage() {
+export default function GaleriPage() {
   const [galleryItems, setGalleryItems] = useState<MasonryItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [activeCategory, setActiveCategory] = useState('Semua Foto');
-  const [searchQuery, setSearchQuery] = useState('');
-
+  const [activeCategory, setActiveCategory] = useState<string>('Semua Foto');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedItem, setSelectedItem] = useState<MasonryItem | null>(null);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // Modal States
+  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [itemToEdit, setItemToEdit] = useState<MasonryItem | null>(null);
 
+  // Fetch gallery items from API
   const fetchGallery = async () => {
     try {
       setIsLoading(true);
       const res = await fetch('/api/gallery');
       if (res.ok) {
         const json = await res.json();
-        if (json.success && json.data) {
-          const formatted = json.data.map((item: any) => ({
-            id: item.id,
-            img: item.imageUrl || item.img,
-            title: item.title,
-            category: item.category || 'Pemandangan Alam',
-            description: item.description,
-            location: item.location || 'Desa Suka Banjar',
-            height: item.height || 400,
-            createdAt: item.createdAt,
+        if (json.success && json.data && json.data.length > 0) {
+          const normalized = json.data.map((item: any) => ({
+            ...item,
+            img: item.imageUrl || item.img || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200&auto=format&fit=crop',
+            format: item.format || item.aspectFormat || item.aspectType || (item.height >= 500 ? 'portrait' : item.height <= 340 ? 'landscape' : 'square'),
           }));
-          setGalleryItems(formatted);
-          return;
+          setGalleryItems(normalized);
+        } else {
+          setGalleryItems(FALLBACK_ITEMS);
         }
+      } else {
+        setGalleryItems(FALLBACK_ITEMS);
       }
-      // Fallback
-      setGalleryItems(FALLBACK_ITEMS);
     } catch (err) {
-      console.error('Error loading gallery items:', err);
+      console.error('Error fetching gallery:', err);
       setGalleryItems(FALLBACK_ITEMS);
     } finally {
       setIsLoading(false);
@@ -142,17 +154,19 @@ export default function GalleryPage() {
   };
 
   // Filtering items
-  const filteredItems = galleryItems.filter((item) => {
-    const matchesCategory =
-      activeCategory === 'Semua Foto' || item.category === activeCategory;
-    const matchesSearch =
-      !searchQuery.trim() ||
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (item.location && item.location.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredItems = useMemo(() => {
+    return galleryItems.filter((item) => {
+      const matchesCategory =
+        activeCategory === 'Semua Foto' || item.category === activeCategory;
+      const matchesSearch =
+        !searchQuery.trim() ||
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.location && item.location.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    return matchesCategory && matchesSearch;
-  });
+      return matchesCategory && matchesSearch;
+    });
+  }, [galleryItems, activeCategory, searchQuery]);
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
@@ -167,9 +181,9 @@ export default function GalleryPage() {
         onOpenAddModal={handleOpenAdd}
       />
 
-      {/* Main Masonry Grid Section */}
+      {/* Main Masonry Grid Section - Non-paginated infinite grid */}
       <section className="section-padding bg-slate-50 relative min-h-[60vh] py-12">
-        <div className="container-section space-y-8">
+        <div className="container-section">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20 text-slate-400 space-y-3">
               <RefreshCw size={28} className="animate-spin text-[#0086C9]" />

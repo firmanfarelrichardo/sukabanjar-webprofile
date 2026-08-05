@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import {
   Inbox,
@@ -26,6 +26,9 @@ import {
   Store,
   Check,
   Eye,
+  Search,
+  Filter,
+  X,
 } from 'lucide-react';
 import { useAdmin } from '@/context/AdminContext';
 import AddUmkmModal from '@/components/admin/AddUmkmModal';
@@ -37,6 +40,7 @@ import EditVillageProfileModal from '@/components/admin/EditVillageProfileModal'
 import AdminUmkmValidationModal from '@/components/sections/umkm/AdminUmkmValidationModal';
 import AdminProfileEditTab from '@/components/admin/AdminProfileEditTab';
 import AdminSipdeskelTab from '@/components/admin/AdminSipdeskelTab';
+import Pagination from '@/components/ui/Pagination';
 
 export default function AdminDashboardPage() {
   const { openInboxModal, setIsEditMode, setUnreadCount } = useAdmin();
@@ -58,6 +62,91 @@ export default function AdminDashboardPage() {
   const [galleryList, setGalleryList] = useState<any[]>([]);
   const [umkmList, setUmkmList] = useState<any[]>([]);
   const [facilitiesList, setFacilitiesList] = useState<any[]>([]);
+
+  // Pagination States
+  const [articlesPage, setArticlesPage] = useState(1);
+  const [galleryPage, setGalleryPage] = useState(1);
+  const [umkmPage, setUmkmPage] = useState(1);
+  const [facilityPage, setFacilityPage] = useState(1);
+
+  // Search & Filter States for Admin Sections
+  const [articleSearch, setArticleSearch] = useState('');
+  const [articleCategory, setArticleCategory] = useState('Semua');
+
+  const [gallerySearch, setGallerySearch] = useState('');
+  const [galleryCategory, setGalleryCategory] = useState('Semua');
+
+  const [umkmSearch, setUmkmSearch] = useState('');
+  const [umkmCategory, setUmkmCategory] = useState('Semua');
+
+  const [facilitySearch, setFacilitySearch] = useState('');
+  const [facilityCategory, setFacilityCategory] = useState('Semua');
+
+  // Reset pagination on filter changes
+  useEffect(() => setArticlesPage(1), [articleSearch, articleCategory]);
+  useEffect(() => setGalleryPage(1), [gallerySearch, galleryCategory]);
+  useEffect(() => setUmkmPage(1), [umkmSearch, umkmCategory]);
+  useEffect(() => setFacilityPage(1), [facilitySearch, facilityCategory]);
+
+  // Filtered Articles
+  const filteredAdminArticles = useMemo(() => {
+    return articlesList.filter((art) => {
+      const matchesSearch =
+        !articleSearch.trim() ||
+        art.title.toLowerCase().includes(articleSearch.toLowerCase()) ||
+        (art.content && art.content.toLowerCase().includes(articleSearch.toLowerCase())) ||
+        (art.author && art.author.toLowerCase().includes(articleSearch.toLowerCase()));
+      const matchesCat = articleCategory === 'Semua' || art.category === articleCategory;
+      return matchesSearch && matchesCat;
+    });
+  }, [articlesList, articleSearch, articleCategory]);
+
+  // Filtered Gallery
+  const filteredAdminGallery = useMemo(() => {
+    return galleryList.filter((item) => {
+      const matchesSearch =
+        !gallerySearch.trim() ||
+        item.title.toLowerCase().includes(gallerySearch.toLowerCase()) ||
+        (item.description && item.description.toLowerCase().includes(gallerySearch.toLowerCase())) ||
+        (item.location && item.location.toLowerCase().includes(gallerySearch.toLowerCase()));
+      const matchesCat = galleryCategory === 'Semua' || item.category === galleryCategory;
+      return matchesSearch && matchesCat;
+    });
+  }, [galleryList, gallerySearch, galleryCategory]);
+
+  // Filtered UMKM
+  const filteredAdminUmkm = useMemo(() => {
+    return umkmList.filter((item) => {
+      const matchesSearch =
+        !umkmSearch.trim() ||
+        item.title.toLowerCase().includes(umkmSearch.toLowerCase()) ||
+        (item.ownerName && item.ownerName.toLowerCase().includes(umkmSearch.toLowerCase())) ||
+        (item.description && item.description.toLowerCase().includes(umkmSearch.toLowerCase()));
+
+      let matchesCat = true;
+      if (umkmCategory === 'Disetujui') {
+        matchesCat = item.isApproved === true;
+      } else if (umkmCategory === 'Menunggu Validasi') {
+        matchesCat = item.isApproved === false;
+      } else if (umkmCategory !== 'Semua') {
+        matchesCat = item.category === umkmCategory;
+      }
+
+      return matchesSearch && matchesCat;
+    });
+  }, [umkmList, umkmSearch, umkmCategory]);
+
+  // Filtered Facilities
+  const filteredAdminFacilities = useMemo(() => {
+    return facilitiesList.filter((item) => {
+      const matchesSearch =
+        !facilitySearch.trim() ||
+        item.name.toLowerCase().includes(facilitySearch.toLowerCase()) ||
+        (item.address && item.address.toLowerCase().includes(facilitySearch.toLowerCase()));
+      const matchesCat = facilityCategory === 'Semua' || item.category === facilityCategory;
+      return matchesSearch && matchesCat;
+    });
+  }, [facilitiesList, facilitySearch, facilityCategory]);
 
   const [inboxFilter, setInboxFilter] = useState<'all' | 'unread'>('all');
   const [selectedAspiration, setSelectedAspiration] = useState<any | null>(null);
@@ -666,71 +755,131 @@ export default function AdminDashboardPage() {
               </button>
             </div>
 
-            {articlesList.length === 0 ? (
-              <p className="text-xs text-slate-400 py-6 text-center">Belum ada artikel berita yang dibuat.</p>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {articlesList.map((art) => (
-                  <div
-                    key={art.id}
-                    className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
+            {/* Search & Category Filter Bar Berita */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
+              <div className="relative flex-1 w-full">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Cari judul berita, isi, atau penulis..."
+                  value={articleSearch}
+                  onChange={(e) => setArticleSearch(e.target.value)}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-800 font-medium focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                />
+                {articleSearch && (
+                  <button
+                    onClick={() => setArticleSearch('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
-                    <div className="space-y-3">
-                      {/* PREVIEW GAMBAR BERITA (TAMPIL SEPERTI PADA GALERI) */}
-                      <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-900 relative">
-                        <img
-                          src={
-                            art.imageUrl ||
-                            'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=600&q=80'
-                          }
-                          alt={art.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <span className="absolute top-2 left-2 px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-[#0086C9] text-white shadow">
-                          {art.category}
-                        </span>
-                      </div>
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
 
-                      <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
-                        <span>Penulis: {art.author || 'Tim Redaksi'}</span>
-                        <span>
-                          {new Date(art.createdAt).toLocaleDateString('id-ID', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                          })}
-                        </span>
-                      </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                <Filter size={15} className="text-slate-400 shrink-0" />
+                <select
+                  value={articleCategory}
+                  onChange={(e) => setArticleCategory(e.target.value)}
+                  className="w-full sm:w-48 py-2 px-3 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none focus:border-indigo-500 cursor-pointer"
+                >
+                  <option value="Semua">Semua Kategori</option>
+                  <option value="Kegiatan Desa">Kegiatan Desa</option>
+                  <option value="Pengumuman">Pengumuman</option>
+                  <option value="Pembangunan">Pembangunan</option>
+                  <option value="Pendidikan">Pendidikan</option>
+                  <option value="Pertanian">Pertanian</option>
+                  <option value="Ekonomi">Ekonomi</option>
+                  <option value="Kesehatan">Kesehatan</option>
+                  <option value="Sosial & Budaya">Sosial & Budaya</option>
+                  <option value="KKN">KKN</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+            </div>
 
-                      <h4 className="font-extrabold text-sm text-slate-900 line-clamp-2 leading-snug">
-                        {art.title}
-                      </h4>
-                      <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-                        {art.content.replace(/[\#\*\_\`]/g, '')}
-                      </p>
-                    </div>
-
-                    <div className="pt-3 border-t border-slate-200/80 flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => {
-                          setArticleToEdit(art);
-                          setIsAddArticleOpen(true);
-                        }}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors cursor-pointer"
+            {filteredAdminArticles.length === 0 ? (
+              <p className="text-xs text-slate-400 py-6 text-center">
+                {articlesList.length === 0
+                  ? 'Belum ada artikel berita yang dibuat.'
+                  : 'Tidak ditemukan artikel berita yang sesuai dengan kata kunci / kategori.'}
+              </p>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredAdminArticles
+                    .slice((articlesPage - 1) * 6, articlesPage * 6)
+                    .map((art) => (
+                      <div
+                        key={art.id}
+                        className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
                       >
-                        <Edit3 size={13} />
-                        <span>Edit</span>
-                      </button>
-                      <button
-                        onClick={() => handleDeleteArticle(art.id, art.title)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-xs border border-rose-200 transition-colors cursor-pointer"
-                      >
-                        <Trash2 size={13} />
-                        <span>Hapus</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                        <div className="space-y-3">
+                          {/* PREVIEW GAMBAR BERITA (TAMPIL SEPERTI PADA GALERI) */}
+                          <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-900 relative">
+                            <img
+                              src={
+                                art.imageUrl ||
+                                'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=600&q=80'
+                              }
+                              alt={art.title}
+                              className="w-full h-full object-cover"
+                            />
+                            <span className="absolute top-2 left-2 px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-[#0086C9] text-white shadow">
+                              {art.category}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
+                            <span>Penulis: {art.author || 'Tim Redaksi'}</span>
+                            <span>
+                              {new Date(art.createdAt).toLocaleDateString('id-ID', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                              })}
+                            </span>
+                          </div>
+
+                          <h4 className="font-extrabold text-sm text-slate-900 line-clamp-2 leading-snug">
+                            {art.title}
+                          </h4>
+                          <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                            {art.content.replace(/[\#\*\_\`]/g, '')}
+                          </p>
+                        </div>
+
+                        <div className="pt-3 border-t border-slate-200/80 flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => {
+                              setArticleToEdit(art);
+                              setIsAddArticleOpen(true);
+                            }}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors cursor-pointer"
+                          >
+                            <Edit3 size={13} />
+                            <span>Edit</span>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteArticle(art.id, art.title)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-xs border border-rose-200 transition-colors cursor-pointer"
+                          >
+                            <Trash2 size={13} />
+                            <span>Hapus</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                <Pagination
+                  currentPage={articlesPage}
+                  totalPages={Math.ceil(filteredAdminArticles.length / 6)}
+                  onPageChange={(p) => setArticlesPage(p)}
+                  totalItems={filteredAdminArticles.length}
+                  itemsPerPage={6}
+                  itemName="artikel berita"
+                />
               </div>
             )}
           </div>
@@ -758,57 +907,112 @@ export default function AdminDashboardPage() {
               </button>
             </div>
 
-            {galleryList.length === 0 ? (
-              <p className="text-xs text-slate-400 py-6 text-center">Belum ada foto galeri yang diunggah.</p>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {galleryList.map((item) => (
-                  <div
-                    key={item.id}
-                    className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
+            {/* Search & Category Filter Bar Galeri */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
+              <div className="relative flex-1 w-full">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Cari judul foto, keterangan, lokasi..."
+                  value={gallerySearch}
+                  onChange={(e) => setGallerySearch(e.target.value)}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-800 font-medium focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                />
+                {gallerySearch && (
+                  <button
+                    onClick={() => setGallerySearch('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
-                    <div className="space-y-2">
-                      <div className="w-full h-32 rounded-xl overflow-hidden bg-slate-900">
-                        <img
-                          src={item.imageUrl || item.img}
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-100 text-teal-800">
-                          {item.category}
-                        </span>
-                        <span className="text-[10px] text-slate-400 font-medium">
-                          {item.location || 'Desa'}
-                        </span>
-                      </div>
-                      <h4 className="font-extrabold text-xs text-slate-900 line-clamp-1">
-                        {item.title}
-                      </h4>
-                    </div>
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
 
-                    <div className="pt-2 border-t border-slate-200/80 flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => {
-                          setGalleryItemToEdit(item);
-                          setIsAddGalleryOpen(true);
-                        }}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] transition-colors cursor-pointer"
+              <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                <Filter size={15} className="text-slate-400 shrink-0" />
+                <select
+                  value={galleryCategory}
+                  onChange={(e) => setGalleryCategory(e.target.value)}
+                  className="w-full sm:w-48 py-2 px-3 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none focus:border-teal-500 cursor-pointer"
+                >
+                  <option value="Semua">Semua Kategori</option>
+                  <option value="Kegiatan Desa">Kegiatan Desa</option>
+                  <option value="Pemandangan Alam">Pemandangan Alam</option>
+                  <option value="Fasilitas Publik">Fasilitas Publik</option>
+                  <option value="UMKM & Tradisi">UMKM & Tradisi</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+            </div>
+
+            {filteredAdminGallery.length === 0 ? (
+              <p className="text-xs text-slate-400 py-6 text-center">
+                {galleryList.length === 0
+                  ? 'Belum ada foto galeri yang diunggah.'
+                  : 'Tidak ditemukan foto galeri yang sesuai dengan kata kunci / kategori.'}
+              </p>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {filteredAdminGallery
+                    .slice((galleryPage - 1) * 8, galleryPage * 8)
+                    .map((item) => (
+                      <div
+                        key={item.id}
+                        className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
                       >
-                        <Edit3 size={12} />
-                        <span>Edit</span>
-                      </button>
-                      <button
-                        onClick={() => handleDeleteGallery(item.id, item.title)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-[11px] border border-rose-200 transition-colors cursor-pointer"
-                      >
-                        <Trash2 size={12} />
-                        <span>Hapus</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                        <div className="space-y-2">
+                          <div className="w-full h-32 rounded-xl overflow-hidden bg-slate-900">
+                            <img
+                              src={item.imageUrl || item.img}
+                              alt={item.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-100 text-teal-800">
+                              {item.category}
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-medium">
+                              {item.location || 'Desa'}
+                            </span>
+                          </div>
+                          <h4 className="font-extrabold text-xs text-slate-900 line-clamp-1">
+                            {item.title}
+                          </h4>
+                        </div>
+
+                        <div className="pt-2 border-t border-slate-200/80 flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => {
+                              setGalleryItemToEdit(item);
+                              setIsAddGalleryOpen(true);
+                            }}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] transition-colors cursor-pointer"
+                          >
+                            <Edit3 size={12} />
+                            <span>Edit</span>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteGallery(item.id, item.title)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-[11px] border border-rose-200 transition-colors cursor-pointer"
+                          >
+                            <Trash2 size={12} />
+                            <span>Hapus</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                <Pagination
+                  currentPage={galleryPage}
+                  totalPages={Math.ceil(filteredAdminGallery.length / 8)}
+                  onPageChange={(p) => setGalleryPage(p)}
+                  totalItems={filteredAdminGallery.length}
+                  itemsPerPage={8}
+                  itemName="foto galeri"
+                />
               </div>
             )}
           </div>
@@ -846,69 +1050,126 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {umkmList.length === 0 ? (
-              <p className="text-xs text-slate-400 py-6 text-center">Belum ada produk UMKM terdaftar.</p>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {umkmList.map((item) => (
-                  <div
-                    key={item.id}
-                    className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
+            {/* Search & Category Filter Bar UMKM */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
+              <div className="relative flex-1 w-full">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Cari nama produk, pemilik, atau deskripsi UMKM..."
+                  value={umkmSearch}
+                  onChange={(e) => setUmkmSearch(e.target.value)}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-800 font-medium focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                />
+                {umkmSearch && (
+                  <button
+                    onClick={() => setUmkmSearch('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
-                    <div className="space-y-2">
-                      <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-900 relative">
-                        <img
-                          src={
-                            item.imageUrl ||
-                            (item.imageUrls && item.imageUrls.length > 0
-                              ? item.imageUrls[0]
-                              : 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=600&q=80')
-                          }
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <span
-                          className={`absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-extrabold text-white shadow ${
-                            item.isApproved ? 'bg-emerald-600' : 'bg-amber-600'
-                          }`}
-                        >
-                          {item.isApproved ? 'Disetujui' : 'Menunggu Validasi'}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#0086C9]">{item.price || 'Sesuai Pesanan'}</span>
-                        <span className="text-[10px] text-slate-500 font-medium">Pemilik: {item.ownerName || 'Warga'}</span>
-                      </div>
-                      <h4 className="font-extrabold text-sm text-slate-900 line-clamp-1">
-                        {item.title}
-                      </h4>
-                      <p className="text-xs text-slate-500 line-clamp-2">
-                        {item.description}
-                      </p>
-                    </div>
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
 
-                    {/* FITUR EDIT & HAPUS UMKM */}
-                    <div className="pt-3 border-t border-slate-200/80 flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => {
-                          setUmkmToEdit(item);
-                          setIsEditUmkmOpen(true);
-                        }}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors cursor-pointer"
+              <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                <Filter size={15} className="text-slate-400 shrink-0" />
+                <select
+                  value={umkmCategory}
+                  onChange={(e) => setUmkmCategory(e.target.value)}
+                  className="w-full sm:w-48 py-2 px-3 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none focus:border-amber-500 cursor-pointer"
+                >
+                  <option value="Semua">Semua Produk & Status</option>
+                  <option value="Disetujui">Status: Disetujui</option>
+                  <option value="Menunggu Validasi">Status: Menunggu Validasi</option>
+                  <option value="Makanan & Minuman">Makanan & Minuman</option>
+                  <option value="Kerajinan">Kerajinan</option>
+                  <option value="Pertanian">Pertanian</option>
+                  <option value="Jasa">Jasa</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+            </div>
+
+            {filteredAdminUmkm.length === 0 ? (
+              <p className="text-xs text-slate-400 py-6 text-center">
+                {umkmList.length === 0
+                  ? 'Belum ada produk UMKM terdaftar.'
+                  : 'Tidak ditemukan produk UMKM yang sesuai dengan kata kunci / kategori.'}
+              </p>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredAdminUmkm
+                    .slice((umkmPage - 1) * 6, umkmPage * 6)
+                    .map((item) => (
+                      <div
+                        key={item.id}
+                        className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
                       >
-                        <Edit3 size={13} />
-                        <span>Edit</span>
-                      </button>
-                      <button
-                        onClick={() => handleDeleteUmkm(item.id, item.title)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-xs border border-rose-200 transition-colors cursor-pointer"
-                      >
-                        <Trash2 size={13} />
-                        <span>Hapus</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                        <div className="space-y-2">
+                          <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-900 relative">
+                            <img
+                              src={
+                                item.imageUrl ||
+                                (item.imageUrls && item.imageUrls.length > 0
+                                  ? item.imageUrls[0]
+                                  : 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=600&q=80')
+                              }
+                              alt={item.title}
+                              className="w-full h-full object-cover"
+                            />
+                            <span
+                              className={`absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-extrabold text-white shadow ${
+                                item.isApproved ? 'bg-emerald-600' : 'bg-amber-600'
+                              }`}
+                            >
+                              {item.isApproved ? 'Disetujui' : 'Menunggu Validasi'}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-[#0086C9]">{item.price || 'Sesuai Pesanan'}</span>
+                            <span className="text-[10px] text-slate-500 font-medium">Pemilik: {item.ownerName || 'Warga'}</span>
+                          </div>
+                          <h4 className="font-extrabold text-sm text-slate-900 line-clamp-1">
+                            {item.title}
+                          </h4>
+                          <p className="text-xs text-slate-500 line-clamp-2">
+                            {item.description}
+                          </p>
+                        </div>
+
+                        {/* FITUR EDIT & HAPUS UMKM */}
+                        <div className="pt-3 border-t border-slate-200/80 flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => {
+                              setUmkmToEdit(item);
+                              setIsEditUmkmOpen(true);
+                            }}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors cursor-pointer"
+                          >
+                            <Edit3 size={13} />
+                            <span>Edit</span>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteUmkm(item.id, item.title)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-xs border border-rose-200 transition-colors cursor-pointer"
+                          >
+                            <Trash2 size={13} />
+                            <span>Hapus</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                <Pagination
+                  currentPage={umkmPage}
+                  totalPages={Math.ceil(filteredAdminUmkm.length / 6)}
+                  onPageChange={(p) => setUmkmPage(p)}
+                  totalItems={filteredAdminUmkm.length}
+                  itemsPerPage={6}
+                  itemName="produk UMKM"
+                />
               </div>
             )}
           </div>
@@ -936,65 +1197,123 @@ export default function AdminDashboardPage() {
               </button>
             </div>
 
-            {facilitiesList.length === 0 ? (
-              <p className="text-xs text-slate-400 py-6 text-center">Belum ada lokasi fasilitas desa yang ditambahkan.</p>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {facilitiesList.map((item) => (
-                  <div
-                    key={item.id}
-                    className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
+            {/* Search & Category Filter Bar Peta & Fasilitas */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
+              <div className="relative flex-1 w-full">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Cari nama fasilitas, alamat..."
+                  value={facilitySearch}
+                  onChange={(e) => setFacilitySearch(e.target.value)}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-800 font-medium focus:outline-none focus:border-[#0086C9] focus:ring-1 focus:ring-[#0086C9]"
+                />
+                {facilitySearch && (
+                  <button
+                    onClick={() => setFacilitySearch('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
-                    <div className="space-y-3">
-                      {/* PREVIEW GAMBAR SAMPUL FASILITAS */}
-                      <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-900 relative">
-                        <img
-                          src={
-                            item.imageUrl ||
-                            'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=600&q=80'
-                          }
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                        />
-                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-[#0086C9] text-white shadow">
-                          {item.category}
-                        </span>
-                      </div>
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
 
-                      <div>
-                        <h4 className="font-extrabold text-sm text-slate-900 line-clamp-1">
-                          {item.name}
-                        </h4>
-                        <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
-                          {item.address || 'Desa Suka Banjar, Kec. Sidomulyo'}
-                        </p>
-                        <span className="text-[10px] text-slate-400 font-mono block mt-1">
-                          Koordinat: {item.latitude}, {item.longitude}
-                        </span>
-                      </div>
-                    </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                <Filter size={15} className="text-slate-400 shrink-0" />
+                <select
+                  value={facilityCategory}
+                  onChange={(e) => setFacilityCategory(e.target.value)}
+                  className="w-full sm:w-48 py-2 px-3 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none focus:border-[#0086C9] cursor-pointer"
+                >
+                  <option value="Semua">Semua Kategori</option>
+                  <option value="Pemerintahan">Pemerintahan</option>
+                  <option value="Pendidikan">Pendidikan</option>
+                  <option value="Kesehatan">Kesehatan</option>
+                  <option value="Ibadah">Ibadah</option>
+                  <option value="Ekonomi & UMKM">Ekonomi & UMKM</option>
+                  <option value="Wisata & Ruang Terbuka">Wisata & Ruang Terbuka</option>
+                  <option value="Infrastruktur">Infrastruktur</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+            </div>
 
-                    <div className="pt-3 border-t border-slate-200/80 flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => {
-                          setFacilityToEdit(item);
-                          setIsAddFacilityOpen(true);
-                        }}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors cursor-pointer"
+            {filteredAdminFacilities.length === 0 ? (
+              <p className="text-xs text-slate-400 py-6 text-center">
+                {facilitiesList.length === 0
+                  ? 'Belum ada lokasi fasilitas desa yang ditambahkan.'
+                  : 'Tidak ditemukan lokasi fasilitas yang sesuai dengan kata kunci / kategori.'}
+              </p>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredAdminFacilities
+                    .slice((facilityPage - 1) * 6, facilityPage * 6)
+                    .map((item) => (
+                      <div
+                        key={item.id}
+                        className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
                       >
-                        <Edit3 size={13} />
-                        <span>Edit</span>
-                      </button>
-                      <button
-                        onClick={() => handleDeleteFacility(item.id, item.name)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-xs border border-rose-200 transition-colors cursor-pointer"
-                      >
-                        <Trash2 size={13} />
-                        <span>Hapus</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                        <div className="space-y-3">
+                          {/* PREVIEW GAMBAR SAMPUL FASILITAS */}
+                          <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-900 relative">
+                            <img
+                              src={
+                                item.imageUrl ||
+                                'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=600&q=80'
+                              }
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                            />
+                            <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-[#0086C9] text-white shadow">
+                              {item.category}
+                            </span>
+                          </div>
+
+                          <div>
+                            <h4 className="font-extrabold text-sm text-slate-900 line-clamp-1">
+                              {item.name}
+                            </h4>
+                            <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                              {item.address || 'Desa Suka Banjar, Kec. Sidomulyo'}
+                            </p>
+                            <span className="text-[10px] text-slate-400 font-mono block mt-1">
+                              Koordinat: {item.latitude}, {item.longitude}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="pt-3 border-t border-slate-200/80 flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => {
+                              setFacilityToEdit(item);
+                              setIsAddFacilityOpen(true);
+                            }}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors cursor-pointer"
+                          >
+                            <Edit3 size={13} />
+                            <span>Edit</span>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteFacility(item.id, item.name)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-xs border border-rose-200 transition-colors cursor-pointer"
+                          >
+                            <Trash2 size={13} />
+                            <span>Hapus</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                <Pagination
+                  currentPage={facilityPage}
+                  totalPages={Math.ceil(filteredAdminFacilities.length / 6)}
+                  onPageChange={(p) => setFacilityPage(p)}
+                  totalItems={filteredAdminFacilities.length}
+                  itemsPerPage={6}
+                  itemName="lokasi fasilitas"
+                />
               </div>
             )}
           </div>

@@ -90,15 +90,25 @@ export async function GET() {
       orderBy: { createdAt: 'desc' },
     });
 
+    const itemsToReturn = galleryItems.length > 0 ? galleryItems : DEFAULT_GALLERY_ITEMS;
+    const formattedData = itemsToReturn.map((item: any) => ({
+      ...item,
+      format: item.format || (item.height >= 500 ? 'portrait' : item.height <= 340 ? 'landscape' : 'square'),
+    }));
+
     return NextResponse.json({
       success: true,
-      data: galleryItems.length > 0 ? galleryItems : DEFAULT_GALLERY_ITEMS,
+      data: formattedData,
     });
   } catch (error) {
     console.error('Error fetching gallery:', error);
+    const formattedData = DEFAULT_GALLERY_ITEMS.map((item: any) => ({
+      ...item,
+      format: item.format || (item.height >= 500 ? 'portrait' : item.height <= 340 ? 'landscape' : 'square'),
+    }));
     return NextResponse.json({
       success: true,
-      data: DEFAULT_GALLERY_ITEMS,
+      data: formattedData,
     });
   }
 }
@@ -106,7 +116,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, category, description, location, imageUrl, height } = body;
+    const { title, category, description, location, imageUrl, height, format } = body;
 
     if (!title || !imageUrl) {
       return NextResponse.json(
@@ -114,6 +124,8 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+
+    const itemFormat = format || (height >= 500 ? 'portrait' : height <= 340 ? 'landscape' : 'square');
 
     try {
       const newItem = await (prisma as any).gallery.create({
@@ -130,10 +142,12 @@ export async function POST(request: Request) {
       return NextResponse.json({
         success: true,
         message: 'Foto galeri baru berhasil ditambahkan',
-        data: newItem,
+        data: {
+          ...newItem,
+          format: itemFormat,
+        },
       });
     } catch (dbErr) {
-      // Fallback response if DB table gallery does not exist yet
       const fallbackItem = {
         id: `gal-${Date.now()}`,
         title,
@@ -141,6 +155,7 @@ export async function POST(request: Request) {
         description: description || null,
         location: location || 'Desa Suka Banjar',
         imageUrl,
+        format: itemFormat,
         height: height ? parseInt(String(height), 10) : 420,
         createdAt: new Date().toISOString(),
       };
@@ -203,7 +218,7 @@ export async function DELETE(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, title, category, description, location, imageUrl, height } = body;
+    const { id, title, category, description, location, imageUrl, height, format } = body;
 
     if (!id || !title || !imageUrl) {
       return NextResponse.json(
@@ -211,6 +226,8 @@ export async function PUT(request: Request) {
         { status: 400 }
       );
     }
+
+    const itemFormat = format || (height >= 500 ? 'portrait' : height <= 340 ? 'landscape' : 'square');
 
     try {
       const updatedItem = await (prisma as any).gallery.update({
@@ -228,7 +245,10 @@ export async function PUT(request: Request) {
       return NextResponse.json({
         success: true,
         message: 'Foto galeri berhasil diperbarui',
-        data: updatedItem,
+        data: {
+          ...updatedItem,
+          format: itemFormat,
+        },
       });
     } catch (dbErr) {
       return NextResponse.json({
@@ -241,6 +261,7 @@ export async function PUT(request: Request) {
           description: description || null,
           location: location || 'Desa Suka Banjar',
           imageUrl,
+          format: itemFormat,
           height: height ? parseInt(String(height), 10) : 420,
           updatedAt: new Date().toISOString(),
         },
