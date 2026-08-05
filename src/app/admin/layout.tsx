@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { useAdmin } from '@/context/AdminContext';
+import AdminIdleGuard from '@/components/admin/AdminIdleGuard';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -74,5 +75,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return null;
   }
 
-  return <div className="min-h-screen bg-slate-50">{children}</div>;
+  return (
+    <AdminIdleGuard>
+      <div className="min-h-screen bg-slate-50">{children}</div>
+    </AdminIdleGuard>
+  );
 }
