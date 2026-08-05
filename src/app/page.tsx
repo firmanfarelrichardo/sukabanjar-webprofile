@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import HeroSection from '@/components/sections/HeroSection';
 import GalleryDriftWallSection from '@/components/sections/GalleryDriftWallSection';
+import VillageApparatusSection from '@/components/sections/home/VillageApparatusSection';
 import QuickAccessGrid from '@/components/sections/QuickAccessGrid';
 import StatsCountUp from '@/components/sections/StatsCountUp';
 import LatestArticlesSection from '@/components/sections/LatestArticlesSection';
@@ -59,6 +60,15 @@ async function getLandingData() {
       console.warn('Prisma gallery fetch warning:', gErr);
     }
 
+    let apparatusItems: any[] = [];
+    try {
+      apparatusItems = await (prisma as any).apparatus.findMany({
+        orderBy: { orderNum: 'asc' },
+      });
+    } catch (appErr) {
+      console.warn('Prisma apparatus fetch warning:', appErr);
+    }
+
     const totalUmkm = await prisma.umkm.count({ where: { isApproved: true } });
     const totalFacilities = await prisma.facility.count();
 
@@ -91,6 +101,7 @@ async function getLandingData() {
       })),
       featuredUmkm,
       galleryItems: galleryItems || [],
+      apparatusItems: apparatusItems || [],
     };
   } catch (error) {
     console.error('Error loading landing page data:', error);
@@ -120,6 +131,7 @@ async function getLandingData() {
       latestArticles: [],
       featuredUmkm: [],
       galleryItems: [],
+      apparatusItems: [],
     };
   }
 }
@@ -139,8 +151,11 @@ export default async function Home() {
         heroSubtitle={data.profile.heroSubtitle}
       />
 
-      {/* 2. DriftWall 3D ReactBits Component (Terletak setelah Hero, sebelum Akses Cepat Portal) */}
+      {/* 2. DriftWall 3D ReactBits Component (Terletak setelah Hero) */}
       <GalleryDriftWallSection galleryItems={data.galleryItems} />
+
+      {/* 2.5. Aparatur & Perangkat Desa Suka Banjar (Dinamis dari Admin) */}
+      <VillageApparatusSection officials={data.apparatusItems} />
 
       {/* 3. Quick Access Grid ("Akses Cepat Portal Desa Suka Banjar") */}
       <QuickAccessGrid />
