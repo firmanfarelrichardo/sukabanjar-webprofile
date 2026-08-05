@@ -81,8 +81,8 @@ export default function GalleryDriftWallSection({ galleryItems = [] }: GalleryDr
         <DriftWall
           items={driftItems}
           columns={7}
-          tileWidth={210}
-          tileHeight={310}
+          tileWidth={250}
+          tileHeight={155}
           gap={18}
           scale={1.65}
           tilt={8}

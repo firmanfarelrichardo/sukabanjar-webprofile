@@ -45,10 +45,15 @@ export default function AddGalleryModal({
         setDescription(itemToEdit.description || '');
         setImageUrl(itemToEdit.img || itemToEdit.imageUrl || '');
         
-        const h = itemToEdit.height || 420;
-        if (h >= 500) setAspectType('portrait');
-        else if (h <= 340) setAspectType('landscape');
-        else setAspectType('square');
+        const format = itemToEdit.format || itemToEdit.aspectType || itemToEdit.aspectRatio;
+        if (format) {
+          setAspectType(format as 'portrait' | 'square' | 'landscape');
+        } else {
+          const h = itemToEdit.height || 420;
+          if (h >= 500) setAspectType('portrait');
+          else if (h <= 340) setAspectType('landscape');
+          else setAspectType('square');
+        }
       } else {
         setTitle('');
         setCategory('Pemandangan Alam');
@@ -125,6 +130,7 @@ export default function AddGalleryModal({
           location,
           description,
           imageUrl,
+          format: aspectType,
           height: calculatedHeight,
         }),
       });
@@ -159,7 +165,7 @@ export default function AddGalleryModal({
               </h3>
               <p className="text-xs text-slate-500">
                 {itemToEdit
-                  ? 'Ubah judul, kategori, deskripsi, atau berkas gambar foto galeri ini'
+                  ? 'Ubah judul, kategori, deskripsi, atau format tampilan foto galeri ini'
                   : 'Unggah pemandangan atau kegiatan desa untuk tampil di halaman Galeri Masonry'}
               </p>
             </div>
@@ -287,7 +293,7 @@ export default function AddGalleryModal({
                     : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                 }`}
               >
-                Tinggi (Portrait)
+                Potrait (9:16)
               </button>
               <button
                 type="button"
@@ -298,7 +304,7 @@ export default function AddGalleryModal({
                     : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                 }`}
               >
-                Persegi (Square)
+                Persegi (1:1)
               </button>
               <button
                 type="button"
@@ -309,7 +315,7 @@ export default function AddGalleryModal({
                     : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                 }`}
               >
-                Melebar (Landscape)
+                Lanskap (16:9)
               </button>
             </div>
           </div>

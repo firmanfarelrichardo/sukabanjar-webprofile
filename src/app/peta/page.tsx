@@ -6,6 +6,7 @@ import MapFilterBar from '@/components/sections/peta/MapFilterBar';
 import FacilityListGrid from '@/components/sections/peta/FacilityListGrid';
 import InteractiveGoogleMap, { FacilityItem } from '@/components/sections/peta/InteractiveGoogleMap';
 import AddFacilityModal from '@/components/admin/AddFacilityModal';
+import Pagination from '@/components/ui/Pagination';
 import { Plus } from 'lucide-react';
 
 export default function PetaPage() {
@@ -13,6 +14,7 @@ export default function PetaPage() {
   const [activeCategory, setActiveCategory] = useState<string>('Semua');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isAddFacilityOpen, setIsAddFacilityOpen] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   // Fetch data fasilitas dari API
   const loadFacilities = async () => {
@@ -50,6 +52,21 @@ export default function PetaPage() {
     if (activeCategory === 'Semua') return facilities;
     return facilities.filter((f) => f.category === activeCategory);
   }, [facilities, activeCategory]);
+
+  // Reset page ke 1 saat kategori berubah
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeCategory]);
+
+  // Threshold: > 6 lokasi fasilitas -> 6 per halaman
+  const ITEMS_PER_PAGE = 6;
+  const totalPages = Math.ceil(filteredFacilities.length / ITEMS_PER_PAGE);
+  const paginatedFacilities = useMemo(() => {
+    return filteredFacilities.slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      currentPage * ITEMS_PER_PAGE
+    );
+  }, [filteredFacilities, currentPage]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -95,12 +112,26 @@ export default function PetaPage() {
             <InteractiveGoogleMap facilities={filteredFacilities} />
           )}
 
-          {/* Grid List Facility Places */}
-          <FacilityListGrid facilities={filteredFacilities} />
+          {/* Grid List Facility Places & Pagination (Berlaku ketika fasilitas > 6) */}
+          <div className="space-y-8">
+            <FacilityListGrid facilities={paginatedFacilities} />
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                window.scrollTo({ top: 500, behavior: 'smooth' });
+              }}
+              totalItems={filteredFacilities.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+              itemName="lokasi fasilitas"
+            />
+          </div>
         </div>
       </section>
 
-      {/* Add Facility Modal (Max 1MB image validation, Leaflet location picker, Google Maps parser) */}
+      {/* Add Facility Modal */}
       <AddFacilityModal
         isOpen={isAddFacilityOpen}
         onClose={() => setIsAddFacilityOpen(false)}

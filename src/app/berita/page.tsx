@@ -5,6 +5,7 @@ import ArticleHeader from '@/components/sections/berita/ArticleHeader';
 import ArticleFeaturedHero, { ArticleItem } from '@/components/sections/berita/ArticleFeaturedHero';
 import ArticleMiddleBanners from '@/components/sections/berita/ArticleMiddleBanners';
 import ArticleLatestGrid from '@/components/sections/berita/ArticleLatestGrid';
+import Pagination from '@/components/ui/Pagination';
 
 const CATEGORIES = [
   'Semua',
@@ -25,6 +26,7 @@ export default function BeritaPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('Semua');
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Fetch articles from API
   useEffect(() => {
@@ -62,10 +64,24 @@ export default function BeritaPage() {
     });
   }, [articles, searchQuery, activeCategory]);
 
-  const mainArticle = filteredArticles[0] || articles[0];
-  const secondaryArticles = filteredArticles.slice(1, 4);
-  const middleBannerArticles = filteredArticles.slice(4, 6);
-  const latestArticles = filteredArticles.slice(6);
+  // Reset page ke 1 saat filter pencarian atau kategori berubah
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, activeCategory]);
+
+  // Threshold: > 6 berita -> 6 berita per halaman
+  const ITEMS_PER_PAGE = 6;
+  const totalPages = Math.ceil(filteredArticles.length / ITEMS_PER_PAGE);
+  const paginatedArticles = useMemo(() => {
+    return filteredArticles.slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      currentPage * ITEMS_PER_PAGE
+    );
+  }, [filteredArticles, currentPage]);
+
+  const mainArticle = paginatedArticles[0] || articles[0];
+  const secondaryArticles = paginatedArticles.slice(1, 4);
+  const middleBannerArticles = paginatedArticles.slice(4, 6);
 
   return (
     <div className="flex flex-col min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-[#0086C9] selection:text-white">
@@ -99,7 +115,7 @@ export default function BeritaPage() {
           </button>
         </div>
       ) : (
-        <main className="space-y-4">
+        <main className="space-y-6 pb-16">
           {/* Top Featured Hero Section */}
           {mainArticle && (
             <ArticleFeaturedHero
@@ -114,15 +130,22 @@ export default function BeritaPage() {
           )}
 
           {/* Bottom Latest Articles Grid Section */}
-          <ArticleLatestGrid
-            articles={
-              latestArticles.length > 0
-                ? latestArticles
-                : filteredArticles.length > 3
-                ? filteredArticles.slice(3)
-                : filteredArticles
-            }
-          />
+          <ArticleLatestGrid articles={paginatedArticles} />
+
+          {/* Pagination (Berlaku ketika berita > 6) */}
+          <div className="container-section px-4 sm:px-6">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                window.scrollTo({ top: 300, behavior: 'smooth' });
+              }}
+              totalItems={filteredArticles.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+              itemName="berita & pengumuman"
+            />
+          </div>
         </main>
       )}
     </div>
