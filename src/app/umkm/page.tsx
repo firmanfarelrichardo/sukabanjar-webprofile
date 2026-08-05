@@ -7,6 +7,7 @@ import UmkmCardGrid, { UmkmProduct } from '@/components/sections/umkm/UmkmCardGr
 import UmkmCTA from '@/components/sections/umkm/UmkmCTA';
 import AdminUmkmValidationModal from '@/components/sections/umkm/AdminUmkmValidationModal';
 import PublicUmkmRegistrationModal from '@/components/sections/umkm/PublicUmkmRegistrationModal';
+import Pagination from '@/components/ui/Pagination';
 import { useAdmin } from '@/context/AdminContext';
 import { ShieldCheck, Inbox } from 'lucide-react';
 
@@ -19,6 +20,7 @@ export default function UmkmPage() {
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [isValidatingModalOpen, setIsValidatingModalOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Fetch data UMKM dari API
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function UmkmPage() {
     loadUmkm();
   }, [isAdmin]);
 
-  // Filter produk berdasarkan pencarian & kategori (menggunakan field category dari DB)
+  // Filter produk berdasarkan pencarian & kategori
   const filteredProducts = useMemo(() => {
     return products.filter((item) => {
       const matchesSearch =
@@ -66,6 +68,21 @@ export default function UmkmPage() {
       return matchesSearch && matchesCategory;
     });
   }, [products, searchQuery, activeCategory]);
+
+  // Reset page ke 1 saat filter pencarian/kategori berubah
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, activeCategory]);
+
+  // Threshold: > 6 UMKM -> 6 UMKM per halaman
+  const ITEMS_PER_PAGE = 6;
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const paginatedProducts = useMemo(() => {
+    return filteredProducts.slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      currentPage * ITEMS_PER_PAGE
+    );
+  }, [filteredProducts, currentPage]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -111,7 +128,22 @@ export default function UmkmPage() {
               Memuat katalog produk UMKM...
             </div>
           ) : (
-            <UmkmCardGrid products={filteredProducts} />
+            <div className="space-y-8">
+              <UmkmCardGrid products={paginatedProducts} />
+
+              {/* Pagination (Berlaku ketika produk UMKM > 6) */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => {
+                  setCurrentPage(page);
+                  window.scrollTo({ top: 400, behavior: 'smooth' });
+                }}
+                totalItems={filteredProducts.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                itemName="produk UMKM"
+              />
+            </div>
           )}
         </div>
       </section>

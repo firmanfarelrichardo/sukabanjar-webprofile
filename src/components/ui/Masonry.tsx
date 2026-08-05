@@ -7,7 +7,8 @@ import './Masonry.css';
 
 export interface MasonryItem {
   id: string;
-  img: string;
+  img?: string;
+  imageUrl?: string;
   url?: string;
   title: string;
   category?: string;
@@ -132,7 +133,27 @@ export default function Masonry({
   };
 
   useEffect(() => {
-    preloadImages(items.map((i) => i.img)).then(() => setImagesReady(true));
+    const urls = items
+      .map((i) => i.img || i.imageUrl)
+      .filter(Boolean) as string[];
+
+    let isCancelled = false;
+    const timer = setTimeout(() => {
+      if (!isCancelled) setImagesReady(true);
+    }, 600);
+
+    if (urls.length > 0) {
+      preloadImages(urls).then(() => {
+        if (!isCancelled) setImagesReady(true);
+      });
+    } else {
+      setImagesReady(true);
+    }
+
+    return () => {
+      isCancelled = true;
+      clearTimeout(timer);
+    };
   }, [items]);
 
   const grid = useMemo(() => {
@@ -141,12 +162,34 @@ export default function Masonry({
     const colHeights = new Array(columns).fill(0);
     const columnWidth = width / columns;
 
-    return items.map((child) => {
+    return items.map((child, index) => {
       const col = colHeights.indexOf(Math.min(...colHeights));
       const x = columnWidth * col;
-      const height = child.height || 380;
-      const y = colHeights[col];
+      
+      // Calculate dynamic aspect ratio height: 16:9 landscape, 1:1 square, or 9:16 portrait
+      const format = child.aspectFormat || child.format || child.aspectRatio;
+      let height: number;
 
+      if (format === 'landscape' || format === '16:9') {
+        height = Math.round(columnWidth * (9 / 16));
+      } else if (format === 'square' || format === '1:1') {
+        height = Math.round(columnWidth * 1.0);
+      } else if (format === 'portrait' || format === '9:16' || format === '16:9-portrait') {
+        height = Math.round(columnWidth * (16 / 9));
+      } else {
+        // Pattern sequence: Portrait (9:16), Landscape (16:9), Square (1:1)
+        const pattern = [
+          Math.round(columnWidth * (16 / 9)), // Portrait 9:16
+          Math.round(columnWidth * (9 / 16)), // Landscape 16:9
+          Math.round(columnWidth * 1.0),      // Square 1:1
+          Math.round(columnWidth * (9 / 16)), // Landscape 16:9
+          Math.round(columnWidth * (16 / 9)), // Portrait 9:16
+          Math.round(columnWidth * 1.0),      // Square 1:1
+        ];
+        height = pattern[index % pattern.length];
+      }
+
+      const y = colHeights[col];
       colHeights[col] += height;
 
       return { ...child, x, y, w: columnWidth, h: height };
@@ -236,6 +279,11 @@ export default function Masonry({
       style={{ height: `${maxContainerHeight}px` }}
     >
       {grid.map((item) => {
+        const imgSrc =
+          item.img ||
+          item.imageUrl ||
+          'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200&auto=format&fit=crop';
+
         return (
           <div
             key={item.id}
@@ -245,16 +293,23 @@ export default function Masonry({
             onMouseEnter={(e) => handleMouseEnter(e, item)}
             onMouseLeave={(e) => handleMouseLeave(e, item)}
           >
-            <div
-              className="masonry-item-img"
-              style={{ backgroundImage: `url(${item.img})` }}
-            >
+            <div className="masonry-item-img relative overflow-hidden bg-slate-900 w-full h-full">
+              <img
+                src={imgSrc}
+                alt={item.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src =
+                    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200&auto=format&fit=crop';
+                }}
+              />
+
               {colorShiftOnHover && <div className="masonry-color-overlay" />}
 
               {/* Badge Overlay Details */}
               <div className="masonry-info-badge space-y-1.5">
                 {item.category && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-primary-500/90 text-white backdrop-blur-md shadow-sm">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#0086C9]/90 text-white backdrop-blur-md shadow-sm">
                     <Tag size={10} />
                     {item.category}
                   </span>
