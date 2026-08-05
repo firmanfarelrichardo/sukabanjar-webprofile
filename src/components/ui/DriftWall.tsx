@@ -56,8 +56,8 @@ const columnFactor = (index: number, variance: number): number => {
 export default function DriftWall({
   items = DEFAULT_ITEMS,
   columns = 7,
-  tileWidth = 210,
-  tileHeight = 310,
+  tileWidth = 250,
+  tileHeight = 155,
   gap = 18,
   radius = 16,
   tilt = 8,
