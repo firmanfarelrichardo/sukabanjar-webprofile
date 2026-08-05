@@ -40,7 +40,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [announcements] = useState<Announcement[]>(DEFAULT_TICKER_ITEMS);
 
-  if (pathname?.startsWith('/admin')) return null;
+  if (pathname?.startsWith('/admin') || pathname === '/kkn') return null;
 
   return (
     <>

@@ -10,7 +10,7 @@ export default function Footer() {
   const pathname = usePathname();
   const { profile } = useVillageProfile();
 
-  if (pathname?.startsWith('/admin')) return null;
+  if (pathname?.startsWith('/admin') || pathname === '/kkn') return null;
 
   return (
     <footer className="bg-[#0086C9] text-white border-t border-sky-400/30">
@@ -143,8 +143,8 @@ export default function Footer() {
 
             {/* KKN Credit Link in Middle */}
             <Link
-              href="/profil"
-              className="text-xs hover:text-white underline underline-offset-4 transition-colors cursor-pointer"
+              href="/kkn"
+              className="text-xs hover:text-white underline underline-offset-4 transition-colors cursor-pointer font-bold text-amber-300 hover:text-amber-200"
             >
               Dibuat oleh KKN Desa Suka Banjar 2026
             </Link>

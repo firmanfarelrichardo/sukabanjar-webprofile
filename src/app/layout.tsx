@@ -14,6 +14,7 @@ import AdminSaveBar from '@/components/admin/AdminSaveBar';
 import InlineEditModal from '@/components/admin/InlineEditModal';
 import AdminInboxModal from '@/components/admin/AdminInboxModal';
 import ExitEditConfirmationModal from '@/components/admin/ExitEditConfirmationModal';
+import IntroSplashOverlay from '@/components/layout/IntroSplashOverlay';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -63,6 +64,9 @@ export default function RootLayout({
       <body className="antialiased flex flex-col min-h-screen">
         <VillageProfileProvider>
           <AdminProvider>
+            {/* Initial Full-Screen Animated Splash Transition Overlay */}
+            <IntroSplashOverlay />
+
             {/* Dynamic Favicon tab icon */}
             <DynamicFavicon />
 
