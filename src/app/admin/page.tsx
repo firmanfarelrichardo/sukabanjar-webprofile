@@ -29,6 +29,7 @@ import {
   Search,
   Filter,
   X,
+  UserCheck,
 } from 'lucide-react';
 import { useAdmin } from '@/context/AdminContext';
 import AddUmkmModal from '@/components/admin/AddUmkmModal';
@@ -36,6 +37,7 @@ import EditUmkmModal from '@/components/admin/EditUmkmModal';
 import AddGalleryModal from '@/components/admin/AddGalleryModal';
 import AddArticleModal from '@/components/admin/AddArticleModal';
 import AddFacilityModal from '@/components/admin/AddFacilityModal';
+import AddOfficialModal from '@/components/admin/AddOfficialModal';
 import EditVillageProfileModal from '@/components/admin/EditVillageProfileModal';
 import AdminUmkmValidationModal from '@/components/sections/umkm/AdminUmkmValidationModal';
 import AdminProfileEditTab from '@/components/admin/AdminProfileEditTab';
@@ -44,7 +46,7 @@ import Pagination from '@/components/ui/Pagination';
 
 export default function AdminDashboardPage() {
   const { openInboxModal, setIsEditMode, setUnreadCount } = useAdmin();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'edit-website' | 'sipdeskel' | 'inbox' | 'profile'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'edit-website' | 'apparatus' | 'sipdeskel' | 'inbox' | 'profile'>('dashboard');
 
   const [stats, setStats] = useState({
     totalAspirations: 0,
@@ -62,12 +64,14 @@ export default function AdminDashboardPage() {
   const [galleryList, setGalleryList] = useState<any[]>([]);
   const [umkmList, setUmkmList] = useState<any[]>([]);
   const [facilitiesList, setFacilitiesList] = useState<any[]>([]);
+  const [apparatusList, setApparatusList] = useState<any[]>([]);
 
   // Pagination States
   const [articlesPage, setArticlesPage] = useState(1);
   const [galleryPage, setGalleryPage] = useState(1);
   const [umkmPage, setUmkmPage] = useState(1);
   const [facilityPage, setFacilityPage] = useState(1);
+  const [apparatusPage, setApparatusPage] = useState(1);
 
   // Search & Filter States for Admin Sections
   const [articleSearch, setArticleSearch] = useState('');
@@ -82,11 +86,15 @@ export default function AdminDashboardPage() {
   const [facilitySearch, setFacilitySearch] = useState('');
   const [facilityCategory, setFacilityCategory] = useState('Semua');
 
+  const [apparatusSearch, setApparatusSearch] = useState('');
+  const [apparatusCategory, setApparatusCategory] = useState('Semua');
+
   // Reset pagination on filter changes
   useEffect(() => setArticlesPage(1), [articleSearch, articleCategory]);
   useEffect(() => setGalleryPage(1), [gallerySearch, galleryCategory]);
   useEffect(() => setUmkmPage(1), [umkmSearch, umkmCategory]);
   useEffect(() => setFacilityPage(1), [facilitySearch, facilityCategory]);
+  useEffect(() => setApparatusPage(1), [apparatusSearch, apparatusCategory]);
 
   // Filtered Articles
   const filteredAdminArticles = useMemo(() => {
@@ -148,6 +156,26 @@ export default function AdminDashboardPage() {
     });
   }, [facilitiesList, facilitySearch, facilityCategory]);
 
+  // Filtered Apparatus
+  const filteredAdminApparatus = useMemo(() => {
+    return apparatusList.filter((item) => {
+      const matchesSearch =
+        !apparatusSearch.trim() ||
+        item.name.toLowerCase().includes(apparatusSearch.toLowerCase()) ||
+        (item.role && item.role.toLowerCase().includes(apparatusSearch.toLowerCase()));
+      const matchesCat = apparatusCategory === 'Semua' || item.role === apparatusCategory;
+      return matchesSearch && matchesCat;
+    });
+  }, [apparatusList, apparatusSearch, apparatusCategory]);
+
+  // Unique Apparatus Roles for Dynamic Filter Options
+  const uniqueApparatusRoles = useMemo(() => {
+    const roles = Array.from(
+      new Set(apparatusList.map((item) => item.role).filter(Boolean))
+    );
+    return roles;
+  }, [apparatusList]);
+
   const [inboxFilter, setInboxFilter] = useState<'all' | 'unread'>('all');
   const [selectedAspiration, setSelectedAspiration] = useState<any | null>(null);
 
@@ -166,6 +194,9 @@ export default function AdminDashboardPage() {
 
   const [isAddFacilityOpen, setIsAddFacilityOpen] = useState(false);
   const [facilityToEdit, setFacilityToEdit] = useState<any | null>(null);
+
+  const [isAddOfficialOpen, setIsAddOfficialOpen] = useState(false);
+  const [officialToEdit, setOfficialToEdit] = useState<any | null>(null);
 
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isUmkmValidationOpen, setIsUmkmValidationOpen] = useState(false);
@@ -257,16 +288,43 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const fetchApparatus = async () => {
+    try {
+      const res = await fetch('/api/apparatus');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          setApparatusList(json.data);
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching apparatus:', err);
+    }
+  };
+
+  const handleDeleteOfficial = async (id: string, name: string) => {
+    if (!confirm(`Apakah Anda yakin ingin menghapus data perangkat desa "${name}"?`)) return;
+    try {
+      const res = await fetch(`/api/apparatus?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setApparatusList((prev) => prev.filter((item) => item.id !== id));
+      }
+    } catch (err) {
+      console.error('Error deleting apparatus:', err);
+    }
+  };
+
   useEffect(() => {
     async function loadStats() {
       try {
         setIsLoading(true);
-        const [aspRes, artRes, umkmRes, galRes, facRes] = await Promise.all([
+        const [aspRes, artRes, umkmRes, galRes, facRes, appRes] = await Promise.all([
           fetch('/api/admin/aspirations'),
           fetch('/api/articles'),
           fetch('/api/umkm?all=true'),
           fetch('/api/gallery'),
           fetch('/api/facilities'),
+          fetch('/api/apparatus'),
         ]);
 
         let aspirations = [];
@@ -274,6 +332,7 @@ export default function AdminDashboardPage() {
         let umkm = [];
         let gallery = [];
         let facilities = [];
+        let apparatus = [];
 
         if (aspRes.ok) {
           const json = await aspRes.json();
@@ -300,11 +359,17 @@ export default function AdminDashboardPage() {
           if (json.success && json.data) facilities = json.data;
         }
 
+        if (appRes.ok) {
+          const json = await appRes.json();
+          if (json.success && json.data) apparatus = json.data;
+        }
+
         setAspirationsList(aspirations);
         setArticlesList(articles);
         setUmkmList(umkm);
         setGalleryList(gallery);
         setFacilitiesList(facilities);
+        setApparatusList(apparatus);
 
         const unreadAsp = aspirations.filter((a: any) => !a.isRead).length;
         setUnreadCount(unreadAsp);
@@ -470,6 +535,18 @@ export default function AdminDashboardPage() {
           >
             <Edit3 size={16} />
             <span>Kelola Website</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('apparatus')}
+            className={`inline-flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'apparatus'
+                ? 'bg-[#0086C9] text-white shadow-lg shadow-[#0086C9]/20'
+                : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <UserCheck size={16} />
+            <span>Aparatur Desa</span>
           </button>
 
           <button
@@ -1317,10 +1394,290 @@ export default function AdminDashboardPage() {
               </div>
             )}
           </div>
+
+          {/* SECTION 5: PENGELOLAAN PERANGKAT DESA (APARATUR) */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900 font-heading flex items-center gap-2">
+                  <UserCheck size={20} className="text-[#0086C9]" />
+                  <span>Pengelolaan Perangkat Desa (Aparatur)</span>
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Kelola daftar aparatur desa, ubah nama, jabatan, foto profil, dan urutan hirarki tampilan di beranda
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setOfficialToEdit(null);
+                  setIsAddOfficialOpen(true);
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0086C9] hover:bg-[#006ca3] text-white font-extrabold text-xs shadow-md transition-all hover:scale-105 cursor-pointer shrink-0"
+              >
+                <Plus size={16} />
+                <span>Tambah Perangkat Desa Baru</span>
+              </button>
+            </div>
+
+            {/* Search & Role Filter Bar */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
+              <div className="relative flex-1 w-full">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Cari nama perangkat desa, jabatan..."
+                  value={apparatusSearch}
+                  onChange={(e) => setApparatusSearch(e.target.value)}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-800 font-medium focus:outline-none focus:border-[#0086C9] focus:ring-1 focus:ring-[#0086C9]"
+                />
+                {apparatusSearch && (
+                  <button
+                    onClick={() => setApparatusSearch('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                <Filter size={15} className="text-slate-400 shrink-0" />
+                <select
+                  value={apparatusCategory}
+                  onChange={(e) => setApparatusCategory(e.target.value)}
+                  className="w-full sm:w-48 py-2 px-3 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none focus:border-[#0086C9] cursor-pointer"
+                >
+                  <option value="Semua">Semua Jabatan</option>
+                  {uniqueApparatusRoles.map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {filteredAdminApparatus.length === 0 ? (
+              <p className="text-xs text-slate-400 py-6 text-center">
+                {apparatusList.length === 0
+                  ? 'Belum ada data perangkat desa yang didaftarkan.'
+                  : 'Tidak ditemukan perangkat desa yang sesuai dengan pencarian.'}
+              </p>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {filteredAdminApparatus
+                    .slice((apparatusPage - 1) * 8, apparatusPage * 8)
+                    .map((item) => (
+                      <div
+                        key={item.id}
+                        className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
+                      >
+                        <div className="space-y-2">
+                          <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-900 relative">
+                            <img
+                              src={
+                                item.imageUrl ||
+                                'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop'
+                              }
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                            />
+                            <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-black bg-amber-500 text-slate-950 shadow">
+                              Urutan #{item.orderNum || 1}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#0086C9]/10 text-[#0086C9]">
+                              {item.role}
+                            </span>
+                            <h4 className="font-extrabold text-xs text-slate-900 line-clamp-1 mt-1">
+                              {item.name}
+                            </h4>
+                          </div>
+                        </div>
+
+                        <div className="pt-2 border-t border-slate-200/80 flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => {
+                              setOfficialToEdit(item);
+                              setIsAddOfficialOpen(true);
+                            }}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] transition-colors cursor-pointer"
+                          >
+                            <Edit3 size={12} />
+                            <span>Edit</span>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteOfficial(item.id, item.name)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-[11px] border border-rose-200 transition-colors cursor-pointer"
+                          >
+                            <Trash2 size={12} />
+                            <span>Hapus</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                <Pagination
+                  currentPage={apparatusPage}
+                  totalPages={Math.ceil(filteredAdminApparatus.length / 8)}
+                  onPageChange={(p) => setApparatusPage(p)}
+                  totalItems={filteredAdminApparatus.length}
+                  itemsPerPage={8}
+                  itemName="perangkat desa"
+                />
+              </div>
+            )}
+          </div>
         </div>
       )}
 
-      {/* MENU 3: PROFIL DESA, KONTAK & SOSMED */}
+      {/* MENU 3: KELOLA APARATUR DESA */}
+      {activeTab === 'apparatus' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900 font-heading flex items-center gap-2">
+                  <UserCheck size={20} className="text-[#0086C9]" />
+                  <span>Pengelolaan Aparatur & Perangkat Desa</span>
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Kelola daftar aparatur desa, ubah nama, jabatan, foto profil, dan urutan hirarki tampilan di beranda
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setOfficialToEdit(null);
+                  setIsAddOfficialOpen(true);
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0086C9] hover:bg-[#006ca3] text-white font-extrabold text-xs shadow-md transition-all hover:scale-105 cursor-pointer shrink-0"
+              >
+                <Plus size={16} />
+                <span>Tambah Perangkat Desa Baru</span>
+              </button>
+            </div>
+
+            {/* Search & Role Filter Bar */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
+              <div className="relative flex-1 w-full">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Cari nama perangkat desa, jabatan..."
+                  value={apparatusSearch}
+                  onChange={(e) => setApparatusSearch(e.target.value)}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-800 font-medium focus:outline-none focus:border-[#0086C9] focus:ring-1 focus:ring-[#0086C9]"
+                />
+                {apparatusSearch && (
+                  <button
+                    onClick={() => setApparatusSearch('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                <Filter size={15} className="text-slate-400 shrink-0" />
+                <select
+                  value={apparatusCategory}
+                  onChange={(e) => setApparatusCategory(e.target.value)}
+                  className="w-full sm:w-48 py-2 px-3 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none focus:border-[#0086C9] cursor-pointer"
+                >
+                  <option value="Semua">Semua Jabatan</option>
+                  {uniqueApparatusRoles.map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {filteredAdminApparatus.length === 0 ? (
+              <p className="text-xs text-slate-400 py-6 text-center">
+                {apparatusList.length === 0
+                  ? 'Belum ada data perangkat desa yang didaftarkan.'
+                  : 'Tidak ditemukan perangkat desa yang sesuai dengan pencarian.'}
+              </p>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {filteredAdminApparatus
+                    .slice((apparatusPage - 1) * 8, apparatusPage * 8)
+                    .map((item) => (
+                      <div
+                        key={item.id}
+                        className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 flex flex-col justify-between"
+                      >
+                        <div className="space-y-2">
+                          <div className="w-full h-36 rounded-xl overflow-hidden bg-slate-900 relative">
+                            <img
+                              src={
+                                item.imageUrl ||
+                                'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop'
+                              }
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                            />
+                            <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-black bg-amber-500 text-slate-950 shadow">
+                              Urutan #{item.orderNum || 1}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#0086C9]/10 text-[#0086C9]">
+                              {item.role}
+                            </span>
+                            <h4 className="font-extrabold text-xs text-slate-900 line-clamp-1 mt-1">
+                              {item.name}
+                            </h4>
+                          </div>
+                        </div>
+
+                        <div className="pt-2 border-t border-slate-200/80 flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => {
+                              setOfficialToEdit(item);
+                              setIsAddOfficialOpen(true);
+                            }}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] transition-colors cursor-pointer"
+                          >
+                            <Edit3 size={12} />
+                            <span>Edit</span>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteOfficial(item.id, item.name)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 font-bold text-[11px] border border-rose-200 transition-colors cursor-pointer"
+                          >
+                            <Trash2 size={12} />
+                            <span>Hapus</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                <Pagination
+                  currentPage={apparatusPage}
+                  totalPages={Math.ceil(filteredAdminApparatus.length / 8)}
+                  onPageChange={(p) => setApparatusPage(p)}
+                  totalItems={filteredAdminApparatus.length}
+                  itemsPerPage={8}
+                  itemName="perangkat desa"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* MENU 4: PROFIL DESA, KONTAK & SOSMED */}
       {activeTab === 'profile' && <AdminProfileEditTab />}
 
       {/* MENU 4: SINKRONISASI & DEMOGRAFI SIPDESKEL */}
@@ -1564,6 +1921,16 @@ export default function AdminDashboardPage() {
           setFacilityToEdit(null);
         }}
         onSuccess={fetchFacilities}
+      />
+
+      <AddOfficialModal
+        isOpen={isAddOfficialOpen}
+        itemToEdit={officialToEdit}
+        onClose={() => {
+          setIsAddOfficialOpen(false);
+          setOfficialToEdit(null);
+        }}
+        onSuccess={fetchApparatus}
       />
 
       <EditVillageProfileModal
