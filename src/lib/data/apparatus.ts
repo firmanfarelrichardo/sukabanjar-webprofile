@@ -9,8 +9,8 @@ export interface OfficialItem {
   gender?: string | null;
   address?: string | null;
   description?: string | null;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
 }
 
 export const DEFAULT_OFFICIALS: OfficialItem[] = [
