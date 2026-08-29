@@ -66,6 +66,7 @@ context/
 │
 ├── 05-setup/             ← Panduan setup lingkungan lokal & cloud (Zero to Hero)
 │   ├── setup-sequence.md        ← MASTER urutan setup kronologis & sistematis dari nol
+│   ├── SEO_GUIDE.md             ← Panduan Lengkap SEO & Google Search Console Indexing
 │   ├── local-development.md     ← Panduan menjalankan aplikasi di lokal
 │   ├── supabase-setup.md        ← Panduan setup database PostgreSQL & Storage Supabase
 │   ├── environment-variables.md ← Dokumentasi variabel lingkungan (.env.local)
@@ -81,7 +82,8 @@ context/
     ├── facilities.md     ← Peta Interaktif & Fasilitas Publik (Leaflet.js)
     ├── umkm.md           ← Katalog UMKM & Direct WhatsApp
     ├── tourism.md        ← Destinasi Wisata & Galeri Foto
-    └── articles.md       ← Portal Berita, Artikel & Pengumuman
+    ├── articles.md       ← Portal Berita, Artikel & Pengumuman
+    └── features-and-improvements.md ← Fitur Baru & Perbaikan (Biodata Aparatur, Maps Baru, SIPDeskel Persistence, Splash)
 ```
 
 ---

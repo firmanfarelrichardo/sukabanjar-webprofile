@@ -44,14 +44,14 @@ const DEFAULT_PROFILE_DATA: VillageProfileData = {
   subdistrict: 'Sidomulyo',
   district: 'Lampung Selatan',
   province: 'Lampung',
-  logoUrl: '/images/logo-desa.png',
+  logoUrl: 'https://sipdeskel.id/LAMPUNG/LAMPUNGSELATAN/Sidomulyo/SukaBanjar/foto_desa/18_01_07_2004_logo_desa.jpg?',
   phone: '081234567890',
   email: 'desa.sukabanjar@gmail.com',
   address: 'Jl. Raya Desa Suka Banjar, Kec. Sidomulyo, Kab. Lampung Selatan',
   socialMedia: DEFAULT_5_SOCIAL_MEDIA,
 };
 
-const LOCAL_STORAGE_KEY = 'sukabanjar_village_profile_v5';
+const LOCAL_STORAGE_KEY = 'sukabanjar_village_profile_v6';
 
 const VillageProfileContext = createContext<VillageProfileContextType>({
   profile: DEFAULT_PROFILE_DATA,

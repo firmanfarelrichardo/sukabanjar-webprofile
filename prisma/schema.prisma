@@ -45,13 +45,18 @@ model Aspiration {
 
 // 3. Data Perangkat Desa (Struktur Organisasi)
 model Apparatus {
-  id        String   @id @default(uuid())
-  name      String
-  role      String
-  imageUrl  String?
-  orderNum  Int      @default(0) // Untuk urutan tampilan hirarki
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  role        String
+  imageUrl    String?
+  orderNum    Int      @default(0) // Untuk urutan tampilan hirarki
+  birthPlace  String?  // Tempat Lahir (misal: "Lampung Selatan")
+  birthDate   String?  // Tanggal Lahir (misal: "1985-05-12" atau teks)
+  gender      String?  // Jenis Kelamin ("Laki-Laki" | "Perempuan")
+  address     String?  @db.Text // Alamat Domisili
+  description String?  @db.Text // Deskripsi Singkat
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // 4. Modul Berita & Artikel
