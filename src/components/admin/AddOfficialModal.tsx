@@ -35,6 +35,11 @@ export default function AddOfficialModal({
   const [role, setRole] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [orderNum, setOrderNum] = useState<number>(1);
+  const [birthPlace, setBirthPlace] = useState('');
+  const [birthDate, setBirthDate] = useState('');
+  const [gender, setGender] = useState('Laki-Laki');
+  const [address, setAddress] = useState('');
+  const [description, setDescription] = useState('');
 
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
@@ -47,11 +52,21 @@ export default function AddOfficialModal({
         setRole(itemToEdit.role || '');
         setImageUrl(itemToEdit.imageUrl || itemToEdit.img || '');
         setOrderNum(itemToEdit.orderNum || 1);
+        setBirthPlace(itemToEdit.birthPlace || '');
+        setBirthDate(itemToEdit.birthDate || '');
+        setGender(itemToEdit.gender || 'Laki-Laki');
+        setAddress(itemToEdit.address || '');
+        setDescription(itemToEdit.description || '');
       } else {
         setName('');
         setRole('');
         setImageUrl('');
         setOrderNum(1);
+        setBirthPlace('');
+        setBirthDate('');
+        setGender('Laki-Laki');
+        setAddress('');
+        setDescription('');
       }
     }
   }, [isOpen, itemToEdit]);
@@ -119,6 +134,11 @@ export default function AddOfficialModal({
           role: finalRole,
           imageUrl: imageUrl.trim() || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
           orderNum: Number(orderNum) || 1,
+          birthPlace: birthPlace.trim() || null,
+          birthDate: birthDate.trim() || null,
+          gender: gender || 'Laki-Laki',
+          address: address.trim() || null,
+          description: description.trim() || null,
         }),
       });
 
@@ -139,7 +159,7 @@ export default function AddOfficialModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div className="flex items-center gap-3">
@@ -148,12 +168,12 @@ export default function AddOfficialModal({
             </div>
             <div>
               <h3 className="font-heading font-black text-lg text-slate-900">
-                {itemToEdit ? 'Edit Data Perangkat Desa' : 'Tambah Perangkat Desa Baru'}
+                {itemToEdit ? 'Edit Biodata Perangkat Desa' : 'Tambah Perangkat Desa Baru'}
               </h3>
               <p className="text-xs text-slate-500">
                 {itemToEdit
-                  ? 'Ubah nama, jabatan, foto, atau urutan tampilan perangkat desa'
-                  : 'Daftarkan aparatur atau perangkat desa untuk tampil di halaman Beranda'}
+                  ? 'Perbarui nama, jabatan, biodata lengkap, dan foto profil aparatur'
+                  : 'Daftarkan aparatur desa dengan biodata lengkap untuk halaman publik'}
               </p>
             </div>
           </div>
@@ -167,52 +187,116 @@ export default function AddOfficialModal({
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Nama Lengkap & Gelar */}
-          <div className="space-y-1">
-            <label className="text-xs font-extrabold text-slate-700">
-              Nama Lengkap & Gelar <span className="text-rose-500">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="Contoh: Dedi Kurniawan, S.IP"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 text-xs focus:ring-2 focus:ring-[#0086C9] focus:outline-none"
-            />
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Nama Lengkap & Gelar */}
+            <div className="space-y-1 sm:col-span-2">
+              <label className="text-xs font-extrabold text-slate-700">
+                Nama Lengkap & Gelar <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="Contoh: Dedi Kurniawan, S.IP"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 text-xs focus:ring-2 focus:ring-[#0086C9] focus:outline-none"
+              />
+            </div>
 
-          {/* Jabatan / Posisi (Ketik Manual Langsung) */}
-          <div className="space-y-1">
-            <label className="text-xs font-extrabold text-slate-700">
-              Jabatan / Posisi <span className="text-rose-500">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="Contoh: Kepala Desa / Sekretaris Desa / Kaur Keuangan"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 text-xs focus:ring-2 focus:ring-[#0086C9] focus:outline-none"
-            />
-          </div>
+            {/* Jabatan / Posisi */}
+            <div className="space-y-1">
+              <label className="text-xs font-extrabold text-slate-700">
+                Jabatan / Posisi <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="Contoh: Kepala Desa / Kaur Keuangan"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 text-xs focus:ring-2 focus:ring-[#0086C9] focus:outline-none"
+              />
+            </div>
 
-          {/* Urutan Tampilan */}
-          <div className="space-y-1">
-            <label className="text-xs font-extrabold text-slate-700">
-              Urutan Hirarki Tampilan (Angka)
-            </label>
-            <input
-              type="number"
-              min={1}
-              max={100}
-              value={orderNum}
-              onChange={(e) => setOrderNum(parseInt(e.target.value, 10) || 1)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 text-xs focus:ring-2 focus:ring-[#0086C9] focus:outline-none"
-            />
-            <p className="text-[11px] text-slate-400">
-              Semakin kecil angka (misal 1 untuk Kades), semakin depan posisi tampilan pada grid.
-            </p>
+            {/* Urutan Tampilan */}
+            <div className="space-y-1">
+              <label className="text-xs font-extrabold text-slate-700">
+                Urutan Hirarki (1 = Teratas)
+              </label>
+              <input
+                type="number"
+                min={1}
+                max={100}
+                value={orderNum}
+                onChange={(e) => setOrderNum(parseInt(e.target.value, 10) || 1)}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 text-xs focus:ring-2 focus:ring-[#0086C9] focus:outline-none"
+              />
+            </div>
+
+            {/* Tempat Lahir */}
+            <div className="space-y-1">
+              <label className="text-xs font-extrabold text-slate-700">Tempat Lahir</label>
+              <input
+                type="text"
+                placeholder="Tempat Lahir"
+                value={birthPlace}
+                onChange={(e) => setBirthPlace(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 text-xs focus:ring-2 focus:ring-[#0086C9] focus:outline-none"
+              />
+            </div>
+
+            {/* Tanggal Lahir (Input Kalender) */}
+            <div className="space-y-1">
+              <label className="text-xs font-extrabold text-slate-700 flex items-center gap-1">
+                <span>Tanggal Lahir</span>
+                <span className="text-slate-400 font-normal">(Kalender)</span>
+              </label>
+              <input
+                type="date"
+                value={birthDate}
+                onChange={(e) => setBirthDate(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 text-xs focus:ring-2 focus:ring-[#0086C9] focus:outline-none bg-white font-medium"
+              />
+            </div>
+
+            {/* Jenis Kelamin */}
+            <div className="space-y-1 sm:col-span-2">
+              <label className="text-xs font-extrabold text-slate-700">Jenis Kelamin</label>
+              <select
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 text-xs focus:ring-2 focus:ring-[#0086C9] focus:outline-none bg-white font-medium"
+              >
+                <option value="Laki-Laki">Laki-Laki</option>
+                <option value="Perempuan">Perempuan</option>
+              </select>
+            </div>
+
+            {/* Alamat Domisili */}
+            <div className="space-y-1 sm:col-span-2">
+              <label className="text-xs font-extrabold text-slate-700">Alamat Lengkap Domisili</label>
+              <input
+                type="text"
+                placeholder="Silahkan isi alamat domisili"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 text-xs focus:ring-2 focus:ring-[#0086C9] focus:outline-none"
+              />
+            </div>
+
+            {/* Deskripsi Singkat */}
+            <div className="space-y-1 sm:col-span-2">
+              <label className="text-xs font-extrabold text-slate-700">
+                Deskripsi Singkat
+              </label>
+              <textarea
+                rows={3}
+                placeholder="Silahkan isi deskripsi singkat"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 text-xs focus:ring-2 focus:ring-[#0086C9] focus:outline-none leading-relaxed"
+              />
+            </div>
           </div>
 
           {/* Upload Foto */}

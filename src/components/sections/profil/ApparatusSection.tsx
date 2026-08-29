@@ -1,18 +1,17 @@
-import { UserCheck, Shield, Users } from 'lucide-react';
+'use client';
 
-interface ApparatusItem {
-  id: string;
-  name: string;
-  role: string;
-  orderNum: number;
-  imageUrl?: string | null;
-}
+import React, { useState } from 'react';
+import { UserCheck, Shield } from 'lucide-react';
+import { OfficialItem } from '@/lib/data/apparatus';
+import OfficialBiodataModal from '@/components/ui/OfficialBiodataModal';
 
 interface ApparatusSectionProps {
-  apparatus: ApparatusItem[];
+  apparatus: OfficialItem[];
 }
 
 export default function ApparatusSection({ apparatus }: ApparatusSectionProps) {
+  const [selectedOfficial, setSelectedOfficial] = useState<OfficialItem | null>(null);
+
   if (!apparatus || apparatus.length === 0) return null;
 
   return (
@@ -36,7 +35,16 @@ export default function ApparatusSection({ apparatus }: ApparatusSectionProps) {
           {apparatus.map((item) => (
             <div
               key={item.id}
-              className="group relative rounded-2xl bg-white border border-slate-200/80 hover:border-primary-300 p-5 text-center shadow-sm hover:shadow-xl hover:shadow-primary-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col items-center justify-between"
+              onClick={() => setSelectedOfficial(item)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setSelectedOfficial(item);
+                }
+              }}
+              className="group relative rounded-2xl bg-white border border-slate-200/80 hover:border-[#0086C9] p-5 text-center shadow-sm hover:shadow-xl hover:shadow-[#0086C9]/10 transition-all duration-300 hover:-translate-y-1 flex flex-col items-center justify-between cursor-pointer select-none"
             >
               {/* Top Photo / Avatar */}
               <div className="w-full space-y-4">
@@ -46,6 +54,10 @@ export default function ApparatusSection({ apparatus }: ApparatusSectionProps) {
                       src={item.imageUrl}
                       alt={item.name}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop';
+                      }}
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-slate-800 to-primary-900 flex items-center justify-center text-white">
@@ -56,24 +68,30 @@ export default function ApparatusSection({ apparatus }: ApparatusSectionProps) {
 
                 {/* Name & Role */}
                 <div className="space-y-1">
-                  <h3 className="font-heading font-bold text-slate-900 text-base sm:text-lg group-hover:text-primary-600 transition-colors line-clamp-1">
+                  <h3 className="font-heading font-bold text-slate-900 text-base sm:text-lg group-hover:text-[#0086C9] transition-colors line-clamp-1">
                     {item.name}
                   </h3>
-                  <p className="text-xs font-medium text-primary-600 bg-primary-50 px-3 py-1 rounded-full inline-block">
+                  <p className="text-xs font-medium text-[#0086C9] bg-sky-50 px-3 py-1 rounded-full inline-block">
                     {item.role}
                   </p>
                 </div>
               </div>
 
               {/* Status Badge */}
-              <div className="mt-5 pt-3 border-t border-slate-100 w-full flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
+              <div className="mt-5 pt-3 border-t border-slate-100 w-full flex items-center justify-center gap-1.5 text-[11px] text-slate-400 group-hover:text-[#0086C9] transition-colors">
                 <Shield size={12} className="text-emerald-500" />
-                <span>Pemerintah Desa Suka Banjar</span>
+                <span>Lihat Biodata Lengkap &rarr;</span>
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Pop Up Modal Biodata */}
+      <OfficialBiodataModal
+        official={selectedOfficial}
+        onClose={() => setSelectedOfficial(null)}
+      />
     </section>
   );
 }

@@ -371,16 +371,22 @@ export default function DemographicsCharts({
                   {/* Accordion Content: RT/RW Breakdown */}
                   {isExpanded && dusun.rws && dusun.rws.length > 0 && (
                     <div className="p-5 space-y-5 bg-white border-t border-slate-100 animate-fadeIn">
-                      {dusun.rws.map((rw, rwIdx) => (
-                        <div key={rwIdx} className="space-y-3">
-                          <div className="flex items-center justify-between bg-primary-50 p-3 rounded-xl border border-primary-100 text-xs font-bold text-primary-900">
-                            <span>
-                              {rw.rw} {rw.ketua && rw.ketua !== '-' ? `(Ketua: ${rw.ketua})` : ''}
-                            </span>
-                            <span>
-                              {rw.jumlahKK} KK | Total: {rw.jumlah} Jiwa (L: {rw.lakiLaki}, P: {rw.perempuan})
-                            </span>
-                          </div>
+                      {dusun.rws.map((rw, rwIdx) => {
+                        const rwKK = (dusun.rws && dusun.rws.length === 1) ? dusun.households : (rw.jumlahKK || dusun.households);
+                        const rwJumlah = (dusun.rws && dusun.rws.length === 1) ? dusun.population : (rw.jumlah || dusun.population);
+                        const rwLaki = (dusun.rws && dusun.rws.length === 1) ? dusun.lakiLaki : (rw.lakiLaki || dusun.lakiLaki);
+                        const rwPerempuan = (dusun.rws && dusun.rws.length === 1) ? dusun.perempuan : (rw.perempuan || dusun.perempuan);
+
+                        return (
+                          <div key={rwIdx} className="space-y-3">
+                            <div className="flex items-center justify-between bg-primary-50 p-3 rounded-xl border border-primary-100 text-xs font-bold text-primary-900">
+                              <span>
+                                {rw.rw} {rw.ketua && rw.ketua !== '-' ? `(Ketua: ${rw.ketua})` : ''}
+                              </span>
+                              <span>
+                                {rwKK} KK | Total: {rwJumlah} Jiwa (L: {rwLaki}, P: {rwPerempuan})
+                              </span>
+                            </div>
 
                           <div className="overflow-x-auto pl-2 sm:pl-4">
                             <table className="w-full text-left text-xs">
@@ -409,7 +415,8 @@ export default function DemographicsCharts({
                             </table>
                           </div>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>

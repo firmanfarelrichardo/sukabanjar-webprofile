@@ -28,7 +28,10 @@ const plusJakarta = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://desasukabanjar.vercel.app';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: {
     default: `${SITE_INFO.name} — ${SITE_INFO.tagline}`,
     template: `%s | ${SITE_INFO.name}`,
@@ -36,21 +39,45 @@ export const metadata: Metadata = {
   description: SITE_INFO.description,
   keywords: [
     'Desa Suka Banjar',
-    'Profil Desa',
+    'Profil Desa Suka Banjar',
     'Sidomulyo',
     'Lampung Selatan',
-    'UMKM Desa',
+    'Pemerintah Desa Suka Banjar',
+    'UMKM Desa Suka Banjar',
     'Galeri Desa',
     'Aspirasi Warga',
     'Peta Fasilitas',
+    'Statistik Kependudukan',
   ],
-  authors: [{ name: 'Tim Pengelola Desa Suka Banjar' }],
+  authors: [{ name: 'Pemerintah Desa Suka Banjar' }],
+  creator: 'Pemerintah Desa Suka Banjar',
+  publisher: 'Pemerintah Desa Suka Banjar',
   openGraph: {
     title: `${SITE_INFO.name} — ${SITE_INFO.tagline}`,
     description: SITE_INFO.description,
+    url: baseUrl,
     type: 'website',
     locale: 'id_ID',
     siteName: SITE_INFO.name,
+    images: [
+      {
+        url: '/images/logos/logo_desa_sipdeskel.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Logo & Banner Resmi Desa Suka Banjar',
+      },
+    ],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 

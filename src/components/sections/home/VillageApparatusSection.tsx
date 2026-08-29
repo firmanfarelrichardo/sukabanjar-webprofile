@@ -1,64 +1,22 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
-import { UserCheck, Shield, Award, ChevronLeft, ChevronRight } from 'lucide-react';
-
-export interface Official {
-  id: string;
-  name: string;
-  role: string;
-  imageUrl?: string | null;
-  orderNum?: number;
-}
+import React, { useState, useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { DEFAULT_OFFICIALS, OfficialItem } from '@/lib/data/apparatus';
+import OfficialBiodataModal from '@/components/ui/OfficialBiodataModal';
 
 interface VillageApparatusSectionProps {
-  officials?: Official[];
+  officials?: OfficialItem[];
 }
-
-const DEFAULT_OFFICIALS: Official[] = [
-  {
-    id: 'off-1',
-    name: 'Dedi Kurniawan, S.IP',
-    role: 'Kepala Desa',
-    imageUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: 'off-2',
-    name: 'Rahmat Hidayat, S.Sos',
-    role: 'Sekretaris Desa',
-    imageUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: 'off-3',
-    name: 'Budi Santoso, S.E',
-    role: 'Kaur Keuangan',
-    imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: 'off-4',
-    name: 'Siti Aminah, A.Md',
-    role: 'Kaur Perencanaan & Umum',
-    imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: 'off-5',
-    name: 'Ahmad Fauzi, S.H',
-    role: 'Kasi Pemerintahan',
-    imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: 'off-6',
-    name: 'Nurul Huda, S.Pd',
-    role: 'Kasi Kesejahteraan',
-    imageUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop',
-  },
-];
 
 export default function VillageApparatusSection({
   officials = [],
 }: VillageApparatusSectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [items, setItems] = useState<Official[]>(officials && officials.length > 0 ? officials : DEFAULT_OFFICIALS);
+  const [items, setItems] = useState<OfficialItem[]>(
+    officials && officials.length > 0 ? officials : DEFAULT_OFFICIALS
+  );
+  const [selectedOfficial, setSelectedOfficial] = useState<OfficialItem | null>(null);
 
   useEffect(() => {
     async function loadApparatus() {
@@ -81,106 +39,123 @@ export default function VillageApparatusSection({
 
   const handleScroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const scrollAmount = direction === 'left' ? -320 : 320;
+      const scrollAmount = direction === 'left' ? -380 : 380;
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
   return (
-    <section className="py-20 bg-slate-900 relative overflow-hidden text-white">
+    <section id="perangkat-desa" className="py-16 sm:py-20 bg-slate-900 relative overflow-hidden text-white">
       {/* Ambient Orbs Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#0086C9]/10 rounded-full blur-[160px]" />
         <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[140px]" />
       </div>
 
-      <div className="container-section relative z-10 space-y-8">
-        {/* Section Header with Left/Right Navigation */}
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 border-b border-slate-800 pb-6">
-          <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0086C9]/20 text-[#0086C9] border border-[#0086C9]/30 text-xs font-black uppercase tracking-widest backdrop-blur-md">
-              <UserCheck size={14} />
-              <span>Pemerintahan & Pelayan Masyarakat</span>
+      <div className="container-section relative z-10 space-y-6 sm:space-y-8">
+        {/* Section Header dengan Garis Aksen & Tombol Navigasi Scroll */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-center sm:text-left space-y-2">
+            <div className="inline-block relative">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black font-heading text-white tracking-tight">
+                Aparatur Desa
+              </h2>
+              <div className="w-20 sm:w-24 h-1 bg-[#0086C9] rounded-full mt-2 shadow-sm shadow-[#0086C9]/60 mx-auto sm:mx-0" />
             </div>
-
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-heading text-white tracking-tight leading-tight">
-              Aparatur & Perangkat <span className="text-[#0086C9]">Desa Suka Banjar</span>
-            </h2>
-
-            <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-              Mengenal jajaran pimpinan dan aparatur pemerintah desa yang siap memberikan pelayanan publik digital terbaik, responsif, dan ramah untuk seluruh warga Desa Suka Banjar.
+            <p className="text-slate-300 text-xs sm:text-sm">
+              Jajaran pimpinan dan aparatur pemerintah yang melayani masyarakat Desa Suka Banjar
             </p>
           </div>
 
-          {/* Left & Right Scroll Buttons */}
-          <div className="flex items-center gap-3 shrink-0">
+          {/* Navigation Controls untuk Swipe / Scroll Horizontal */}
+          <div className="flex items-center gap-2.5 shrink-0">
             <button
               onClick={() => handleScroll('left')}
-              aria-label="Geser Kiri"
-              className="p-3 rounded-2xl bg-slate-800 hover:bg-[#0086C9] text-slate-300 hover:text-white border border-slate-700 transition-all duration-300 shadow-md cursor-pointer hover:scale-105 active:scale-95"
+              aria-label="Geser ke kiri"
+              className="p-2.5 sm:p-3 rounded-2xl bg-slate-800/90 hover:bg-[#0086C9] text-slate-300 hover:text-white border border-slate-700 transition-all duration-300 shadow-md cursor-pointer hover:scale-105 active:scale-95"
             >
-              <ChevronLeft size={20} />
+              <ChevronLeft size={18} />
             </button>
             <button
               onClick={() => handleScroll('right')}
-              aria-label="Geser Kanan"
-              className="p-3 rounded-2xl bg-slate-800 hover:bg-[#0086C9] text-slate-300 hover:text-white border border-slate-700 transition-all duration-300 shadow-md cursor-pointer hover:scale-105 active:scale-95"
+              aria-label="Geser ke kanan"
+              className="p-2.5 sm:p-3 rounded-2xl bg-slate-800/90 hover:bg-[#0086C9] text-slate-300 hover:text-white border border-slate-700 transition-all duration-300 shadow-md cursor-pointer hover:scale-105 active:scale-95"
             >
-              <ChevronRight size={20} />
+              <ChevronRight size={18} />
             </button>
           </div>
         </div>
 
-        {/* Horizontal Scrollable Container */}
+        {/* 2-Row Horizontal Scrollable Grid (Tepat 2 Baris ke Samping) */}
         <div
           ref={scrollRef}
-          className="flex items-stretch gap-6 overflow-x-auto pt-2 pb-6 scroll-smooth snap-x snap-mandatory scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-800/40"
+          className="grid grid-rows-2 grid-flow-col auto-cols-[165px] sm:auto-cols-[190px] md:auto-cols-[210px] lg:auto-cols-[225px] gap-3 sm:gap-4 overflow-x-auto pb-4 pt-1 scroll-smooth snap-x snap-mandatory scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-800/40"
         >
           {displayOfficials.map((person) => {
-            const isKades = person.role.toLowerCase().includes('kepala desa');
+            const initials = person.name
+              .split(' ')
+              .slice(0, 2)
+              .map((n) => n[0])
+              .join('');
 
             return (
               <div
                 key={person.id}
-                className="w-[260px] sm:w-[280px] shrink-0 snap-start group relative bg-slate-800/80 rounded-3xl p-4 border border-slate-700/60 hover:border-[#0086C9]/50 shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#0086C9]/10 flex flex-col"
+                onClick={() => setSelectedOfficial(person)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedOfficial(person);
+                  }
+                }}
+                className="group relative aspect-[3/4] sm:aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950/90 border border-slate-800/90 hover:border-[#0086C9] shadow-lg hover:shadow-2xl hover:shadow-[#0086C9]/25 transition-all duration-300 hover:-translate-y-1.5 cursor-pointer flex flex-col justify-end select-none snap-start"
               >
-                {/* Photo Container */}
-                <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-slate-950 mb-4 border border-slate-700/50">
+                {/* Background Image / Placeholder */}
+                {person.imageUrl ? (
                   <img
-                    src={
-                      person.imageUrl ||
-                      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop'
-                    }
+                    src={person.imageUrl}
                     alt={person.name}
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                    className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src =
                         'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop';
                     }}
                   />
-
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
-
-                  {/* Role Badge inside image - Clean Glass Border Without Icons */}
-                  <div className="absolute bottom-3 left-3 right-3">
-                    <span className="inline-flex items-center justify-center px-3 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider bg-slate-950/65 text-slate-100 border border-slate-700/80 backdrop-blur-md shadow-lg w-full text-center">
-                      <span className="truncate">{person.role}</span>
+                ) : (
+                  <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-slate-800 to-slate-950 flex flex-col items-center justify-center text-slate-500">
+                    <span className="text-3xl font-black text-slate-600 font-heading">
+                      {initials}
                     </span>
+                    <span className="text-[10px] mt-1 text-slate-400">Aparatur</span>
                   </div>
-                </div>
+                )}
 
-                {/* Name Details */}
-                <div className="px-2 py-1 text-center mt-auto">
-                  <h3 className="text-base font-extrabold text-white font-heading group-hover:text-[#0086C9] transition-colors line-clamp-1">
+                {/* Dark Gradient Bottom Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-transparent opacity-90 group-hover:opacity-95 transition-opacity" />
+
+                {/* Text Card Strip at Bottom */}
+                <div className="relative z-10 p-2.5 sm:p-3 text-center flex flex-col items-center justify-end w-full">
+                  <h3 className="text-[11px] sm:text-xs md:text-sm font-black text-white uppercase tracking-wider font-heading line-clamp-1 group-hover:text-[#0086C9] transition-colors drop-shadow-md">
                     {person.name}
                   </h3>
+                  <p className="text-[10px] sm:text-[11px] text-slate-300 font-medium truncate w-full mt-0.5 drop-shadow-sm">
+                    {person.role}
+                  </p>
                 </div>
               </div>
             );
           })}
         </div>
       </div>
+
+      {/* Interactive Pop-Up Modal Biodata */}
+      <OfficialBiodataModal
+        official={selectedOfficial}
+        onClose={() => setSelectedOfficial(null)}
+      />
     </section>
   );
 }
+
