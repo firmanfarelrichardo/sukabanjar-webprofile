@@ -85,24 +85,82 @@ export default function AdminSipdeskelTab() {
   const handleSaveEdit = async () => {
     if (!editingItem) return;
     try {
+      const payload = {
+        ...editingItem,
+        jumlahKK: editingItem.jumlahKK !== undefined ? Number(editingItem.jumlahKK) : undefined,
+        jumlah: Number(editingItem.jumlah) || Number(editingItem.lakiLaki || 0) + Number(editingItem.perempuan || 0),
+        lakiLaki: Number(editingItem.lakiLaki) || 0,
+        perempuan: Number(editingItem.perempuan) || 0,
+        persentase: editingItem.persentase !== undefined ? Number(editingItem.persentase) : undefined,
+      };
+
       const res = await fetch('/api/statistik', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editingItem),
+        body: JSON.stringify(payload),
       });
-      if (res.ok) {
+
+      const json = await res.json();
+
+      if (res.ok && json.success) {
+        // Optimistic State Update for Instant Feedback
+        setData((prev: any) => {
+          if (!prev) return prev;
+          const targetKey = editingItem.type; // 'dusun' | 'usia' | 'pendidikan' | 'pekerjaan'
+          if (!prev[targetKey]) return prev;
+
+          const updatedList = prev[targetKey].map((item: any) => {
+            if (item.id === editingItem.id || (item.namaDusun && item.namaDusun === editingItem.namaDusun) || (item.kategori && item.kategori === editingItem.kategori)) {
+              return {
+                ...item,
+                ...payload,
+              };
+            }
+            return item;
+          });
+
+          // Recalculate totals if dusun was edited
+          let newOverview = prev.overview;
+          if (targetKey === 'dusun') {
+            const totalPop = updatedList.reduce((acc: number, d: any) => acc + (d.jumlah || 0), 0);
+            const totalMale = updatedList.reduce((acc: number, d: any) => acc + (d.lakiLaki || 0), 0);
+            const totalFemale = updatedList.reduce((acc: number, d: any) => acc + (d.perempuan || 0), 0);
+            const totalKK = updatedList.reduce((acc: number, d: any) => acc + (d.jumlahKK || 0), 0);
+            newOverview = {
+              ...prev.overview,
+              totalPopulation: totalPop,
+              malePopulation: totalMale,
+              femalePopulation: totalFemale,
+              totalHouseholds: totalKK,
+            };
+          }
+
+          return {
+            ...prev,
+            [targetKey]: updatedList,
+            overview: newOverview,
+          };
+        });
+
         setSyncResult({
           success: true,
           message: `Perubahan data ${editingItem.type} berhasil disimpan ke database!`,
         });
         setEditingItem(null);
+
+        // Fetch fresh server state
         fetchData();
+      } else {
+        setSyncResult({
+          success: false,
+          message: json.message || 'Gagal menyimpan data.',
+        });
       }
     } catch (err) {
       console.error('Error saving manual edit:', err);
       setSyncResult({
         success: false,
-        message: 'Gagal menyimpan perubahan data.',
+        message: 'Terjadi kesalahan saat menyimpan perubahan data.',
       });
     }
   };
@@ -343,16 +401,22 @@ export default function AdminSipdeskelTab() {
                     {/* Nested Breakdown: RW & RT Tables */}
                     {isExpanded && (
                       <div className="p-5 space-y-6 bg-white animate-fadeIn">
-                        {(dus.rws || []).map((rwItem: any, rwIdx: number) => (
-                          <div key={rwIdx} className="space-y-3">
-                            <div className="flex items-center justify-between bg-sky-50 p-3 rounded-xl border border-sky-100 text-xs font-bold text-sky-900">
-                              <span>
-                                {rwItem.rw} {rwItem.ketua && rwItem.ketua !== '-' ? `(Ketua: ${rwItem.ketua})` : ''}
-                              </span>
-                              <span>
-                                {rwItem.jumlahKK} KK | Total: {rwItem.jumlah} Jiwa (L: {rwItem.lakiLaki}, P: {rwItem.perempuan})
-                              </span>
-                            </div>
+                        {(dus.rws || []).map((rwItem: any, rwIdx: number) => {
+                          const rwKK = (dus.rws && dus.rws.length === 1) ? dus.jumlahKK : (rwItem.jumlahKK || dus.jumlahKK);
+                          const rwJumlah = (dus.rws && dus.rws.length === 1) ? dus.jumlah : (rwItem.jumlah || dus.jumlah);
+                          const rwLaki = (dus.rws && dus.rws.length === 1) ? dus.lakiLaki : (rwItem.lakiLaki || dus.lakiLaki);
+                          const rwPerempuan = (dus.rws && dus.rws.length === 1) ? dus.perempuan : (rwItem.perempuan || dus.perempuan);
+
+                          return (
+                            <div key={rwIdx} className="space-y-3">
+                              <div className="flex items-center justify-between bg-sky-50 p-3 rounded-xl border border-sky-100 text-xs font-bold text-sky-900">
+                                <span>
+                                  {rwItem.rw} {rwItem.ketua && rwItem.ketua !== '-' ? `(Ketua: ${rwItem.ketua})` : ''}
+                                </span>
+                                <span>
+                                  {rwKK} KK | Total: {rwJumlah} Jiwa (L: {rwLaki}, P: {rwPerempuan})
+                                </span>
+                              </div>
 
                             <div className="overflow-x-auto pl-2 sm:pl-4">
                               <table className="w-full text-left text-xs">
@@ -380,8 +444,9 @@ export default function AdminSipdeskelTab() {
                                 </tbody>
                               </table>
                             </div>
-                          </div>
-                        ))}
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </div>

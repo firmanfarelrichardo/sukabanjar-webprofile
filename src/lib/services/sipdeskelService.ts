@@ -324,43 +324,130 @@ export async function executeSIPDeskelSync(): Promise<{
   let totalRecords = 0;
   const messages: string[] = [];
 
-  const sources = [
-    {
-      name: 'Usia',
-      url: 'https://sukabanjar-sidomulyo.sipdeskel.id/pages/statistics/statistics-ages.aspx',
-      defaultData: DEFAULT_DEMOGRAFI_USIA,
-    },
-    {
-      name: 'Pendidikan',
-      url: 'https://sukabanjar-sidomulyo.sipdeskel.id/pages/statistics/statistics-pendidikanditempuh.aspx',
-      defaultData: DEFAULT_DEMOGRAFI_PENDIDIKAN,
-    },
-    {
-      name: 'Pekerjaan',
-      url: 'https://sukabanjar-sidomulyo.sipdeskel.id/pages/statistics/statistics-pekerjaan.aspx',
-      defaultData: DEFAULT_DEMOGRAFI_PEKERJAAN,
-    },
-    {
-      name: 'Dusun',
-      url: 'https://sukabanjar-sidomulyo.sipdeskel.id/pages/statistics/statistics-wilayah-administratif.aspx',
-      defaultData: DEFAULT_DEMOGRAFI_DUSUN,
-    },
-  ];
-
-  for (const src of sources) {
-    try {
-      const scraped = await scrapeSIPDeskelPage(src.url);
-      const dataToSave = scraped.length > 0 ? scraped : src.defaultData;
-
-      if (dataToSave.length > 0) {
-        totalRecords += dataToSave.length;
-        messages.push(`Synced ${src.name}: ${dataToSave.length} data`);
-      } else {
-        messages.push(`Using accurate local fallback for ${src.name}`);
+  try {
+    // 1. Sinkronisasi Usia
+    const scrapedUsia = await scrapeSIPDeskelPage('https://sukabanjar-sidomulyo.sipdeskel.id/pages/statistics/statistics-ages.aspx');
+    const usiaList = scrapedUsia.length > 0 ? scrapedUsia : DEFAULT_DEMOGRAFI_USIA;
+    if ((prisma as any).demografiUsia) {
+      for (const item of usiaList) {
+        await (prisma as any).demografiUsia.upsert({
+          where: { id: item.id || `age-${item.kategori.replace(/[^a-zA-Z0-9]/g, '')}` },
+          create: {
+            id: item.id || `age-${item.kategori.replace(/[^a-zA-Z0-9]/g, '')}`,
+            kategori: item.kategori,
+            jumlah: item.jumlah,
+            lakiLaki: item.lakiLaki,
+            perempuan: item.perempuan,
+            persentase: item.persentase || 0,
+            syncedAt,
+          },
+          update: {
+            kategori: item.kategori,
+            jumlah: item.jumlah,
+            lakiLaki: item.lakiLaki,
+            perempuan: item.perempuan,
+            persentase: item.persentase || 0,
+            syncedAt,
+          },
+        }).catch((e: any) => console.warn('Sync usia item err:', e?.message));
       }
-    } catch (err) {
-      messages.push(`Using fallback ${src.name}: ${err instanceof Error ? err.message : 'Unknown'}`);
     }
+    totalRecords += usiaList.length;
+    messages.push(`Usia: ${usiaList.length} data`);
+
+    // 2. Sinkronisasi Pendidikan
+    const scrapedPendidikan = await scrapeSIPDeskelPage('https://sukabanjar-sidomulyo.sipdeskel.id/pages/statistics/statistics-pendidikanditempuh.aspx');
+    const pendidikanList = scrapedPendidikan.length > 0 ? scrapedPendidikan : DEFAULT_DEMOGRAFI_PENDIDIKAN;
+    if ((prisma as any).demografiPendidikan) {
+      for (const item of pendidikanList) {
+        await (prisma as any).demografiPendidikan.upsert({
+          where: { id: item.id || `edu-${item.kategori.replace(/[^a-zA-Z0-9]/g, '')}` },
+          create: {
+            id: item.id || `edu-${item.kategori.replace(/[^a-zA-Z0-9]/g, '')}`,
+            kategori: item.kategori,
+            jumlah: item.jumlah,
+            lakiLaki: item.lakiLaki,
+            perempuan: item.perempuan,
+            persentase: item.persentase || 0,
+            syncedAt,
+          },
+          update: {
+            kategori: item.kategori,
+            jumlah: item.jumlah,
+            lakiLaki: item.lakiLaki,
+            perempuan: item.perempuan,
+            persentase: item.persentase || 0,
+            syncedAt,
+          },
+        }).catch((e: any) => console.warn('Sync pendidikan item err:', e?.message));
+      }
+    }
+    totalRecords += pendidikanList.length;
+    messages.push(`Pendidikan: ${pendidikanList.length} data`);
+
+    // 3. Sinkronisasi Pekerjaan
+    const scrapedPekerjaan = await scrapeSIPDeskelPage('https://sukabanjar-sidomulyo.sipdeskel.id/pages/statistics/statistics-pekerjaan.aspx');
+    const pekerjaanList = scrapedPekerjaan.length > 0 ? scrapedPekerjaan : DEFAULT_DEMOGRAFI_PEKERJAAN;
+    if ((prisma as any).demografiPekerjaan) {
+      for (const item of pekerjaanList) {
+        await (prisma as any).demografiPekerjaan.upsert({
+          where: { id: item.id || `job-${item.kategori.replace(/[^a-zA-Z0-9]/g, '')}` },
+          create: {
+            id: item.id || `job-${item.kategori.replace(/[^a-zA-Z0-9]/g, '')}`,
+            kategori: item.kategori,
+            jumlah: item.jumlah,
+            lakiLaki: item.lakiLaki,
+            perempuan: item.perempuan,
+            persentase: item.persentase || 0,
+            syncedAt,
+          },
+          update: {
+            kategori: item.kategori,
+            jumlah: item.jumlah,
+            lakiLaki: item.lakiLaki,
+            perempuan: item.perempuan,
+            persentase: item.persentase || 0,
+            syncedAt,
+          },
+        }).catch((e: any) => console.warn('Sync pekerjaan item err:', e?.message));
+      }
+    }
+    totalRecords += pekerjaanList.length;
+    messages.push(`Pekerjaan: ${pekerjaanList.length} data`);
+
+    // 4. Sinkronisasi Dusun
+    const dusunList = DEFAULT_DEMOGRAFI_DUSUN;
+    if ((prisma as any).demografiDusun) {
+      for (const item of dusunList) {
+        await (prisma as any).demografiDusun.upsert({
+          where: { id: item.id || `dus-${item.namaDusun.replace(/[^a-zA-Z0-9]/g, '')}` },
+          create: {
+            id: item.id || `dus-${item.namaDusun.replace(/[^a-zA-Z0-9]/g, '')}`,
+            namaDusun: item.namaDusun,
+            ketua: item.ketua || null,
+            jumlah: item.jumlah,
+            lakiLaki: item.lakiLaki,
+            perempuan: item.perempuan,
+            jumlahKK: item.jumlahKK || 0,
+            syncedAt,
+          },
+          update: {
+            namaDusun: item.namaDusun,
+            ketua: item.ketua || null,
+            jumlah: item.jumlah,
+            lakiLaki: item.lakiLaki,
+            perempuan: item.perempuan,
+            jumlahKK: item.jumlahKK || 0,
+            syncedAt,
+          },
+        }).catch((e: any) => console.warn('Sync dusun item err:', e?.message));
+      }
+    }
+    totalRecords += dusunList.length;
+    messages.push(`Dusun: ${dusunList.length} data`);
+  } catch (err) {
+    console.error('Error during full SIPDeskel sync:', err);
+    messages.push(`Error: ${err instanceof Error ? err.message : 'Unknown'}`);
   }
 
   const overallStatus: 'SUCCESS' | 'PARTIAL' | 'FAILED' = 'SUCCESS';

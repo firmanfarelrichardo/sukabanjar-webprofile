@@ -1,0 +1,151 @@
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
+const DEFAULT_OFFICIALS = [
+  {
+    id: 'off-1',
+    name: 'Dedi Kurniawan, S.IP',
+    role: 'Kepala Desa',
+    imageUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop',
+    orderNum: 1,
+    birthPlace: 'Suka Banjar',
+    birthDate: '1980-05-12',
+    gender: 'Laki-Laki',
+    address: 'Dusun I RT 02 RW 01, Desa Suka Banjar',
+    description: 'Berkomitmen mewujudkan tata kelola pemerintahan desa yang transparan, mandiri, berdaya saing, dan berbasis digital untuk kemajuan seluruh warga Desa Suka Banjar.',
+  },
+  {
+    id: 'off-2',
+    name: 'Rahmat Hidayat, S.Sos',
+    role: 'Sekretaris Desa',
+    imageUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop',
+    orderNum: 2,
+    birthPlace: 'Sidomulyo',
+    birthDate: '1984-08-20',
+    gender: 'Laki-Laki',
+    address: 'Dusun II RT 01 RW 02, Desa Suka Banjar',
+    description: 'Bertanggung jawab dalam koordinasi administrasi kepemerintahan, pelayanan surat menyurat warga, dan pengelolaan arsip digital desa.',
+  },
+  {
+    id: 'off-3',
+    name: 'Budi Santoso, S.E',
+    role: 'Kaur Keuangan',
+    imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
+    orderNum: 3,
+    birthPlace: 'Kalianda',
+    birthDate: '1988-11-15',
+    gender: 'Laki-Laki',
+    address: 'Dusun I RT 03 RW 01, Desa Suka Banjar',
+    description: 'Mengelola tata kelola keuangan, APBDes, dan akuntabilitas anggaran pendapatan belanja desa secara terbuka dan tertib.',
+  },
+  {
+    id: 'off-4',
+    name: 'Siti Aminah, A.Md',
+    role: 'Kaur Perencanaan & Umum',
+    imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop',
+    orderNum: 4,
+    birthPlace: 'Suka Banjar',
+    birthDate: '1992-03-25',
+    gender: 'Perempuan',
+    address: 'Dusun III RT 02 RW 01, Desa Suka Banjar',
+    description: 'Menyusun dokumen perencanaan pembangunan jangka menengah dan tahunan desa (RPJMDes & RKPDes) serta inventarisasi aset desa.',
+  },
+  {
+    id: 'off-5',
+    name: 'Ahmad Fauzi',
+    role: 'Kasi Pemerintahan',
+    imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop',
+    orderNum: 5,
+    birthPlace: 'Sidomulyo',
+    birthDate: '1987-07-10',
+    gender: 'Laki-Laki',
+    address: 'Dusun I RT 01 RW 01, Desa Suka Banjar',
+    description: 'Menyelenggarakan pembinaan ketertiban masyarakat, kependudukan desa, dan tata tertib administrasi wilayah administrasi dusun.',
+  },
+  {
+    id: 'off-6',
+    name: 'Dewi Lestari, S.Pd',
+    role: 'Kasi Kesejahteraan',
+    imageUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop',
+    orderNum: 6,
+    birthPlace: 'Bandar Lampung',
+    birthDate: '1991-09-04',
+    gender: 'Perempuan',
+    address: 'Dusun II RT 03 RW 02, Desa Suka Banjar',
+    description: 'Menggerakkan program penanggulangan kemiskinan, posyandu kesehatan balita & lansia, serta pemberdayaan pendidikan generasi muda desa.',
+  },
+  {
+    id: 'off-7',
+    name: 'Hendra Saputra',
+    role: 'Kasi Pelayanan',
+    imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
+    orderNum: 7,
+    birthPlace: 'Suka Banjar',
+    birthDate: '1989-12-18',
+    gender: 'Laki-Laki',
+    address: 'Dusun IV RT 01 RW 01, Desa Suka Banjar',
+    description: 'Melayani permohonan surat pengantar administrasi kependudukan, perizinan usaha mikro warga, dan penyaluran bantuan sosial tepat sasaran.',
+  },
+  {
+    id: 'off-8',
+    name: 'Iman Hazbullah',
+    role: 'Kadus I (Damar Lega)',
+    imageUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=800&auto=format&fit=crop',
+    orderNum: 8,
+    birthPlace: 'Suka Banjar',
+    birthDate: '1978-01-22',
+    gender: 'Laki-Laki',
+    address: 'Dusun Damar Lega RT 01 RW 03, Desa Suka Banjar',
+    description: 'Memimpin koordinasi kemasyarakatan dan pelayanan lingkungan Dusun Damar Lega (RT 01 sampai RT 04) dengan total 193 KK.',
+  },
+  {
+    id: 'off-9',
+    name: 'Heri Yanto',
+    role: 'Kadus II (Katibung)',
+    imageUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop',
+    orderNum: 9,
+    birthPlace: 'Katibung',
+    birthDate: '1982-06-14',
+    gender: 'Laki-Laki',
+    address: 'Dusun Katibung RT 02 RW 05, Desa Suka Banjar',
+    description: 'Mengayomi masyarakat Dusun Katibung dalam kegiatan gotong royong, keamanan poskamling, dan pemutakhiran data kependudukan berkala.',
+  },
+  {
+    id: 'off-10',
+    name: 'Sapri Hidayat',
+    role: 'Kadus III (Sandaran I)',
+    imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
+    orderNum: 10,
+    birthPlace: 'Suka Banjar',
+    birthDate: '1985-04-30',
+    gender: 'Laki-Laki',
+    address: 'Dusun Sandaran I RT 01 RW 02, Desa Suka Banjar',
+    description: 'Menjaga kerukunan warga Dusun Sandaran I dan mengawal usulan pembangunan musrenbang tingkat dusun ke pemerintah desa.',
+  },
+];
+
+async function seed() {
+  console.log('Seeding apparatus with full biodata to database...');
+  for (const item of DEFAULT_OFFICIALS) {
+    await prisma.apparatus.upsert({
+      where: { id: item.id },
+      create: item,
+      update: {
+        name: item.name,
+        role: item.role,
+        imageUrl: item.imageUrl,
+        orderNum: item.orderNum,
+        birthPlace: item.birthPlace,
+        birthDate: item.birthDate,
+        gender: item.gender,
+        address: item.address,
+        description: item.description,
+      },
+    });
+  }
+  console.log('✓ All 10 apparatus seeded with biodata in database!');
+}
+
+seed()
+  .catch(console.error)
+  .finally(() => prisma.$disconnect());

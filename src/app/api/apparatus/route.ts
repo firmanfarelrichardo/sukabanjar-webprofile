@@ -1,73 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-
-export interface OfficialItem {
-  id: string;
-  name: string;
-  role: string;
-  imageUrl?: string | null;
-  orderNum: number;
-  createdAt?: string;
-}
-
-const DEFAULT_OFFICIALS: OfficialItem[] = [
-  {
-    id: 'off-1',
-    name: 'Dedi Kurniawan, S.IP',
-    role: 'Kepala Desa',
-    imageUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop',
-    orderNum: 1,
-  },
-  {
-    id: 'off-2',
-    name: 'Rahmat Hidayat, S.Sos',
-    role: 'Sekretaris Desa',
-    imageUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop',
-    orderNum: 2,
-  },
-  {
-    id: 'off-3',
-    name: 'Budi Santoso, S.E',
-    role: 'Kaur Keuangan',
-    imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
-    orderNum: 3,
-  },
-  {
-    id: 'off-4',
-    name: 'Siti Aminah, A.Md',
-    role: 'Kaur Perencanaan & Umum',
-    imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop',
-    orderNum: 4,
-  },
-  {
-    id: 'off-5',
-    name: 'Ahmad Fauzi, S.H',
-    role: 'Kasi Pemerintahan',
-    imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop',
-    orderNum: 5,
-  },
-  {
-    id: 'off-6',
-    name: 'Nurul Huda, S.Pd',
-    role: 'Kasi Kesejahteraan & Pelayanan',
-    imageUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop',
-    orderNum: 6,
-  },
-  {
-    id: 'off-7',
-    name: 'Hendra Saputra',
-    role: 'Kepala Dusun 1',
-    imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
-    orderNum: 7,
-  },
-  {
-    id: 'off-8',
-    name: 'Bambang Supriyadi',
-    role: 'Kepala Dusun 2',
-    imageUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=800&auto=format&fit=crop',
-    orderNum: 8,
-  },
-];
+import { DEFAULT_OFFICIALS, OfficialItem } from '@/lib/data/apparatus';
 
 export async function GET() {
   try {
@@ -91,7 +24,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, role, imageUrl, orderNum } = body;
+    const { name, role, imageUrl, orderNum, birthPlace, birthDate, gender, address, description } = body;
 
     if (!name || !role) {
       return NextResponse.json(
@@ -107,6 +40,11 @@ export async function POST(request: Request) {
           role,
           imageUrl: imageUrl || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
           orderNum: orderNum ? parseInt(String(orderNum), 10) : 1,
+          birthPlace: birthPlace || null,
+          birthDate: birthDate || null,
+          gender: gender || null,
+          address: address || null,
+          description: description || null,
         },
       });
 
@@ -122,6 +60,11 @@ export async function POST(request: Request) {
         role,
         imageUrl: imageUrl || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
         orderNum: orderNum ? parseInt(String(orderNum), 10) : 1,
+        birthPlace: birthPlace || null,
+        birthDate: birthDate || null,
+        gender: gender || null,
+        address: address || null,
+        description: description || null,
         createdAt: new Date().toISOString(),
       };
       return NextResponse.json({
@@ -146,7 +89,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, name, role, imageUrl, orderNum } = body;
+    const { id, name, role, imageUrl, orderNum, birthPlace, birthDate, gender, address, description } = body;
 
     if (!id || !name || !role) {
       return NextResponse.json(
@@ -163,6 +106,11 @@ export async function PUT(request: Request) {
           role,
           imageUrl: imageUrl || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
           orderNum: orderNum ? parseInt(String(orderNum), 10) : 1,
+          birthPlace: birthPlace || null,
+          birthDate: birthDate || null,
+          gender: gender || null,
+          address: address || null,
+          description: description || null,
         },
       });
 
@@ -181,6 +129,11 @@ export async function PUT(request: Request) {
           role,
           imageUrl: imageUrl || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
           orderNum: orderNum ? parseInt(String(orderNum), 10) : 1,
+          birthPlace: birthPlace || null,
+          birthDate: birthDate || null,
+          gender: gender || null,
+          address: address || null,
+          description: description || null,
         },
       });
     }

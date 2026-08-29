@@ -4,14 +4,18 @@ Dokumen ini mencatat seluruh riwayat perubahan, pembaruan fitur, perbaikan bug, 
 
 ---
 
-## [Unreleased / Recent Updates] — 2026-07-31
+## [1.1.0] — 2026-08-30
 
-### 🛠️ Redesign Admin UX: Mode Kelola Visual Desa (In-Context Admin Mode)
-- **FIXED (Header Collision):** Mengeliminasi bentrokan visual antara Header Publik dan Sidebar Admin pada rute `/admin`.
-- **NEW (Admin Provider & Top Control Bar):** Menambahkan `AdminProvider` di `src/context/AdminContext.tsx` dan bilah kontrol melayang `AdminControlBar.tsx` di bagian paling atas layar.
-- **NEW (In-Place Edit Buttons):** Menambahkan tombol `[ ✏️ Edit Bagian Ini ]` pada komponen `HeroSection`, `VisionMissionSection`, dan `HistorySection` yang hanya muncul saat Admin login.
-- **NEW (Inline Edit Modal):** Menambahkan `InlineEditModal.tsx` dengan huruf besar, kontras tinggi, dan tombol `[ 💾 Simpan Perubahan ]` hijau mencolok yang sangat ramah pengguna untuk perangkat desa tua maupun muda.
-- **NEW (Admin Inbox Modal):** Menambahkan `AdminInboxModal.tsx` untuk membaca dan memoderasi laporan aspirasi warga langsung tanpa perlu navigasi rumit.
+### ✨ Fitur Baru & Peningkatan Sistem (Modul 06)
+- **NEW (Panduan Lengkap SEO & Google Indexing):** Menyusun file dokumentasi resmi [`SEO_GUIDE.md`](file:///c:/laragon/www/sukabanjar-webprofile/context/05-setup/SEO_GUIDE.md) yang mencakup 13 bab persiapan, pembuatan robots.txt, sitemap.xml, metadata, hingga verifikasi Google Search Console menggunakan URL produksi resmi `https://desasukabanjar.vercel.app`.
+- **NEW (Otomasi Robots & Sitemap):** Menambahkan [`src/app/robots.ts`](file:///c:/laragon/www/sukabanjar-webprofile/src/app/robots.ts) dan [`src/app/sitemap.ts`](file:///c:/laragon/www/sukabanjar-webprofile/src/app/sitemap.ts) berbasis URL resmi `https://desasukabanjar.vercel.app`.
+- **NEW (Layout 2 Baris Horizontal Scroll / Swipe & Modal Pop Up):** Memperbarui tampilan aparatur desa di beranda dengan format **tepat 2 baris vertikal** yang dapat di-scroll/swipe secara horizontal (`grid-rows-2 grid-flow-col auto-cols-[...]`) dilengkapi tombol geser navigasi kiri & kanan, serta integrasi [`OfficialBiodataModal.tsx`](file:///c:/laragon/www/sukabanjar-webprofile/src/components/ui/OfficialBiodataModal.tsx) untuk menampilkan pop-up biodata instan.
+- **NEW (Biodata Aparatur & Halaman Profil Khusus):** Menambahkan field TTL, Jenis Kelamin, Alamat, dan Deskripsi Pengabdian pada model `Apparatus`, membuat API [`/api/apparatus/[id]`](file:///c:/laragon/www/sukabanjar-webprofile/src/app/api/apparatus/[id]/route.ts) dan halaman publik interaktif [`/aparatur/[id]`](file:///c:/laragon/www/sukabanjar-webprofile/src/app/aparatur/[id]/page.tsx).
+- **IMPROVED (Format Kalender Tanggal Lahir):** Mengubah input tanggal lahir di admin menjadi kalender interaktif (`type="date"`) dan memformat tampilan publik ke format waktu kalender Indonesia yang rapi (contoh: `12 Mei 1980`).
+- **NEW (Embed Google Maps Baru):** Memperbarui titik koordinat resmi Kantor Desa Suka Banjar pada `Footer.tsx`.
+- **IMPROVED (Presisi Edit Manual SIPDeskel):** Arsitektur *Dual Persistence* (In-Memory + PostgreSQL Upsert) pada `src/app/api/statistik/route.ts` dan `AdminSipdeskelTab.tsx` untuk sinkronisasi akurat Dusun, RW, dan RT.
+- **IMPROVED (Splash Screen Centering & Responsiveness):** Menyelaraskan posisi tengah presisi (vertikal & horizontal) pada `IntroSplashOverlay.tsx`, menyinkronkan logo desa resmi dari SIPDeskel (`useVillageProfile`), dan memperbaiki aspek rasio logo di seluruh perangkat.
+- **DATABASE (Schema Migration):** Menambahkan kolom `birthPlace`, `birthDate`, `gender`, `address`, `description` pada tabel `Apparatus` serta membuat tabel `DemografiDusun`, `DemografiUsia`, `DemografiPendidikan`, `DemografiPekerjaan`, dan `SyncLog`.
 
 ---
 
