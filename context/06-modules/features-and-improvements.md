@@ -46,7 +46,7 @@ Modul Fitur Baru & Perbaikan (*New Features & Improvements*) merangkum spesifika
 ### 2. Pembaruan Google Maps Footer
 - **FR-NFI-005:** Mengganti iframe lama pada `Footer.tsx` dengan URL embed Google Maps resmi Balai/Kantor Desa Suka Banjar:
   ```text
-  https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3970.8353398002814!2d105.499691!3d-5.5913363!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e411f0050d67711%3A0xa3994d36ce33d4b0!2sKANTOR%20DESA%20SUKABANJAR!5e0!3m2!1sid!2sid!4v1787929018394!5m2!1sid!2sid
+  https://www.google.com/maps/embed?pb=!4v1788167680397!6m8!1m7!1szwMQlYZtp2pHtM9tdkV1rg!2m2!1d-5.591413578913071!2d105.4996216327626!3f42.169224!4f0!5f0.7820865974627469
   ```
 - **FR-NFI-006:** Menampilkan tampilan kartu peta footer yang responsif, rounded, dengan tombol aksi cepat *"Buka di Google Maps"* atau *"Petunjuk Arah"*.
 
